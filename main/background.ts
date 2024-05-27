@@ -32,6 +32,14 @@ if (isProd) {
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 
+  ipcMain.on("closeApp", () => {
+    mainWindow.close();
+  });
+
+  ipcMain.on("minimizeApp", () => {
+    mainWindow.minimize();
+  });
+
   if (isProd) {
     await mainWindow.loadURL("app://./home");
   } else {

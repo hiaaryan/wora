@@ -1,12 +1,15 @@
 import { IconArrowDownRight, IconX } from "@tabler/icons-react";
 import Image from "next/image";
+import { Button } from "../ui/button";
 
 function Actions() {
-  // useEffect(() => {
-  //   const closeWindow = () => {
-  //     window.ipc.send("window-all-closed", "");
-  //   };
-  // });
+  const closeWindow = () => {
+    window.ipc.send("closeApp", 1);
+  };
+
+  const minimizeWindow = () => {
+    window.ipc.send("minimizeApp", 1);
+  };
 
   return (
     <div className="z-50 w-full absolute top-0 flex items-center justify-end px-8 py-4 drag">
@@ -17,14 +20,12 @@ function Actions() {
           Wora v0.1.0-alpha
         </div>
         <div className="flex items-center gap-3 no-drag">
-          <IconArrowDownRight
-            className="w-3.5 hover:opacity-75 wora-transition cursor-pointer"
-            stroke={2}
-          />
-          <IconX
-            className="w-3.5 hover:opacity-75 wora-transition cursor-pointer"
-            stroke={2}
-          />
+          <Button variant="ghost" onClick={minimizeWindow}>
+            <IconArrowDownRight className="w-3.5" stroke={2} />
+          </Button>
+          <Button variant="ghost" onClick={closeWindow}>
+            <IconX className="w-3.5" stroke={2} />
+          </Button>
         </div>
       </div>
     </div>

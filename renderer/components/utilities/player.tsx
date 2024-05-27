@@ -44,7 +44,7 @@ function Player() {
     });
 
     var sound = new Howl({
-      src: ["/test2.flac"],
+      src: ["/test.flac"],
       html5: true,
       format: ["flac"],
       volume: volume,
@@ -55,7 +55,7 @@ function Player() {
     let metadata: any;
 
     const fetchMetadata = async () => {
-      metadata = await mm.fetchFromUrl("/test2.flac", {});
+      metadata = await mm.fetchFromUrl("/test.flac", {});
       console.log(metadata);
     };
 
