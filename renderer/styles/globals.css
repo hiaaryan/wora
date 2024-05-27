@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.wora-bg {
+    @apply bg-black/10 dark:bg-white/30;
+}
+
+.wora-border {
+    @apply border border-black/5 dark:border-white/10;
+}
+
+.wora-transition {
+    @apply transition-all duration-300;
+}
+
+.drag {
+    -webkit-app-region: drag;
+}
+
+.no-drag {
+    -webkit-app-region: no-drag;
+}

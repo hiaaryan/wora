@@ -1,0 +1,12 @@
+appId: com.wora.player
+productName: Wora
+copyright: Copyright © 2024 Aaryan Kapoor
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
