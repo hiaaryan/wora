@@ -1,5 +1,5 @@
 import path from "path";
-import { app, ipcMain } from "electron";
+import { app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
 import * as DiscordRPC from "discord-rpc";
 import { createWindow } from "./helpers";
@@ -68,6 +68,20 @@ ipcMain.on("set-rpc-state", (_, { details, state }) => {
 
 app.on("window-all-closed", () => {
   app.quit();
+});
+
+ipcMain.on("openDialog", () => {
+  dialog
+    .showOpenDialog({
+      properties: ["openDirectory", "createDirectory"],
+    })
+    .then((result) => {
+      console.log(result.canceled);
+      console.log(result.filePaths);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 ipcMain.on("message", async (event, arg) => {

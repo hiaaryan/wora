@@ -23,6 +23,7 @@ import {
   CommandShortcut,
 } from "../ui/command";
 import React from "react";
+import Link from "next/link";
 
 function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -64,7 +65,9 @@ function Navbar() {
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button variant="ghost" asChild>
-                  <IconInbox stroke={2} className="w-5" />
+                  <Link href="/home">
+                    <IconInbox stroke={2} className="w-5" />
+                  </Link>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>
@@ -84,7 +87,9 @@ function Navbar() {
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button variant="ghost" asChild>
-                  <IconVinyl stroke={2} className="w-5" />
+                  <Link href="/playlists">
+                    <IconVinyl stroke={2} className="w-5" />
+                  </Link>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>

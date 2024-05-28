@@ -57,17 +57,18 @@ function Player() {
     const fetchMetadata = async () => {
       metadata = await mm.fetchFromUrl("/test.flac", {});
       console.log(metadata);
+      setData(metadata);
     };
 
-    fetchMetadata().then(() => {
-      var dataInit = metadata;
+    const getCover = () => {
       const getCover = mm.selectCover(metadata.common.picture);
       if (getCover != null) {
         const art = `data:${getCover.format};base64,${getCover.data.toString("base64")}`;
         setCover(art);
       }
-      setData(dataInit);
-    });
+    };
+
+    fetchMetadata().then(() => getCover());
 
     const convertTime = (seconds: number) => {
       const minutes = Math.floor(seconds / 60);
@@ -215,7 +216,6 @@ function Player() {
               step={0.01}
             />
           </div>
-
           <div className="flex items-center gap-4">
             <Button variant="ghost" className="!opacity-100">
               <IconHeart stroke={2} size={15} className="stroke-red-500" />
@@ -224,7 +224,15 @@ function Player() {
               <DialogTrigger className="opacity-40 hover:opacity-100 duration-500">
                 <IconInfoCircle stroke={2} size={15} />
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="flex items-start gap-8">
+                <div className="relative h-24 w-24 rounded-lg overflow-hidden transition duration-500">
+                  <Image
+                    alt="album"
+                    src={cover}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <DialogHeader>
                   <DialogTitle>Track Information</DialogTitle>
                   <DialogDescription>
@@ -233,7 +241,6 @@ function Player() {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-
             <Button variant="ghost">
               <IconListTree stroke={2} size={15} />
             </Button>

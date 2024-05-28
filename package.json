@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "Wora",
-  "description": "A beautiful music player for macOS 🎧",
+  "description": "🎧 A beautiful FLAC player for Windows & macOS.",
   "version": "0.1.0",
   "author": "Aaryan Kapoor",
   "main": "app/background.js",

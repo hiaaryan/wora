@@ -16,7 +16,20 @@ function Actions() {
       <div className="flex w-full items-center justify-between">
         <div></div>
         <div className="flex items-center gap-2">
-          <Image src={"/icon.ico"} alt="logo" width={16} height={16} />
+          <Image
+            src={"/icon.ico"}
+            className="block dark:hidden"
+            alt="logo"
+            width={16}
+            height={16}
+          />
+          <Image
+            src={"/icon[dark].ico"}
+            className="hidden dark:block"
+            alt="logo"
+            width={16}
+            height={16}
+          />
           Wora v0.1.0-alpha
         </div>
         <div className="flex items-center gap-3 no-drag">

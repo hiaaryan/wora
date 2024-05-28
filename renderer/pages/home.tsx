@@ -1,9 +1,7 @@
 import React from "react";
-import Head from "next/head";
 import Image from "next/image";
-import Navbar from "@/components/utilities/navbar";
-import Player from "@/components/utilities/player";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Head from "next/head";
 
 export default function HomePage() {
   return (
@@ -11,56 +9,48 @@ export default function HomePage() {
       <Head>
         <title>Home</title>
       </Head>
-      <div className="select-none dark:bg-black bg-white dark:text-white">
-        <div className="flex gap-8">
-          <div className="sticky z-50 top-0 h-dvh p-8 pt-12 pr-0">
-            <Navbar />
-          </div>
-          <div className="flex-grow p-8 pt-12 pl-0 h-screen">
-            <div className="relative flex h-full w-full flex-col">
-              <ScrollArea className="h-full mt-2 w-[88.15vw]">
-                <div className="flex flex-col gap-8">
-                  <div className="flex flex-col gap-8">
-                    <div className="flex flex-col leading-tight">
-                      <div className="text-base mt-2.5">Home</div>
-                      <div className="opacity-50">
-                        Hey Aaryan! Ready for a Jam Session?
-                      </div>
-                    </div>
-                    <div className="relative flex w-full gap-8 h-72">
-                      <div className="group/album hover:bg-black/5 dark:hover:bg-white/10 transition duration-300 w-52 p-5 wora-border rounded-xl cursor-pointer">
-                        <div className="h-full flex flex-col justify-between">
-                          <div className="relative h-2/3 rounded-xl overflow-hidden shadow-xl transition duration-300 w-full">
-                            <Image
-                              alt="album"
-                              src={"/images/bills.jpeg"}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="w-full flex flex-col">
-                            <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
-                              Never Say Die
-                            </p>
-                            <p className="opacity-50">CHVRCHES</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+      <ScrollArea className="h-full mt-2 w-[88.15vw]">
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col leading-tight">
+              <div className="text-base mt-2.5">Home</div>
+              <div className="opacity-50">
+                Hey Aaryan! Ready for a Jam Session?
+              </div>
+            </div>
+            <div className="relative flex w-full gap-8 h-72">
+              <div className="group/album hover:bg-black/5 dark:hover:bg-white/10 transition duration-300 w-52 p-5 wora-border rounded-xl cursor-pointer">
+                <div className="h-full flex flex-col justify-between">
+                  <div className="relative h-2/3 rounded-xl overflow-hidden shadow-xl transition duration-300 w-full">
+                    <Image
+                      alt="album"
+                      src={"/images/bills.jpeg"}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="w-full flex flex-col">
+                    <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
+                      Never Say Die
+                    </p>
+                    <p className="opacity-50">CHVRCHES</p>
                   </div>
                 </div>
-                <div className="h-96 flex w-[87.5vw] items-center justify-center">
-                  <p className="text-center">
-                    Wora v0.1.0 [FLAC Player for macOS] <br /> Made with ❤️ by
-                    Aaryan Kapoor.
-                  </p>
-                </div>
-              </ScrollArea>
-              <Player />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <div className="relative h-96 flex flex-col gap-2 w-[87.5vw] items-center justify-center">
+          <Image
+            alt="wora"
+            src="/wora.svg"
+            className="mix-blend-difference"
+            width={50}
+            height={200}
+          />
+          <p>Made with ❤️ by Aaryan.</p>
+        </div>
+      </ScrollArea>
     </React.Fragment>
   );
 }
