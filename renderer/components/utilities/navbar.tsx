@@ -52,7 +52,7 @@ function Navbar() {
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src="https://avatars.githubusercontent.com/u/30364412" />
+                  <AvatarImage src="/ak.jpeg" />
                   <AvatarFallback>AK</AvatarFallback>
                 </Avatar>
               </TooltipTrigger>

@@ -46,7 +46,7 @@ export default function HomePage() {
             src="/wora.svg"
             className="mix-blend-difference"
             width={50}
-            height={200}
+            height={50}
           />
           <p>Made with ❤️ by Aaryan.</p>
         </div>

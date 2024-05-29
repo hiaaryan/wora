@@ -6,6 +6,7 @@ import {
   IconInfoCircle,
   IconListTree,
   IconMicrophone2,
+  IconMicrophone2Off,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
@@ -31,7 +32,13 @@ interface LyricLine {
   text: string;
 }
 import { handleLyrics } from "./playerHandlers/handleLyrics";
-import { ScrollArea } from "../ui/scroll-area";
+import Lyrics from "../ui/lyrics";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 function Player() {
   const [play, setPlay] = useState(false);
@@ -44,12 +51,14 @@ function Player() {
   const [cover, setCover] = useState("https://iili.io/HlHy9Yx.png");
   const soundRef = useRef<Howl | null>(null);
   const [lyrics, setLyrics] = useState<string | null>(null);
-  const [showlyrics, setShowLyrics] = useState(false);
+  const [showLyrics, setShowLyrics] = useState(false);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
+
+  let metadata: any;
 
   const fetchMetadata = async () => {
     try {
-      const metadata = await mm.fetchFromUrl("/test.flac", {
+      metadata = await mm.fetchFromUrl("/test.flac", {
         skipPostHeaders: true,
       });
 
@@ -62,7 +71,10 @@ function Player() {
       }
 
       setLyrics(
-        await handleLyrics(metadata.common.title, metadata.format.duration),
+        await handleLyrics(
+          metadata.common.title + " " + metadata.common.artist,
+          metadata.format.duration,
+        ),
       );
     } catch (error) {
       console.error("Error fetching metadata:", error);
@@ -95,11 +107,14 @@ function Player() {
       .filter((line) => line !== null) as LyricLine[];
   };
 
+  const isSyncedLyrics = (lyrics: string): boolean => {
+    return /\[\d{2}:\d{2}\.\d{2}\]/.test(lyrics);
+  };
+
   let parsedLyrics: LyricLine[] = [];
 
-  if (lyrics) {
-    const lyricsString = lyrics;
-    parsedLyrics = parseLyrics(lyricsString);
+  if (lyrics && isSyncedLyrics(lyrics)) {
+    parsedLyrics = parseLyrics(lyrics);
   }
 
   useEffect(() => {
@@ -125,14 +140,15 @@ function Player() {
         setSeek(convertTime(Math.round(sound.seek())));
         setDuration(convertTime(Math.round(sound.duration())));
 
-        if (data) {
+        if (metadata) {
           window.ipc.send("set-rpc-state", {
-            details: `${data.common.title} (${data.common.artist})`,
-            state: ` [${data.format.bitsPerSample}/${(data.format.sampleRate / 1000).toFixed(1)}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
+            details: `${metadata.common.title} (${metadata.common.artist})`,
+            state: `[${metadata.format.bitsPerSample}/${(metadata.format.sampleRate / 1000).toFixed(1)}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
           });
         }
 
-        if (lyrics) {
+        if (parsedLyrics.length > 0) {
+          const parsedLyrics = parseLyrics(lyrics);
           const currentLyricLine = parsedLyrics.find((line, index) => {
             const nextLine = parsedLyrics[index + 1];
             return (
@@ -157,7 +173,7 @@ function Player() {
     });
 
     return () => clearInterval(interval);
-  }, [lyrics]);
+  }, [lyrics, metadata]);
 
   const handleVolume = (value: any) => {
     setVolume(value);
@@ -184,7 +200,6 @@ function Player() {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: data.common.title,
           artist: data.common.artist,
-          album: data.common.album,
           artwork: [{ src: cover }],
         });
       }
@@ -192,129 +207,180 @@ function Player() {
   };
 
   const toggleLyrics = () => {
-    setShowLyrics(!showlyrics);
-    console.log(showlyrics);
+    setShowLyrics(!showLyrics);
   };
 
   return (
     <div>
       <div className="!absolute top-0 left-0 w-full">
-        {showlyrics && (
+        {showLyrics && lyrics && (
           <div className="w-full h-full bg-white dark:bg-black wora-border rounded-xl">
-            <div className="text-balance text-4xl font-semibold rounded-xl bg-white dark:bg-black text-white h-[77vh] max-w-3xl flex items-center justify-left p-8">
-              {currentLyric ? (
-                currentLyric.text
+            <div className="text-balance gradient-mask-b-50-d rounded-xl bg-white dark:bg-black dark:text-white h-[77vh] w-full flex items-center justify-left px-8">
+              {isSyncedLyrics(lyrics) ? (
+                <Lyrics
+                  lyrics={parseLyrics(lyrics)}
+                  currentLyric={currentLyric}
+                />
               ) : (
-                <div className="animate-pulse">...</div>
+                <div className="overflow-hidden no-scrollbar overflow-y-auto py-80 h-full w-full text-3xl font-semibold gradient-mask-b-40-d">
+                  <div className="max-w-3xl flex flex-col gap-6">
+                    {lyrics.split("\n").map((line) => {
+                      return (
+                        <p className="text-black dark:text-white opacity-75 font-semibold">
+                          {line}
+                        </p>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
       <div className="z-50 w-full h-24 bg-white dark:bg-black wora-border rounded-xl p-4">
-        <div className="relative w-full justify-between flex h-full items-center">
-          <div className="absolute w-1/2 left-0 flex items-center gap-4">
-            <div className="relative h-16 w-16 rounded-lg overflow-hidden transition duration-500">
-              <Image alt="album" src={cover} fill className="object-cover" />
+        <TooltipProvider>
+          <div className="relative w-full justify-between flex h-full items-center">
+            <div className="absolute w-1/2 left-0 flex items-center gap-4">
+              <div className="relative h-16 w-16 rounded-md overflow-hidden transition duration-500">
+                <Image alt="album" src={cover} fill className="object-cover" />
+              </div>
+              <div className="gradient-mask-r-70 w-1/3">
+                <p className="text-nowrap text-sm">
+                  {data ? data.common.title : "Echoes of Emptiness"}
+                </p>
+                <p className="text-nowrap opacity-50">
+                  {data ? data.common.artist : "The Void Ensemble"}
+                </p>
+              </div>
             </div>
-            <div className="gradient-mask-r-70 w-1/3">
-              <p className="text-nowrap text-sm">
-                {data ? data.common.title : "Echoes of Emptiness"}
-              </p>
-              <p className="text-nowrap opacity-50">
-                {data ? data.common.artist : "The Void Ensemble"}
-              </p>
-            </div>
-          </div>
-          <div className="absolute left-0 mx-auto right-0 flex flex-col justify-around h-full w-1/3 items-center ">
-            <div className="flex items-center gap-8">
-              <Button variant="ghost">
-                <IconArrowsShuffle2 stroke={2} size={15} />
-              </Button>
-              <Button variant="ghost">
-                <IconPlayerSkipBack
-                  stroke={2}
-                  className="fill-black dark:fill-white"
-                  size={15}
-                />
-              </Button>
-              <Button variant="ghost" onClick={handlePlayPause}>
-                {!play ? (
-                  <IconPlayerPlay
+            <div className="absolute left-0 mx-auto right-0 flex flex-col justify-around h-full w-1/3 items-center ">
+              <div className="relative flex items-center gap-8">
+                <Button variant="ghost">
+                  <IconArrowsShuffle2 stroke={2} size={15} />
+                </Button>
+                <Button variant="ghost">
+                  <IconPlayerSkipBack
                     stroke={2}
-                    className="w-6 h-6 fill-black dark:fill-white"
+                    className="fill-black dark:fill-white"
+                    size={15}
                   />
-                ) : (
-                  <IconPlayerPause
-                    stroke={2}
-                    className="w-6 h-6 fill-black dark:fill-white"
-                  />
-                )}
-              </Button>
-              <Button variant="ghost">
-                <IconPlayerSkipForward
-                  stroke={2}
-                  className="w-4 fill-black dark:fill-white h-4"
-                />
-              </Button>
-              <Button variant="ghost">
-                <IconRepeat stroke={2} size={15} />
-              </Button>
-            </div>
-            <div className="relative w-full gap-3 flex items-center">
-              <p className="absolute -left-10">{seek}</p>
-              <Slider
-                defaultValue={[0]}
-                value={seekSeconds}
-                onValueChange={handleSeek}
-                max={durationSeconds}
-                step={0.01}
-              />
-              <p className="absolute -right-10">{duration}</p>
-            </div>
-          </div>
-          <div className="absolute w-1/3 right-0 flex items-center justify-end gap-8">
-            <div className="w-1/4 flex items-center gap-2 group/volume">
-              <IconVolume stroke={2} size={20} className="opacity-40" />
-              <Slider
-                onValueChange={handleVolume}
-                defaultValue={[volume]}
-                max={1}
-                step={0.01}
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={toggleLyrics}>
-                <IconMicrophone2 stroke={2} size={15} />
-              </Button>
-              <Dialog>
-                <DialogTrigger className="opacity-40 hover:opacity-100 duration-500">
-                  <IconInfoCircle stroke={2} size={15} />
-                </DialogTrigger>
-                <DialogContent className="flex items-start gap-8">
-                  <div className="relative h-24 w-24 rounded-lg overflow-hidden transition duration-500">
-                    <Image
-                      alt="album"
-                      src={cover}
-                      fill
-                      className="object-cover"
+                </Button>
+                <Button variant="ghost" onClick={handlePlayPause}>
+                  {!play ? (
+                    <IconPlayerPlay
+                      stroke={2}
+                      className="w-6 h-6 fill-black dark:fill-white"
                     />
+                  ) : (
+                    <IconPlayerPause
+                      stroke={2}
+                      className="w-6 h-6 fill-black dark:fill-white"
+                    />
+                  )}
+                </Button>
+                <Button variant="ghost">
+                  <IconPlayerSkipForward
+                    stroke={2}
+                    className="w-4 fill-black dark:fill-white h-4"
+                  />
+                </Button>
+                <Button variant="ghost">
+                  <IconRepeat stroke={2} size={15} />
+                </Button>
+                {data && data.format.lossless && (
+                  <div className="absolute -left-16 -mb-0.5">
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger>
+                        <Image
+                          alt="lossless"
+                          src="/icon[dark].ico"
+                          width={12}
+                          height={12}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent side="left" sideOffset={25}>
+                        <p>
+                          Lossless [{data.format.bitsPerSample}/
+                          {(data.format.sampleRate / 1000).toFixed(1)}kHz]
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                  <DialogHeader>
-                    <DialogTitle>Track Information</DialogTitle>
-                    <DialogDescription>
-                      {data && data.common.title}{" "}
-                      {data && data.format.sampleRate}
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-              <Button variant="ghost">
-                <IconListTree stroke={2} size={15} />
-              </Button>
+                )}
+                <div className="absolute -right-16 -mb-0.5">
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <IconHeart stroke={2} className="w-3.5 text-red-500" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" sideOffset={25}>
+                      <p>Like Song</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+              <div className="relative w-full gap-3 flex items-center">
+                <p className="absolute -left-10">{seek}</p>
+                <Slider
+                  defaultValue={[0]}
+                  value={seekSeconds}
+                  onValueChange={handleSeek}
+                  max={durationSeconds}
+                  step={0.01}
+                />
+                <p className="absolute -right-10">{duration}</p>
+              </div>
+            </div>
+            <div className="absolute w-1/3 right-0 flex items-center justify-end gap-8">
+              <div className="w-1/4 flex items-center gap-2 group/volume">
+                <IconVolume stroke={2} size={20} className="opacity-40" />
+                <Slider
+                  onValueChange={handleVolume}
+                  defaultValue={[volume]}
+                  max={1}
+                  step={0.01}
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                {lyrics ? (
+                  <Button variant="ghost" onClick={toggleLyrics}>
+                    <IconMicrophone2 stroke={2} size={15} />
+                  </Button>
+                ) : (
+                  <Button variant="ghost" className="text-red-500 !opacity-100">
+                    <IconMicrophone2Off stroke={2} size={15} />
+                  </Button>
+                )}
+
+                <Dialog>
+                  <DialogTrigger className="opacity-40 hover:opacity-100 duration-500">
+                    <IconInfoCircle stroke={2} size={15} />
+                  </DialogTrigger>
+                  <DialogContent className="flex items-start gap-8">
+                    <div className="relative h-24 w-24 rounded-lg overflow-hidden transition duration-500">
+                      <Image
+                        alt="album"
+                        src={cover}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <DialogHeader>
+                      <DialogTitle>Track Information</DialogTitle>
+                      <DialogDescription>
+                        {data && data.common.title}{" "}
+                        {data && data.format.sampleRate}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Button variant="ghost">
+                  <IconListTree stroke={2} size={15} />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </TooltipProvider>
       </div>
     </div>
   );

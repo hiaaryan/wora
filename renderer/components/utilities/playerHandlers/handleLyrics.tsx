@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const handleLyrics = async (title: string, duration: number) => {
+export const handleLyrics = async (query: string, duration: number) => {
   try {
     const response = await axios.get("https://lrclib.net/api/search", {
-      params: { track_name: title },
+      params: { q: query },
     });
 
     const songs = response.data;
@@ -14,6 +14,8 @@ export const handleLyrics = async (title: string, duration: number) => {
         Math.abs(song.duration - duration) <= 5 &&
         (song.syncedLyrics !== null || song.plainLyrics !== null),
     );
+
+    console.log(matchedSongs);
 
     if (matchedSongs.length === 0) {
       return null;
@@ -35,6 +37,6 @@ export const handleLyrics = async (title: string, duration: number) => {
       return matchedSongs[0].plainLyrics;
     }
   } catch (error) {
-    console.error("Error Fetching Lyrics:", error);
+    return null;
   }
 };
