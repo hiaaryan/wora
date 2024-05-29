@@ -27,8 +27,6 @@ if (isProd) {
     },
   });
 
-  console.log(__dirname);
-
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 

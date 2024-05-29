@@ -20,6 +20,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tabler/icons-react": "^3.5.0",
     "album-art": "^4.0.0",
+    "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
