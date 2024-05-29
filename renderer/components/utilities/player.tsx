@@ -201,8 +201,12 @@ function Player() {
       <div className="!absolute top-0 left-0 w-full">
         {showlyrics && (
           <div className="w-full h-full bg-white dark:bg-black wora-border rounded-xl">
-            <div className="text-4xl font-semibold rounded-xl bg-white dark:bg-black text-white h-[77vh] w-full flex items-center justify-left p-8">
-              {currentLyric ? currentLyric.text : "..."}
+            <div className="text-balance text-4xl font-semibold rounded-xl bg-white dark:bg-black text-white h-[77vh] max-w-3xl flex items-center justify-left p-8">
+              {currentLyric ? (
+                currentLyric.text
+              ) : (
+                <div className="animate-pulse">...</div>
+              )}
             </div>
           </div>
         )}
