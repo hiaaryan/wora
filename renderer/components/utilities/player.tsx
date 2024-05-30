@@ -13,6 +13,7 @@ import {
   IconPlayerSkipForward,
   IconRepeat,
   IconVolume,
+  IconWaveSine,
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
@@ -53,12 +54,15 @@ function Player() {
   const [lyrics, setLyrics] = useState<string | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
+  const [file, setFile] = useState(
+    "/Users/hiaaryan/Documents/FLACs/A. R. Rahman - Rang De Basanti (2006) [FLAC] {Sony BMG, 82876 78120 2, 2005, CD}/10 - A. R. Rahman & Naresh Iyer - Roobaroo.flac",
+  );
 
   let metadata: any;
 
   const fetchMetadata = async () => {
     try {
-      metadata = await mm.fetchFromUrl("/test.flac", {
+      metadata = await mm.fetchFromUrl("file://" + file, {
         skipPostHeaders: true,
       });
 
@@ -99,7 +103,10 @@ function Player() {
           const minutes = parseInt(match[1], 10);
           const seconds = parseFloat(match[2]);
           const time = minutes * 60 + seconds;
-          const text = match[3];
+          let text = match[3].trim();
+          if (text === "") {
+            text = "...";
+          }
           return { time, text };
         }
         return null;
@@ -126,7 +133,7 @@ function Player() {
     });
 
     var sound = new Howl({
-      src: ["/test.flac"],
+      src: ["file://" + file],
       html5: true,
       format: ["flac"],
     });
@@ -141,10 +148,17 @@ function Player() {
         setDuration(convertTime(Math.round(sound.duration())));
 
         if (metadata) {
-          window.ipc.send("set-rpc-state", {
-            details: `${metadata.common.title} (${metadata.common.artist})`,
-            state: `[${metadata.format.bitsPerSample}/${(metadata.format.sampleRate / 1000).toFixed(1)}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
-          });
+          if (metadata.format.lossless) {
+            window.ipc.send("set-rpc-state", {
+              details: `${metadata.common.title} (${metadata.common.artist})`,
+              state: `[${metadata.format.bitsPerSample}/${(metadata.format.sampleRate / 1000).toFixed(1)}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
+            });
+          } else {
+            window.ipc.send("set-rpc-state", {
+              details: `${metadata.common.title} (${metadata.common.artist})`,
+              state: `[${metadata.format.container}] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
+            });
+          }
         }
 
         if (parsedLyrics.length > 0) {
@@ -161,19 +175,39 @@ function Player() {
       }
     }, 1000);
 
-    sound.on("end", function () {
+    sound.on("end", function() {
       setSeekSeconds([0]);
       setSeek("0:00");
-      setDuration("0:00");
       setPlay(false);
+      setDuration("0:00");
       window.ipc.send("set-rpc-state", {
         details: "Taking a Break...",
         state: "Browsing FLACs 🎧",
       });
     });
 
+    sound.on("pause", function() {
+      window.ipc.send("set-rpc-state", {
+        details: "Taking a Break...",
+        state: "Browsing FLACs 🎧",
+      });
+      setPlay(false);
+    });
+
+    sound.on("play", function() {
+      setPlay(true);
+
+      if (metadata) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: metadata.common.title,
+          artist: metadata.common.artist,
+          artwork: [{ src: cover }],
+        });
+      }
+    });
+
     return () => clearInterval(interval);
-  }, [lyrics, metadata]);
+  }, [lyrics, metadata, file]);
 
   const handleVolume = (value: any) => {
     setVolume(value);
@@ -188,22 +222,14 @@ function Player() {
   const handlePlayPause = () => {
     if (soundRef.current.playing()) {
       soundRef.current.pause();
-      setPlay(false);
-      window.ipc.send("set-rpc-state", {
-        details: "Taking a Break...",
-        state: "Browsing FLACs 🎧",
-      });
     } else {
       soundRef.current.play();
-      setPlay(true);
-      if (data) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: data.common.title,
-          artist: data.common.artist,
-          artwork: [{ src: cover }],
-        });
-      }
     }
+  };
+
+  const handleLyricClick = (time: number) => {
+    soundRef.current.seek(time);
+    setSeekSeconds([time]);
   };
 
   const toggleLyrics = () => {
@@ -220,6 +246,7 @@ function Player() {
                 <Lyrics
                   lyrics={parseLyrics(lyrics)}
                   currentLyric={currentLyric}
+                  onLyricClick={handleLyricClick}
                 />
               ) : (
                 <div className="overflow-hidden no-scrollbar overflow-y-auto py-80 h-full w-full text-3xl font-semibold gradient-mask-b-40-d">
@@ -286,18 +313,13 @@ function Player() {
                   />
                 </Button>
                 <Button variant="ghost">
-                  <IconRepeat stroke={2} size={15} />
+                  <IconRepeat stroke={2} size={14} />
                 </Button>
                 {data && data.format.lossless && (
-                  <div className="absolute -left-16 -mb-0.5">
+                  <div className="absolute -left-24">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
-                        <Image
-                          alt="lossless"
-                          src="/icon[dark].ico"
-                          width={12}
-                          height={12}
-                        />
+                        <IconWaveSine stroke={2} className="w-3.5" />
                       </TooltipTrigger>
                       <TooltipContent side="left" sideOffset={25}>
                         <p>
@@ -308,7 +330,7 @@ function Player() {
                     </Tooltip>
                   </div>
                 )}
-                <div className="absolute -right-16 -mb-0.5">
+                <div className="absolute -right-24">
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
                       <IconHeart stroke={2} className="w-3.5 text-red-500" />
@@ -332,8 +354,10 @@ function Player() {
               </div>
             </div>
             <div className="absolute w-1/3 right-0 flex items-center justify-end gap-8">
-              <div className="w-1/4 flex items-center gap-2 group/volume">
-                <IconVolume stroke={2} size={20} className="opacity-40" />
+              <div className="w-1/4 flex items-center gap-3 group/volume">
+                <Button variant="ghost">
+                  <IconVolume stroke={2} size={17.5} />
+                </Button>
                 <Slider
                   onValueChange={handleVolume}
                   defaultValue={[volume]}

@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .wora-bg {
-    @apply bg-black/10 dark:bg-white/30;
+    @apply bg-white/80 dark:bg-black/80;
+}
+
+.wora-bg-invert {
+    @apply bg-black/10 dark:bg-white/20;
 }
 
 .wora-border {

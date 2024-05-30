@@ -8,9 +8,14 @@ interface LyricLine {
 interface LyricsProps {
   lyrics: LyricLine[];
   currentLyric: LyricLine | null;
+  onLyricClick: (time: number) => void;
 }
 
-const Lyrics: React.FC<LyricsProps> = ({ lyrics, currentLyric }) => {
+const Lyrics: React.FC<LyricsProps> = ({
+  lyrics,
+  currentLyric,
+  onLyricClick,
+}) => {
   const lyricsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,12 +32,16 @@ const Lyrics: React.FC<LyricsProps> = ({ lyrics, currentLyric }) => {
       className="overflow-hidden no-scrollbar overflow-y-auto py-80 h-full w-full text-3xl font-semibold gradient-mask-b-40-d"
       ref={lyricsRef}
     >
-      <div className="max-w-3xl flex flex-col gap-6">
+      <div className="max-w-3xl flex flex-col gap-2">
         {lyrics.map((line) => (
           <p
             key={line.time}
             id={`line-${line.time}`}
-            className={`${currentLyric?.time === line.time ? "text-black dark:text-white font-semibold" : "opacity-40"}`}
+            className={
+              `${currentLyric?.time === line.time ? "text-black dark:text-white font-semibold" : "opacity-40"}` +
+              " w-fit p-4 rounded-xl dark:hover:bg-white/15 hover:bg-black/5 wora-transition cursor-pointer"
+            }
+            onClick={() => onLyricClick(line.time)}
           >
             {line.text}
           </p>

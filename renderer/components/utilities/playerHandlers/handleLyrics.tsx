@@ -15,8 +15,6 @@ export const handleLyrics = async (query: string, duration: number) => {
         (song.syncedLyrics !== null || song.plainLyrics !== null),
     );
 
-    console.log(matchedSongs);
-
     if (matchedSongs.length === 0) {
       return null;
     }

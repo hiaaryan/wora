@@ -3,6 +3,7 @@ import { app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
 import * as DiscordRPC from "discord-rpc";
 import { createWindow } from "./helpers";
+import fs from "fs";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -24,6 +25,8 @@ if (isProd) {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       backgroundThrottling: false,
+      nodeIntegration: true,
+      webSecurity: false,
     },
   });
 
@@ -68,6 +71,43 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
+const dsf = async (dirPath: string) => {
+  return readFilesRecursively(dirPath);
+};
+
+const audioExtensions = [
+  ".mp3",
+  ".mpeg",
+  ".opus",
+  ".ogg",
+  ".oga",
+  ".wav",
+  ".aac",
+  ".caf",
+  ".m4a",
+  ".m4b",
+  ".mp4",
+  ".weba",
+  ".webm",
+  ".dolby",
+  ".flac",
+];
+
+function readFilesRecursively(dir: string): string[] {
+  let results: string[] = [];
+  const list = fs.readdirSync(dir);
+  list.forEach((file) => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(readFilesRecursively(filePath));
+    } else if (audioExtensions.includes(path.extname(filePath).toLowerCase())) {
+      results.push(filePath);
+    }
+  });
+  return results;
+}
+
 ipcMain.on("openDialog", () => {
   dialog
     .showOpenDialog({
@@ -75,7 +115,8 @@ ipcMain.on("openDialog", () => {
     })
     .then((result) => {
       console.log(result.canceled);
-      console.log(result.filePaths);
+      console.log(result.filePaths[0]);
+      console.log(dsf(result.filePaths[0]));
     })
     .catch((err) => {
       console.log(err);
