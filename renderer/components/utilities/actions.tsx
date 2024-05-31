@@ -12,7 +12,7 @@ function Actions() {
   };
 
   return (
-    <div className="z-50 w-full absolute top-0 flex items-center justify-end px-8 py-2.5 drag">
+    <div className="drag absolute top-0 z-50 flex w-full items-center justify-end px-8 py-2.5">
       <div className="flex w-full items-center justify-between">
         <div></div>
         <div className="flex items-center gap-2">
@@ -32,7 +32,7 @@ function Actions() {
           />
           Wora v0.1.0-alpha
         </div>
-        <div className="flex items-center gap-3 no-drag mt-0.5">
+        <div className="no-drag mt-0.5 flex items-center gap-3">
           <Button variant="ghost" onClick={minimizeWindow}>
             <IconArrowDownRight className="w-3.5" stroke={2} />
           </Button>

@@ -15,19 +15,19 @@ export default function Playlists() {
       <Head>
         <title>Playlists</title>
       </Head>
-      <ScrollArea className="h-full mt-2 w-[88.15vw]">
+      <ScrollArea className="mt-2 h-full w-[88.15vw]">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col leading-tight">
-              <div className="text-base mt-2.5">Playlists</div>
+              <div className="mt-2.5 text-base">Playlists</div>
               <div className="opacity-50">
                 Hey Aaryan! Ready for a Jam Session?
               </div>
             </div>
-            <div className="relative flex w-full gap-8 h-72">
-              <div className="group/album hover:bg-black/5 dark:hover:bg-white/10 transition duration-300 w-52 p-5 wora-border rounded-xl cursor-pointer">
-                <div className="h-full flex flex-col justify-between">
-                  <div className="relative h-2/3 rounded-xl overflow-hidden shadow-xl transition duration-300 w-full">
+            <div className="relative flex h-72 w-full gap-8">
+              <div className="group/album wora-border w-52 cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-black/5 dark:hover:bg-white/10">
+                <div className="flex h-full flex-col justify-between">
+                  <div className="relative h-2/3 w-full overflow-hidden rounded-xl shadow-xl transition duration-300">
                     <Image
                       alt="album"
                       src={"/images/bills.jpeg"}
@@ -35,7 +35,7 @@ export default function Playlists() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="w-full flex flex-col">
+                  <div className="flex w-full flex-col">
                     <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
                       Never Say Die
                     </p>
@@ -45,13 +45,13 @@ export default function Playlists() {
               </div>
               <Button
                 onClick={openDialog}
-                className="group/album hover:bg-black/5 dark:hover:bg-white/10 transition duration-300 w-52 p-5 wora-border rounded-xl cursor-pointer"
+                className="group/album wora-border w-52 cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-black/5 dark:hover:bg-white/10"
               >
-                <div className="h-full flex flex-col justify-between">
-                  <div className="relative h-2/3 rounded-xl bg-white/20 flex items-center justify-center overflow-hidden shadow-xl transition duration-300 w-full">
+                <div className="flex h-full flex-col justify-between">
+                  <div className="relative flex h-2/3 w-full items-center justify-center overflow-hidden rounded-xl bg-white/20 shadow-xl transition duration-300">
                     <IconPlus className="h-5 w-5" />
                   </div>
-                  <div className="w-full flex flex-col">
+                  <div className="flex w-full flex-col">
                     <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
                       Select Music Folder
                     </p>

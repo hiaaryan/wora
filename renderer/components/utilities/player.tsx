@@ -54,7 +54,9 @@ function Player() {
   const [lyrics, setLyrics] = useState<string | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
-  const [file, setFile] = useState("/Users/test.flac");
+  const [file, setFile] = useState(
+    "/Users/hiaaryan/Soulseek Downloads/complete/raspberry/TECHNO_/0600 - Modjo - Lady (Hear Me Tonight).flac",
+  );
 
   let metadata: any;
 
@@ -240,10 +242,10 @@ function Player() {
 
   return (
     <div>
-      <div className="!absolute top-0 left-0 w-full">
+      <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="w-full h-full bg-white dark:bg-black wora-border rounded-xl">
-            <div className="text-balance gradient-mask-b-50-d rounded-xl bg-white dark:bg-black dark:text-white w-full flex items-center justify-left px-8 h-lyrics">
+          <div className="wora-border h-full w-full rounded-xl bg-white dark:bg-black">
+            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-50-d dark:bg-black dark:text-white">
               {isSyncedLyrics(lyrics) ? (
                 <Lyrics
                   lyrics={parseLyrics(lyrics)}
@@ -251,11 +253,11 @@ function Player() {
                   onLyricClick={handleLyricClick}
                 />
               ) : (
-                <div className="overflow-hidden no-scrollbar overflow-y-auto py-80 h-full w-full text-3xl font-semibold gradient-mask-b-40-d">
-                  <div className="max-w-3xl flex flex-col gap-6">
+                <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto py-80 text-3xl font-semibold">
+                  <div className="flex max-w-3xl flex-col gap-6">
                     {lyrics.split("\n").map((line) => {
                       return (
-                        <p className="text-black dark:text-white opacity-75 font-semibold">
+                        <p className="font-semibold text-black opacity-75 dark:text-white">
                           {line}
                         </p>
                       );
@@ -267,14 +269,14 @@ function Player() {
           </div>
         )}
       </div>
-      <div className="z-50 w-full h-[6.5rem] bg-white dark:bg-black wora-border rounded-xl p-6">
+      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-white p-6 dark:bg-black">
         <TooltipProvider>
-          <div className="relative w-full justify-between flex h-full items-center">
-            <div className="absolute w-1/2 left-0 flex items-center gap-4">
-              <div className="relative h-16 w-16 rounded-md overflow-hidden transition duration-500">
+          <div className="relative flex h-full w-full items-center justify-between">
+            <div className="absolute left-0 flex w-1/2 items-center gap-4">
+              <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
                 <Image alt="album" src={cover} fill className="object-cover" />
               </div>
-              <div className="gradient-mask-r-70 w-1/3">
+              <div className="w-1/3 gradient-mask-r-70">
                 <p className="text-nowrap text-sm">
                   {data ? data.common.title : "Echoes of Emptiness"}
                 </p>
@@ -283,7 +285,7 @@ function Player() {
                 </p>
               </div>
             </div>
-            <div className="absolute left-0 mx-auto right-0 flex flex-col h-full w-1/3 items-center justify-between">
+            <div className="absolute left-0 right-0 mx-auto flex h-full w-1/3 flex-col items-center justify-between">
               <div className="relative flex items-center gap-8">
                 <Button variant="ghost">
                   <IconArrowsShuffle2 stroke={2} size={15} />
@@ -299,19 +301,19 @@ function Player() {
                   {!play ? (
                     <IconPlayerPlay
                       stroke={2}
-                      className="w-6 h-6 fill-black dark:fill-white"
+                      className="h-6 w-6 fill-black dark:fill-white"
                     />
                   ) : (
                     <IconPlayerPause
                       stroke={2}
-                      className="w-6 h-6 fill-black dark:fill-white"
+                      className="h-6 w-6 fill-black dark:fill-white"
                     />
                   )}
                 </Button>
                 <Button variant="ghost">
                   <IconPlayerSkipForward
                     stroke={2}
-                    className="w-4 fill-black dark:fill-white h-4"
+                    className="h-4 w-4 fill-black dark:fill-white"
                   />
                 </Button>
                 <Button variant="ghost">
@@ -343,7 +345,7 @@ function Player() {
                   </Tooltip>
                 </div>
               </div>
-              <div className="relative w-full gap-3 flex items-center">
+              <div className="relative flex w-full items-center gap-3">
                 <p className="absolute -left-10">{seek}</p>
                 <Slider
                   defaultValue={[0]}
@@ -355,8 +357,8 @@ function Player() {
                 <p className="absolute -right-10">{duration}</p>
               </div>
             </div>
-            <div className="absolute w-1/3 right-0 flex items-center justify-end gap-8">
-              <div className="w-1/4 flex items-center gap-3 group/volume">
+            <div className="absolute right-0 flex w-1/3 items-center justify-end gap-8">
+              <div className="group/volume flex w-1/4 items-center gap-3">
                 <Button variant="ghost" onClick={toggleMute}>
                   <IconVolume stroke={2} size={17.5} />
                 </Button>
@@ -378,11 +380,11 @@ function Player() {
                   </Button>
                 )}
                 <Dialog>
-                  <DialogTrigger className="opacity-40 hover:opacity-100 duration-500">
+                  <DialogTrigger className="opacity-40 duration-500 hover:opacity-100">
                     <IconInfoCircle stroke={2} size={15} />
                   </DialogTrigger>
                   <DialogContent className="flex items-start gap-8">
-                    <div className="relative h-28 w-28 rounded-lg overflow-hidden transition duration-500">
+                    <div className="relative h-28 w-28 overflow-hidden rounded-lg transition duration-500">
                       <Image
                         alt="album"
                         src={cover}

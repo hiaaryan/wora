@@ -3,40 +3,40 @@
 @tailwind utilities;
 
 .wora-bg {
-    @apply bg-white/80 dark:bg-black/80;
+  @apply bg-white/80 dark:bg-black/80;
 }
 
 .wora-bg-invert {
-    @apply bg-black/10 dark:bg-white/20;
+  @apply bg-black/5 dark:bg-white/20;
 }
 
 .wora-border {
-    @apply border border-black/5 dark:border-white/10;
+  @apply border border-black/5 dark:border-white/10;
 }
 
 .wora-transition {
-    @apply transition-all duration-300;
+  @apply transition-all duration-300;
 }
 
 .drag {
-    -webkit-app-region: drag;
+  -webkit-app-region: drag;
 }
 
 .no-drag {
-    -webkit-app-region: no-drag;
+  -webkit-app-region: no-drag;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .h-lyrics {
-    height: calc(100vh - 13.6rem);
+  height: calc(100vh - 13.6rem);
 }

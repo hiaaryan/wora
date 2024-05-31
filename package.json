@@ -47,6 +47,8 @@
     "next": "^13.5.6",
     "nextron": "^8.15.0",
     "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.3",

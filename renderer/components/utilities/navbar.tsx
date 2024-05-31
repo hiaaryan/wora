@@ -45,13 +45,13 @@ function Navbar() {
   };
 
   return (
-    <div className="h-full w-20 wora-border rounded-xl p-6">
-      <div className="flex flex-col gap-8 h-full">
+    <div className="wora-border h-full w-20 rounded-xl p-6">
+      <div className="flex h-full flex-col gap-8">
         <TooltipProvider>
           <div className="flex flex-col">
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
-                <Avatar className="w-8 h-8">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src="/ak.jpeg" />
                   <AvatarFallback>AK</AvatarFallback>
                 </Avatar>
