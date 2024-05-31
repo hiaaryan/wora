@@ -29,7 +29,7 @@ const Lyrics: React.FC<LyricsProps> = ({
 
   return (
     <div
-      className="overflow-hidden no-scrollbar overflow-y-auto py-80 h-full w-full text-3xl font-semibold gradient-mask-b-40-d"
+      className="overflow-hidden no-scrollbar overflow-y-auto py-[19rem] h-full w-full text-3xl font-semibold gradient-mask-b-40-d"
       ref={lyricsRef}
     >
       <div className="max-w-3xl flex flex-col gap-2">

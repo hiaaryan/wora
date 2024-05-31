@@ -25,7 +25,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
-    "discord-rpc": "^4.0.1",
+    "discord-rpc-revamp": "^2.0.4",
     "drizzle-orm": "^0.30.10",
     "electron-serve": "^1.3.0",
     "electron-store": "^8.2.0",
@@ -37,7 +37,6 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/discord-rpc": "^4.0.8",
     "@types/howler": "^2.2.11",
     "@types/node": "^20.12.13",
     "@types/react": "^18.3.3",

@@ -17,14 +17,14 @@ function Actions() {
         <div></div>
         <div className="flex items-center gap-2">
           <Image
-            src={"/icon.ico"}
+            src={"/assets/Logo.ico"}
             className="block dark:hidden"
             alt="logo"
             width={16}
             height={16}
           />
           <Image
-            src={"/icon[dark].ico"}
+            src={"/assets/Logo [Dark].ico"}
             className="hidden dark:block"
             alt="logo"
             width={16}

@@ -10,7 +10,7 @@ const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    document.body.classList.add("dark");
+    document.body.classList.add("light");
     document.body.classList.add(mavenPro.className);
   });
 

@@ -62,16 +62,6 @@ export default function Playlists() {
             </div>
           </div>
         </div>
-        <div className="relative h-96 flex flex-col gap-2 w-[87.5vw] items-center justify-center">
-          <Image
-            alt="wora"
-            src="/wora.svg"
-            className="mix-blend-difference"
-            width={50}
-            height={200}
-          />
-          <p>Made with ❤️ by Aaryan.</p>
-        </div>
       </ScrollArea>
     </React.Fragment>
   );

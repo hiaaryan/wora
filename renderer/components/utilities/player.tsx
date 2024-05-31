@@ -54,15 +54,13 @@ function Player() {
   const [lyrics, setLyrics] = useState<string | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
-  const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/A. R. Rahman - Rang De Basanti (2006) [FLAC] {Sony BMG, 82876 78120 2, 2005, CD}/10 - A. R. Rahman & Naresh Iyer - Roobaroo.flac",
-  );
+  const [file, setFile] = useState("/Users/test.flac");
 
   let metadata: any;
 
   const fetchMetadata = async () => {
     try {
-      metadata = await mm.fetchFromUrl("file://" + file, {
+      metadata = await mm.fetchFromUrl("music://" + file, {
         skipPostHeaders: true,
       });
 
@@ -133,8 +131,8 @@ function Player() {
     });
 
     var sound = new Howl({
-      src: ["file://" + file],
-      html5: true,
+      src: ["music://" + file],
+      html5: false,
       format: ["flac"],
     });
 
@@ -175,7 +173,7 @@ function Player() {
       }
     }, 1000);
 
-    sound.on("end", function() {
+    sound.on("end", function () {
       setSeekSeconds([0]);
       setSeek("0:00");
       setPlay(false);
@@ -186,7 +184,7 @@ function Player() {
       });
     });
 
-    sound.on("pause", function() {
+    sound.on("pause", function () {
       window.ipc.send("set-rpc-state", {
         details: "Taking a Break...",
         state: "Browsing FLACs 🎧",
@@ -194,7 +192,7 @@ function Player() {
       setPlay(false);
     });
 
-    sound.on("play", function() {
+    sound.on("play", function () {
       setPlay(true);
 
       if (metadata) {
@@ -236,12 +234,16 @@ function Player() {
     setShowLyrics(!showLyrics);
   };
 
+  const toggleMute = () => {
+    soundRef.current.mute(!soundRef.current.mute());
+  };
+
   return (
     <div>
       <div className="!absolute top-0 left-0 w-full">
         {showLyrics && lyrics && (
           <div className="w-full h-full bg-white dark:bg-black wora-border rounded-xl">
-            <div className="text-balance gradient-mask-b-50-d rounded-xl bg-white dark:bg-black dark:text-white h-[77vh] w-full flex items-center justify-left px-8">
+            <div className="text-balance gradient-mask-b-50-d rounded-xl bg-white dark:bg-black dark:text-white w-full flex items-center justify-left px-8 h-lyrics">
               {isSyncedLyrics(lyrics) ? (
                 <Lyrics
                   lyrics={parseLyrics(lyrics)}
@@ -265,7 +267,7 @@ function Player() {
           </div>
         )}
       </div>
-      <div className="z-50 w-full h-24 bg-white dark:bg-black wora-border rounded-xl p-4">
+      <div className="z-50 w-full h-[6.5rem] bg-white dark:bg-black wora-border rounded-xl p-6">
         <TooltipProvider>
           <div className="relative w-full justify-between flex h-full items-center">
             <div className="absolute w-1/2 left-0 flex items-center gap-4">
@@ -281,7 +283,7 @@ function Player() {
                 </p>
               </div>
             </div>
-            <div className="absolute left-0 mx-auto right-0 flex flex-col justify-around h-full w-1/3 items-center ">
+            <div className="absolute left-0 mx-auto right-0 flex flex-col h-full w-1/3 items-center justify-between">
               <div className="relative flex items-center gap-8">
                 <Button variant="ghost">
                   <IconArrowsShuffle2 stroke={2} size={15} />
@@ -316,7 +318,7 @@ function Player() {
                   <IconRepeat stroke={2} size={14} />
                 </Button>
                 {data && data.format.lossless && (
-                  <div className="absolute -left-24">
+                  <div className="absolute -left-24 mt-0.5">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
                         <IconWaveSine stroke={2} className="w-3.5" />
@@ -330,7 +332,7 @@ function Player() {
                     </Tooltip>
                   </div>
                 )}
-                <div className="absolute -right-24">
+                <div className="absolute -right-24 mt-0.5">
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
                       <IconHeart stroke={2} className="w-3.5 text-red-500" />
@@ -355,7 +357,7 @@ function Player() {
             </div>
             <div className="absolute w-1/3 right-0 flex items-center justify-end gap-8">
               <div className="w-1/4 flex items-center gap-3 group/volume">
-                <Button variant="ghost">
+                <Button variant="ghost" onClick={toggleMute}>
                   <IconVolume stroke={2} size={17.5} />
                 </Button>
                 <Slider
@@ -371,17 +373,16 @@ function Player() {
                     <IconMicrophone2 stroke={2} size={15} />
                   </Button>
                 ) : (
-                  <Button variant="ghost" className="text-red-500 !opacity-100">
+                  <Button variant="ghost" className="text-red-500 !opacity-60">
                     <IconMicrophone2Off stroke={2} size={15} />
                   </Button>
                 )}
-
                 <Dialog>
                   <DialogTrigger className="opacity-40 hover:opacity-100 duration-500">
                     <IconInfoCircle stroke={2} size={15} />
                   </DialogTrigger>
                   <DialogContent className="flex items-start gap-8">
-                    <div className="relative h-24 w-24 rounded-lg overflow-hidden transition duration-500">
+                    <div className="relative h-28 w-28 rounded-lg overflow-hidden transition duration-500">
                       <Image
                         alt="album"
                         src={cover}

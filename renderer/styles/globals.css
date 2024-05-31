@@ -36,3 +36,7 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+
+.h-lyrics {
+    height: calc(100vh - 13.6rem);
+}

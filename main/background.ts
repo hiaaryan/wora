@@ -1,9 +1,10 @@
 import path from "path";
 import { app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
-import * as DiscordRPC from "discord-rpc";
 import { createWindow } from "./helpers";
 import fs from "fs";
+import { protocol, net } from "electron";
+let client = new (require("discord-rpc-revamp").Client)();
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -12,6 +13,18 @@ if (isProd) {
 } else {
   app.setPath("userData", `${app.getPath("userData")} (development)`);
 }
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: "music",
+    privileges: {
+      supportFetchAPI: true,
+      bypassCSP: true,
+      stream: true,
+      secure: true,
+    },
+  },
+]);
 
 (async () => {
   await app.whenReady();
@@ -25,8 +38,6 @@ if (isProd) {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       backgroundThrottling: false,
-      nodeIntegration: true,
-      webSecurity: false,
     },
   });
 
@@ -50,21 +61,17 @@ if (isProd) {
   }
 })();
 
-const clientId = "1243707416588320800";
-const rpc = new DiscordRPC.Client({ transport: "ipc" });
-rpc.login({ clientId: clientId }).catch(console.error);
+client.connect({ clientId: "1243707416588320800" }).catch(console.error);
 
 ipcMain.on("set-rpc-state", (_, { details, state }) => {
-  try {
-    rpc.setActivity({
+  client
+    .setActivity({
       details,
       state,
       largeImageKey: "logo",
-      largeImageText: `v${process.env.npm_package_version}`,
-    });
-  } catch (error) {
-    console.log("discord rpc failed to initialize...");
-  }
+      largeImageText: `v${app.getVersion()}`,
+    })
+    .catch(console.error);
 });
 
 app.on("window-all-closed", () => {
@@ -108,6 +115,12 @@ function readFilesRecursively(dir: string): string[] {
   return results;
 }
 
+app.on("ready", () => {
+  protocol.handle("music", (request) => {
+    return net.fetch("file://" + request.url.replace("music://", ""));
+  });
+});
+
 ipcMain.on("openDialog", () => {
   dialog
     .showOpenDialog({
@@ -121,8 +134,4 @@ ipcMain.on("openDialog", () => {
     .catch((err) => {
       console.log(err);
     });
-});
-
-ipcMain.on("message", async (event, arg) => {
-  event.reply("message", `${arg} World!`);
 });
