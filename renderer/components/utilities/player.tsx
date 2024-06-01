@@ -4,17 +4,13 @@ import {
   IconArrowsShuffle2,
   IconHeart,
   IconInfoCircle,
-  IconLine,
-  IconLineDashed,
   IconListTree,
   IconMicrophone2,
   IconMicrophone2Off,
-  IconOverline,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
   IconPlayerSkipForward,
-  IconPoint,
   IconRepeat,
   IconVolume,
   IconVolumeOff,
@@ -22,7 +18,6 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
-import { IAudioMetadata } from "music-metadata-browser";
 import { Slider } from "../ui/slider";
 import {
   Dialog,
@@ -43,13 +38,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { fetchMetadata } from "./helpers/fetchMetadata";
-import { fetchLyrics } from "./helpers/fetchLyrics";
 import {
   convertTime,
   isSyncedLyrics,
   parseLyrics,
-} from "./helpers/playerFunctions";
+} from "./helpers/utilFunctions";
+import useAudioMetadata from "./helpers/useAudioMetadata";
+import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
 
 function Player() {
   const [play, setPlay] = useState(false);
@@ -59,19 +54,15 @@ function Player() {
   const [duration, setDuration] = useState("0:00");
   const [volume, setVolume] = useState(0.5);
   const [mute, setMute] = useState(false);
-  const [data, setData] = useState<IAudioMetadata | null>(null);
-  const [cover, setCover] = useState("https://iili.io/HlHy9Yx.png");
   const soundRef = useRef<Howl | null>(null);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
-  const [lyrics, setLyrics] = useState<string | null>(null);
   const [repeat, setRepeat] = useState(false);
-
   const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/Bachna Ae Haseeno/05 Small Town Girl.flac",
+    "/Users/hiaaryan/Documents/FLACs/Raaz/02 Soniyo.flac",
   );
 
-  let metadata: any;
+  const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
 
   if (lyrics && isSyncedLyrics(lyrics)) {
@@ -79,62 +70,35 @@ function Player() {
   }
 
   useEffect(() => {
-    fetchMetadata(file)
-      .then(async (response) => {
-        metadata = response.metadata;
-        setData(response.metadata);
-        setCover(response.art);
-        setLyrics(
-          await fetchLyrics(
-            `${metadata.common.title} ${metadata.common.artist}`,
-            metadata.format.duration,
-          ),
-        );
-      })
-      .catch((error) => {
-        console.log("Failed to fetch metdata: ", error.message);
-      });
+    if (!file) return;
 
-    var sound = new Howl({
+    const sound = new Howl({
       src: ["music://" + file],
       format: ["flac"],
     });
 
+    resetDiscordState();
+
     soundRef.current = sound;
 
-    const interval = setInterval(() => {
+    const updateInterval = setInterval(() => {
       if (sound.playing()) {
-        setSeekSeconds([sound.seek()]);
+        const currentSeek = sound.seek() as number;
+        setSeekSeconds([currentSeek]);
         setDurationSeconds(sound.duration());
-        setSeek(convertTime(Math.round(sound.seek())));
+        setSeek(convertTime(Math.round(currentSeek)));
         setDuration(convertTime(Math.round(sound.duration())));
 
-        if (metadata) {
-          const state = metadata.format.lossless
-            ? `[${metadata.format.bitsPerSample}/${(
-                metadata.format.sampleRate / 1000
-              ).toFixed(
-                1,
-              )}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(
-                Math.round(sound.duration()),
-              )}`
-            : `[${metadata.format.container}] ${convertTime(
-                Math.round(sound.seek()),
-              )} / ${convertTime(Math.round(sound.duration()))}`;
-
-          window.ipc.send("set-rpc-state", {
-            details: `${metadata.common.title} (${metadata.common.artist})`,
-            state,
-          });
+        if (data) {
+          updateDiscordState(data, currentSeek, true);
         }
 
         if (parsedLyrics.length > 0) {
-          const parsedLyrics = parseLyrics(lyrics);
           const currentLyricLine = parsedLyrics.find((line, index) => {
             const nextLine = parsedLyrics[index + 1];
             return (
-              sound.seek() >= line.time &&
-              (!nextLine || sound.seek() < nextLine.time)
+              currentSeek >= line.time &&
+              (!nextLine || currentSeek < nextLine.time)
             );
           });
 
@@ -143,31 +107,29 @@ function Player() {
       }
     }, 1000);
 
-    sound.on("end", function () {
+    sound.on("end", () => {
       setSeekSeconds([0]);
       setSeek("0:00");
       setPlay(false);
       setDuration("0:00");
-      window.ipc.send("set-rpc-state", {
-        details: "Taking a Break...",
-        state: "Browsing FLACs 🎧",
-      });
+      resetDiscordState();
     });
 
-    sound.on("pause", function () {
-      window.ipc.send("set-rpc-state", {
-        details: "Taking a Break...",
-        state: "Browsing FLACs 🎧",
-      });
+    sound.on("pause", () => {
+      resetDiscordState();
       setPlay(false);
     });
 
-    sound.on("play", function () {
+    sound.on("play", () => {
       setPlay(true);
     });
 
-    return () => clearInterval(interval);
-  }, [lyrics, metadata, file]);
+    return () => {
+      clearInterval(updateInterval);
+      sound.unload();
+      resetDiscordState();
+    };
+  }, [file, data, lyrics]);
 
   const handleVolume = (value: any) => {
     setVolume(value);
@@ -177,6 +139,7 @@ function Player() {
   const handleSeek = (value: any) => {
     soundRef.current.seek(value);
     setSeekSeconds(value);
+    setSeek(convertTime(Math.round(value)));
   };
 
   const handleRepeat = () => {
@@ -195,6 +158,8 @@ function Player() {
   const handleLyricClick = (time: number) => {
     soundRef.current.seek(time);
     setSeekSeconds([time]);
+    setSeek(convertTime(Math.round(time)));
+    setDuration(convertTime(Math.round(soundRef.current.duration())));
   };
 
   const toggleLyrics = () => {
@@ -211,26 +176,28 @@ function Player() {
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
           <div className="wora-border h-full w-full rounded-xl bg-white dark:bg-black">
-            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-50-d dark:bg-black dark:text-white">
-              {isSyncedLyrics(lyrics) ? (
-                <Lyrics
-                  lyrics={parseLyrics(lyrics)}
-                  currentLyric={currentLyric}
-                  onLyricClick={handleLyricClick}
-                />
-              ) : (
-                <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto py-80 text-3xl font-medium">
-                  <div className="flex max-w-3xl flex-col gap-6">
-                    {lyrics.split("\n").map((line) => {
-                      return (
-                        <p className="font-semibold text-black opacity-75 dark:text-white">
-                          {line}
-                        </p>
-                      );
-                    })}
-                  </div>
+            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-60-d dark:bg-black dark:text-white">
+              <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
+                <div className="my-80 flex max-w-3xl flex-col">
+                  {isSyncedLyrics(lyrics) ? (
+                    <Lyrics
+                      lyrics={parseLyrics(lyrics)}
+                      currentLyric={currentLyric}
+                      onLyricClick={handleLyricClick}
+                    />
+                  ) : (
+                    <div>
+                      {lyrics.split("\n").map((line) => {
+                        return (
+                          <p className="my-8 font-semibold text-black opacity-75 dark:text-white">
+                            {line}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}
@@ -296,8 +263,8 @@ function Player() {
                     />
                   ) : (
                     <div>
-                      <IconRepeat stroke={2} size={15} />{" "}
-                      <div className="absolute -top-2 left-0 right-0 mx-auto h-px w-2/3 bg-black dark:bg-white"></div>
+                      <IconRepeat stroke={2} size={15} />
+                      <div className="absolute -top-2 left-0 right-0 mx-auto h-px w-2/3 rounded-full bg-black dark:bg-white"></div>
                     </div>
                   )}
                 </Button>
