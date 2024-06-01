@@ -19,6 +19,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tabler/icons-react": "^3.5.0",
+    "@types/better-sqlite3": "^7.6.10",
     "album-art": "^4.0.0",
     "axios": "^1.7.2",
     "better-sqlite3": "^10.1.0",

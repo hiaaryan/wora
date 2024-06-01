@@ -2791,6 +2791,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/better-sqlite3@npm:^7.6.10":
+  version: 7.6.10
+  resolution: "@types/better-sqlite3@npm:7.6.10"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/11c4da950e0e1a31270e8c7d98ba34fa5a28fbd3280ffa75945983291d2ec5bc87a9b3b378c21c042249a415d557066a0431da568b83ff9e1bac53eddf4f5adc
+  languageName: node
+  linkType: hard
+
 "@types/cacheable-request@npm:^6.0.1":
   version: 6.0.3
   resolution: "@types/cacheable-request@npm:6.0.3"
@@ -3139,6 +3148,7 @@ __metadata:
     "@radix-ui/react-slot": "npm:^1.0.2"
     "@radix-ui/react-tooltip": "npm:^1.0.7"
     "@tabler/icons-react": "npm:^3.5.0"
+    "@types/better-sqlite3": "npm:^7.6.10"
     "@types/howler": "npm:^2.2.11"
     "@types/node": "npm:^20.12.13"
     "@types/react": "npm:^18.3.3"

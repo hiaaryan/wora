@@ -1,7 +1,9 @@
 import {
   IconArrowsShuffle2,
+  IconFocusCentered,
   IconInbox,
   IconSearch,
+  IconSquare,
   IconVinyl,
 } from "@tabler/icons-react";
 import {
@@ -94,6 +96,18 @@ function Navbar() {
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>
                 <p>Playlists</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <Button variant="ghost" asChild>
+                  <Link href="/albums">
+                    <IconFocusCentered stroke={2} className="w-5" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={55}>
+                <p>Albums</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip delayDuration={0}>

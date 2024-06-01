@@ -4,20 +4,24 @@ import {
   IconArrowsShuffle2,
   IconHeart,
   IconInfoCircle,
+  IconLine,
+  IconLineDashed,
   IconListTree,
   IconMicrophone2,
   IconMicrophone2Off,
+  IconOverline,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
   IconPlayerSkipForward,
+  IconPoint,
   IconRepeat,
   IconVolume,
+  IconVolumeOff,
   IconWaveSine,
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
-import * as mm from "music-metadata-browser";
 import { IAudioMetadata } from "music-metadata-browser";
 import { Slider } from "../ui/slider";
 import {
@@ -32,7 +36,6 @@ interface LyricLine {
   time: number;
   text: string;
 }
-import { handleLyrics } from "./playerHandlers/handleLyrics";
 import Lyrics from "../ui/lyrics";
 import {
   Tooltip,
@@ -40,6 +43,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { fetchMetadata } from "./helpers/fetchMetadata";
+import { fetchLyrics } from "./helpers/fetchLyrics";
+import {
+  convertTime,
+  isSyncedLyrics,
+  parseLyrics,
+} from "./helpers/playerFunctions";
 
 function Player() {
   const [play, setPlay] = useState(false);
@@ -48,76 +58,20 @@ function Player() {
   const [durationSeconds, setDurationSeconds] = useState(0);
   const [duration, setDuration] = useState("0:00");
   const [volume, setVolume] = useState(0.5);
+  const [mute, setMute] = useState(false);
   const [data, setData] = useState<IAudioMetadata | null>(null);
   const [cover, setCover] = useState("https://iili.io/HlHy9Yx.png");
   const soundRef = useRef<Howl | null>(null);
-  const [lyrics, setLyrics] = useState<string | null>(null);
-  const [showLyrics, setShowLyrics] = useState(false);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
+  const [showLyrics, setShowLyrics] = useState(false);
+  const [lyrics, setLyrics] = useState<string | null>(null);
+  const [repeat, setRepeat] = useState(false);
+
   const [file, setFile] = useState(
-    "/Users/hiaaryan/Soulseek Downloads/complete/raspberry/TECHNO_/0600 - Modjo - Lady (Hear Me Tonight).flac",
+    "/Users/hiaaryan/Documents/FLACs/Bachna Ae Haseeno/05 Small Town Girl.flac",
   );
 
   let metadata: any;
-
-  const fetchMetadata = async () => {
-    try {
-      metadata = await mm.fetchFromUrl("music://" + file, {
-        skipPostHeaders: true,
-      });
-
-      setData(metadata);
-
-      const coverArt = mm.selectCover(metadata.common.picture);
-      if (coverArt) {
-        const art = `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`;
-        setCover(art);
-      }
-
-      setLyrics(
-        await handleLyrics(
-          metadata.common.title + " " + metadata.common.artist,
-          metadata.format.duration,
-        ),
-      );
-    } catch (error) {
-      console.error("Error fetching metadata:", error);
-    }
-  };
-
-  const convertTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    // Pad seconds with leading zero if less than 10
-    const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
-    return `${minutes}:${formattedSeconds}`;
-  };
-
-  const parseLyrics = (lyrics: string): LyricLine[] => {
-    return lyrics
-      .split("\n")
-      .filter((line) => line.trim() !== "")
-      .map((line) => {
-        const match = line.match(/^\[(\d{2}):(\d{2}\.\d{2})\] (.*)$/);
-        if (match) {
-          const minutes = parseInt(match[1], 10);
-          const seconds = parseFloat(match[2]);
-          const time = minutes * 60 + seconds;
-          let text = match[3].trim();
-          if (text === "") {
-            text = "...";
-          }
-          return { time, text };
-        }
-        return null;
-      })
-      .filter((line) => line !== null) as LyricLine[];
-  };
-
-  const isSyncedLyrics = (lyrics: string): boolean => {
-    return /\[\d{2}:\d{2}\.\d{2}\]/.test(lyrics);
-  };
-
   let parsedLyrics: LyricLine[] = [];
 
   if (lyrics && isSyncedLyrics(lyrics)) {
@@ -125,16 +79,24 @@ function Player() {
   }
 
   useEffect(() => {
-    fetchMetadata();
-
-    window.ipc.send("set-rpc-state", {
-      details: "Taking a Break...",
-      state: "Browsing FLACs 🎧",
-    });
+    fetchMetadata(file)
+      .then(async (response) => {
+        metadata = response.metadata;
+        setData(response.metadata);
+        setCover(response.art);
+        setLyrics(
+          await fetchLyrics(
+            `${metadata.common.title} ${metadata.common.artist}`,
+            metadata.format.duration,
+          ),
+        );
+      })
+      .catch((error) => {
+        console.log("Failed to fetch metdata: ", error.message);
+      });
 
     var sound = new Howl({
       src: ["music://" + file],
-      html5: false,
       format: ["flac"],
     });
 
@@ -148,17 +110,22 @@ function Player() {
         setDuration(convertTime(Math.round(sound.duration())));
 
         if (metadata) {
-          if (metadata.format.lossless) {
-            window.ipc.send("set-rpc-state", {
-              details: `${metadata.common.title} (${metadata.common.artist})`,
-              state: `[${metadata.format.bitsPerSample}/${(metadata.format.sampleRate / 1000).toFixed(1)}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
-            });
-          } else {
-            window.ipc.send("set-rpc-state", {
-              details: `${metadata.common.title} (${metadata.common.artist})`,
-              state: `[${metadata.format.container}] ${convertTime(Math.round(sound.seek()))} / ${convertTime(Math.round(sound.duration()))}`,
-            });
-          }
+          const state = metadata.format.lossless
+            ? `[${metadata.format.bitsPerSample}/${(
+                metadata.format.sampleRate / 1000
+              ).toFixed(
+                1,
+              )}kHz] ${convertTime(Math.round(sound.seek()))} / ${convertTime(
+                Math.round(sound.duration()),
+              )}`
+            : `[${metadata.format.container}] ${convertTime(
+                Math.round(sound.seek()),
+              )} / ${convertTime(Math.round(sound.duration()))}`;
+
+          window.ipc.send("set-rpc-state", {
+            details: `${metadata.common.title} (${metadata.common.artist})`,
+            state,
+          });
         }
 
         if (parsedLyrics.length > 0) {
@@ -170,6 +137,7 @@ function Player() {
               (!nextLine || sound.seek() < nextLine.time)
             );
           });
+
           setCurrentLyric(currentLyricLine || null);
         }
       }
@@ -196,14 +164,6 @@ function Player() {
 
     sound.on("play", function () {
       setPlay(true);
-
-      if (metadata) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: metadata.common.title,
-          artist: metadata.common.artist,
-          artwork: [{ src: cover }],
-        });
-      }
     });
 
     return () => clearInterval(interval);
@@ -217,6 +177,11 @@ function Player() {
   const handleSeek = (value: any) => {
     soundRef.current.seek(value);
     setSeekSeconds(value);
+  };
+
+  const handleRepeat = () => {
+    soundRef.current.loop(!repeat);
+    setRepeat(!repeat);
   };
 
   const handlePlayPause = () => {
@@ -238,6 +203,7 @@ function Player() {
 
   const toggleMute = () => {
     soundRef.current.mute(!soundRef.current.mute());
+    setMute(!mute);
   };
 
   return (
@@ -253,7 +219,7 @@ function Player() {
                   onLyricClick={handleLyricClick}
                 />
               ) : (
-                <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto py-80 text-3xl font-semibold">
+                <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto py-80 text-3xl font-medium">
                   <div className="flex max-w-3xl flex-col gap-6">
                     {lyrics.split("\n").map((line) => {
                       return (
@@ -288,7 +254,7 @@ function Player() {
             <div className="absolute left-0 right-0 mx-auto flex h-full w-1/3 flex-col items-center justify-between">
               <div className="relative flex items-center gap-8">
                 <Button variant="ghost">
-                  <IconArrowsShuffle2 stroke={2} size={15} />
+                  <IconArrowsShuffle2 stroke={2} size={16} />
                 </Button>
                 <Button variant="ghost">
                   <IconPlayerSkipBack
@@ -316,8 +282,24 @@ function Player() {
                     className="h-4 w-4 fill-black dark:fill-white"
                   />
                 </Button>
-                <Button variant="ghost">
-                  <IconRepeat stroke={2} size={14} />
+                <Button
+                  variant="ghost"
+                  className="relative !opacity-100"
+                  onClick={handleRepeat}
+                  asChild
+                >
+                  {!repeat ? (
+                    <IconRepeat
+                      stroke={2}
+                      size={15}
+                      className="!opacity-40 hover:!opacity-100"
+                    />
+                  ) : (
+                    <div>
+                      <IconRepeat stroke={2} size={15} />{" "}
+                      <div className="absolute -top-2 left-0 right-0 mx-auto h-px w-2/3 bg-black dark:bg-white"></div>
+                    </div>
+                  )}
                 </Button>
                 {data && data.format.lossless && (
                   <div className="absolute -left-24 mt-0.5">
@@ -359,8 +341,24 @@ function Player() {
             </div>
             <div className="absolute right-0 flex w-1/3 items-center justify-end gap-8">
               <div className="group/volume flex w-1/4 items-center gap-3">
-                <Button variant="ghost" onClick={toggleMute}>
-                  <IconVolume stroke={2} size={17.5} />
+                <Button
+                  variant="ghost"
+                  onClick={toggleMute}
+                  className="!opacity-100"
+                >
+                  {!mute ? (
+                    <IconVolume
+                      stroke={2}
+                      size={17.5}
+                      className="wora-transition !opacity-30 hover:!opacity-100"
+                    />
+                  ) : (
+                    <IconVolumeOff
+                      stroke={2}
+                      size={17.5}
+                      className="text-red-500"
+                    />
+                  )}
                 </Button>
                 <Slider
                   onValueChange={handleVolume}
@@ -375,7 +373,7 @@ function Player() {
                     <IconMicrophone2 stroke={2} size={15} />
                   </Button>
                 ) : (
-                  <Button variant="ghost" className="text-red-500 !opacity-60">
+                  <Button variant="ghost" className="text-red-500 opacity-100">
                     <IconMicrophone2Off stroke={2} size={15} />
                   </Button>
                 )}

@@ -18,16 +18,21 @@ protocol.registerSchemesAsPrivileged([
   {
     scheme: "music",
     privileges: {
+      secure: true,
+      allowServiceWorkers: true,
       supportFetchAPI: true,
       bypassCSP: true,
       stream: true,
-      secure: true,
     },
   },
 ]);
 
 (async () => {
   await app.whenReady();
+
+  protocol.handle("music", (request) => {
+    return net.fetch("file://" + request.url.slice("music://".length));
+  });
 
   const mainWindow = createWindow("main", {
     width: 1500,
@@ -78,10 +83,6 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-const dsf = async (dirPath: string) => {
-  return readFilesRecursively(dirPath);
-};
-
 const audioExtensions = [
   ".mp3",
   ".mpeg",
@@ -100,6 +101,10 @@ const audioExtensions = [
   ".flac",
 ];
 
+const callFiles = async (dirPath: string) => {
+  return readFilesRecursively(dirPath);
+};
+
 function readFilesRecursively(dir: string): string[] {
   let results: string[] = [];
   const list = fs.readdirSync(dir);
@@ -115,21 +120,13 @@ function readFilesRecursively(dir: string): string[] {
   return results;
 }
 
-app.on("ready", () => {
-  protocol.handle("music", (request) => {
-    return net.fetch("file://" + request.url.replace("music://", ""));
-  });
-});
-
 ipcMain.on("openDialog", () => {
   dialog
     .showOpenDialog({
       properties: ["openDirectory", "createDirectory"],
     })
     .then((result) => {
-      console.log(result.canceled);
-      console.log(result.filePaths[0]);
-      console.log(dsf(result.filePaths[0]));
+      console.log(callFiles(result.filePaths[0]));
     })
     .catch((err) => {
       console.log(err);

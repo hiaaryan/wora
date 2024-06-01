@@ -11,7 +11,7 @@
 }
 
 .wora-border {
-  @apply border border-black/5 dark:border-white/10;
+  @apply border border-black/5 dark:border-white/[0.125];
 }
 
 .wora-transition {

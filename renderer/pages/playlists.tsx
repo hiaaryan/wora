@@ -18,8 +18,8 @@ export default function Playlists() {
       <ScrollArea className="mt-2 h-full w-[88.15vw]">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
-            <div className="flex flex-col leading-tight">
-              <div className="mt-2.5 text-base">Playlists</div>
+            <div className="flex flex-col">
+              <div className="mt-2 text-xl font-medium">Playlists</div>
               <div className="opacity-50">
                 Hey Aaryan! Ready for a Jam Session?
               </div>

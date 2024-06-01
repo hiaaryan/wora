@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Head from "next/head";
 
-export default function HomePage() {
+export default function Albums() {
   return (
     <React.Fragment>
       <Head>

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const handleLyrics = async (query: string, duration: number) => {
+export const fetchLyrics = async (query: string, duration: number) => {
   try {
     const response = await axios.get("https://lrclib.net/api/search", {
       params: { q: query },
@@ -8,7 +8,6 @@ export const handleLyrics = async (query: string, duration: number) => {
 
     const songs = response.data;
 
-    // Filter songs by title and duration
     const matchedSongs = songs.filter(
       (song: any) =>
         Math.abs(song.duration - duration) <= 5 &&
