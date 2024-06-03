@@ -4,6 +4,7 @@ import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import fs from "fs";
 import { protocol, net } from "electron";
+import { createNowPlayingWindow, createTray } from "./helpers/create-tray";
 let client = new (require("discord-rpc-revamp").Client)();
 
 const isProd = process.env.NODE_ENV === "production";
@@ -64,6 +65,9 @@ protocol.registerSchemesAsPrivileged([
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     // mainWindow.webContents.openDevTools();
   }
+
+  createTray();
+  createNowPlayingWindow();
 })();
 
 client.connect({ clientId: "1243707416588320800" }).catch(console.error);

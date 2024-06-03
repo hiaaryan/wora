@@ -19,7 +19,7 @@ export default function Playlists() {
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
-              <div className="mt-2 text-xl font-medium">Playlists</div>
+              <div className="mt-2 text-base font-medium">Playlists</div>
               <div className="opacity-50">
                 Hey Aaryan! Ready for a Jam Session?
               </div>

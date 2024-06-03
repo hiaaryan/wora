@@ -17,7 +17,7 @@ export const fetchLyrics = async (query: string, duration: number) => {
 
     const matchedSongs = songs.filter(
       (song: any) =>
-        Math.abs(song.duration - duration) <= 5 &&
+        Math.abs(song.duration - duration) <= 3 &&
         (song.syncedLyrics !== null || song.plainLyrics !== null),
     );
 

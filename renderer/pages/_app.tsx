@@ -4,20 +4,25 @@ import Actions from "@/components/utilities/actions";
 import { useEffect } from "react";
 import Navbar from "@/components/utilities/navbar";
 import Player from "@/components/utilities/player";
+import { useRouter } from "next/router";
 
-// If loading a variable font, you don't need to specify the font weight
 const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    document.body.classList.add("dark");
+    document.body.classList.remove("dark");
     document.body.classList.add(mavenPro.className);
   });
 
+  const router = useRouter();
+  const noLayoutPages = ["/tray"];
+
+  if (noLayoutPages.includes(router.pathname)) {
+    return <Component {...pageProps} />;
+  }
+
   return (
-    <div
-      className={`wora-transition text-xs antialiased dark:bg-black dark:text-white`}
-    >
+    <div className="wora-transition text-xs antialiased dark:bg-black/10 dark:text-white">
       <Actions />
       <div className="select-none bg-white dark:bg-black dark:text-white">
         <div className="flex gap-8">

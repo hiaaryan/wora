@@ -45,7 +45,6 @@ import {
 } from "./helpers/utilFunctions";
 import useAudioMetadata from "./helpers/useAudioMetadata";
 import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
-
 function Player() {
   const [play, setPlay] = useState(false);
   const [seek, setSeek] = useState("0:00");
@@ -59,7 +58,7 @@ function Player() {
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState(false);
   const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/Raaz/02 Soniyo.flac",
+    "/Users/hiaaryan/Documents/FLACs/Kho Gaye Hum Kahan/01. Hone Do Jo Hota Hai.flac",
   );
 
   const { data, cover, lyrics } = useAudioMetadata(file);
@@ -75,6 +74,7 @@ function Player() {
     const sound = new Howl({
       src: ["music://" + file],
       format: ["flac"],
+      loop: repeat,
     });
 
     resetDiscordState();
@@ -93,6 +93,14 @@ function Player() {
           updateDiscordState(data, currentSeek, true);
         }
 
+        window.ipc.send("player-update", {
+          play: true,
+          seek: currentSeek,
+          duration: sound.duration(),
+          metadata: data,
+          cover: cover,
+        });
+
         if (parsedLyrics.length > 0) {
           const currentLyricLine = parsedLyrics.find((line, index) => {
             const nextLine = parsedLyrics[index + 1];
@@ -106,6 +114,21 @@ function Player() {
         }
       }
     }, 1000);
+
+    window.ipc.on("tray-command", (_, command) => {
+      // Handle commands received from tray window
+      switch (command) {
+        case "play/pause":
+          handlePlayPause();
+          break;
+        case "seek":
+          // Handle seek command
+          break;
+        // Other commands...
+        default:
+          break;
+      }
+    });
 
     sound.on("end", () => {
       setSeekSeconds([0]);
@@ -189,7 +212,7 @@ function Player() {
                     <div>
                       {lyrics.split("\n").map((line) => {
                         return (
-                          <p className="my-8 font-semibold text-black opacity-75 dark:text-white">
+                          <p className="my-10 font-semibold text-black opacity-75 dark:text-white">
                             {line}
                           </p>
                         );

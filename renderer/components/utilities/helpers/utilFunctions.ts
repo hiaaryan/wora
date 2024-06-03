@@ -4,8 +4,9 @@ interface LyricLine {
 }
 
 export const convertTime = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
+  const convertedSeconds = Math.round(seconds);
+  const minutes = Math.floor(convertedSeconds / 60);
+  const remainingSeconds = convertedSeconds % 60;
   // Pad seconds with leading zero if less than 10
   const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
   return `${minutes}:${formattedSeconds}`;
@@ -20,7 +21,7 @@ export const parseLyrics = (lyrics: string): LyricLine[] => {
       if (match) {
         const minutes = parseInt(match[1], 10);
         const seconds = parseFloat(match[2]);
-        const time = minutes * 60 + seconds;
+        const time = minutes * 60 + seconds - 0.5; // 0.5s offset to make sure the lyrics are displayed before the actual time;
         let text = match[3].trim();
         if (text === "") {
           text = "...";
