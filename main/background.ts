@@ -5,6 +5,8 @@ import { createWindow } from "./helpers";
 import fs from "fs";
 import { protocol, net } from "electron";
 import { createNowPlayingWindow, createTray } from "./helpers/create-tray";
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 let client = new (require("discord-rpc-revamp").Client)();
 
 const isProd = process.env.NODE_ENV === "production";
@@ -68,6 +70,10 @@ protocol.registerSchemesAsPrivileged([
 
   createTray();
   createNowPlayingWindow();
+
+  ipcMain.on("tray-command", (_, data) => {
+    mainWindow.webContents.send("player-command", data);
+  });
 })();
 
 client.connect({ clientId: "1243707416588320800" }).catch(console.error);

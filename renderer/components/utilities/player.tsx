@@ -58,8 +58,12 @@ function Player() {
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState(false);
   const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/Kho Gaye Hum Kahan/01. Hone Do Jo Hota Hai.flac",
+    "/Users/hiaaryan/Documents/FLACs/Crew/01. Naina (From Crew).flac",
   );
+  interface PlayerCommand {
+    type: "play" | "seek";
+    seek?: number;
+  }
 
   const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
@@ -115,21 +119,6 @@ function Player() {
       }
     }, 1000);
 
-    window.ipc.on("tray-command", (_, command) => {
-      // Handle commands received from tray window
-      switch (command) {
-        case "play/pause":
-          handlePlayPause();
-          break;
-        case "seek":
-          // Handle seek command
-          break;
-        // Other commands...
-        default:
-          break;
-      }
-    });
-
     sound.on("end", () => {
       setSeekSeconds([0]);
       setSeek("0:00");
@@ -153,6 +142,22 @@ function Player() {
       resetDiscordState();
     };
   }, [file, data, lyrics]);
+
+  useEffect(() => {
+    window.ipc.on("player-command", (command: PlayerCommand) => {
+      switch (command.type) {
+        case "play":
+          handlePlayPause();
+          break;
+        case "seek":
+          handleSeek(command.seek);
+          break;
+        // More Commands Soon
+        default:
+          break;
+      }
+    });
+  }, []);
 
   const handleVolume = (value: any) => {
     setVolume(value);

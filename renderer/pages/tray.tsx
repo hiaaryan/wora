@@ -3,6 +3,13 @@ import Head from "next/head";
 import { Slider } from "@/components/ui/slider";
 import { IAudioMetadata } from "music-metadata-browser";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  IconPlayerPause,
+  IconPlayerPlay,
+  IconPlayerSkipBack,
+  IconPlayerSkipForward,
+} from "@tabler/icons-react";
 interface trayData {
   play: boolean;
   seek: number;
@@ -21,7 +28,19 @@ export default function Tray() {
   });
 
   const handlePlayPause = () => {
-    window.ipc.send("tray-command", "play_pause");
+    window.ipc.send("tray-command", { type: "play", play: !trayData.play });
+    setTrayData((prevTrayData) => ({
+      ...prevTrayData,
+      play: !prevTrayData.play,
+    }));
+  };
+
+  const handleSeek = (value: number) => {
+    window.ipc.send("tray-command", { type: "seek", seek: value });
+    setTrayData((prevTrayData) => ({
+      ...prevTrayData,
+      seek: value,
+    }));
   };
 
   useEffect(() => {
@@ -35,12 +54,12 @@ export default function Tray() {
       <Head>
         <title>Tray</title>
       </Head>
-      <div className="wora-bg h-screen w-screen overflow-hidden p-6 text-xs text-black antialiased dark:text-white">
+      <div className="h-screen w-screen overflow-hidden bg-white/80 p-5 text-xs text-black antialiased dark:bg-neutral-900/80 dark:text-white">
         <div className="flex h-full w-full items-center">
           <div className="flex h-full w-full flex-col items-center justify-between gap-4">
-            <div className="flex w-full items-center gap-6">
-              <div className="w-fit">
-                <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+            <div className="flex h-full w-full items-center gap-6">
+              <div className="flex h-full w-1/3 items-center">
+                <div className="relative h-28 w-28 overflow-hidden rounded-md transition duration-500">
                   {trayData && trayData.cover && (
                     <Image
                       alt="album"
@@ -51,8 +70,8 @@ export default function Tray() {
                   )}
                 </div>
               </div>
-              <div className="flex h-full w-2/3 flex-col items-start justify-around">
-                <div className="w-full gradient-mask-r-70">
+              <div className="flex h-full w-2/3 flex-col items-start justify-around overflow-hidden">
+                <div className="w-full origin-left scale-95 gradient-mask-r-70">
                   <p className="text-nowrap text-sm">
                     {trayData.metadata
                       ? trayData.metadata.common.title
@@ -67,13 +86,39 @@ export default function Tray() {
                 <Slider
                   defaultValue={[0]}
                   value={[trayData && trayData.seek]}
-                  // onValueChange={handleSeek}
+                  onValueChange={handleSeek}
                   max={trayData && trayData.duration}
                   step={0.01}
                 />
+                <div className="-ml-2 flex w-full items-center justify-center gap-8">
+                  <Button variant="ghost">
+                    <IconPlayerSkipBack
+                      stroke={2}
+                      className="h-4 fill-black dark:fill-white"
+                    />
+                  </Button>
+                  <Button variant="ghost" onClick={handlePlayPause}>
+                    {trayData && !trayData.play ? (
+                      <IconPlayerPlay
+                        stroke={2}
+                        className="h-6 w-6 fill-black dark:fill-white"
+                      />
+                    ) : (
+                      <IconPlayerPause
+                        stroke={2}
+                        className="h-6 w-6 fill-black dark:fill-white"
+                      />
+                    )}
+                  </Button>
+                  <Button variant="ghost">
+                    <IconPlayerSkipForward
+                      stroke={2}
+                      className="h-4 w-4 fill-black dark:fill-white"
+                    />
+                  </Button>
+                </div>
               </div>
             </div>
-            <div className="relative flex w-full items-center justify-center gap-3"></div>
           </div>
         </div>
       </div>
