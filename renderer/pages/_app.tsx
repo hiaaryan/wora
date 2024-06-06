@@ -33,7 +33,12 @@ export default function App({ Component, pageProps }) {
               <div className="h-screen flex-grow p-8 pl-0 pt-12">
                 <div className="relative flex h-full w-full flex-col">
                   <Component {...pageProps} />
-                  <Player />
+                  <Player
+                    file={
+                      "/Users/hiaaryan/Documents/FLACs/Namaste London/06 Annan Faanan.flac"
+                    }
+                    autoPlay={true}
+                  />
                 </div>
               </div>
             </div>

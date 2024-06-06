@@ -66,7 +66,7 @@ export default function Tray() {
                   {trayData && trayData.cover && (
                     <Image
                       alt="album"
-                      src={trayData.cover}
+                      src={trayData && trayData.cover}
                       fill
                       className="object-cover"
                     />

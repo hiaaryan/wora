@@ -50,7 +50,7 @@ interface PlayerCommand {
   seek?: number;
 }
 
-function Player() {
+function Player({ file, autoPlay }) {
   const [play, setPlay] = useState(false);
   const [seek, setSeek] = useState("0:00");
   const [seekSeconds, setSeekSeconds] = useState([0]);
@@ -62,9 +62,6 @@ function Player() {
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState<boolean>(false);
-  const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/Amar Singh Chamkila/02 Naram Kaalja.flac",
-  );
 
   const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
@@ -80,6 +77,8 @@ function Player() {
       src: ["music://" + file],
       format: ["flac"],
       loop: repeat,
+      volume: volume[0],
+      autoplay: autoPlay,
     });
 
     soundRef.current = sound;
@@ -150,6 +149,20 @@ function Player() {
       clearInterval(updateInterval);
       resetDiscordState();
       sound.unload();
+
+      setPlay(false);
+      setSeek("0:00");
+      setSeekSeconds([0]);
+      setDurationSeconds(0);
+      setDuration("0:00");
+      setCurrentLyric(null);
+      setShowLyrics(false);
+      window.ipc.send("player-update", {
+        play: false,
+        seek: 0,
+        metadata: data,
+        cover: cover,
+      });
     };
   }, [file, data, lyrics]);
 
@@ -176,7 +189,7 @@ function Player() {
   const handleSeek = (value: any) => {
     soundRef.current.seek(value);
     setSeekSeconds(value);
-    setSeek(convertTime(Math.round(value)));
+    setSeek(convertTime(value));
   };
 
   const handleRepeat = () => {

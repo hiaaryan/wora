@@ -9,11 +9,11 @@ export default function Albums() {
       <Head>
         <title>Home</title>
       </Head>
-      <ScrollArea className="mt-2 h-full w-[88.15vw]">
+      <ScrollArea className="mt-2.5 h-full w-[88.15vw]">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
-              <div className="mt-2 text-base font-medium">Home</div>
+              <div className="mt-2 text-base font-medium">Albums</div>
               <div className="opacity-50">
                 Hey Aaryan! Ready for a Jam Session?
               </div>
