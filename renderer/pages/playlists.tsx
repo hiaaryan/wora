@@ -27,7 +27,7 @@ export default function Playlists() {
             <div className="relative flex h-72 w-full gap-8">
               <div className="group/album wora-border w-52 cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-black/5 dark:hover:bg-white/10">
                 <div className="flex h-full flex-col justify-between">
-                  <div className="relative h-2/3 w-full overflow-hidden rounded-xl shadow-xl transition duration-300">
+                  <div className="relative h-2/3 w-full overflow-hidden rounded-xl shadow-xl duration-300">
                     <Image
                       alt="album"
                       src={"/images/bills.jpeg"}

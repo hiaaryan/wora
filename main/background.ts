@@ -1,5 +1,5 @@
 import path from "path";
-import { app, dialog, ipcMain } from "electron";
+import { app, dialog, globalShortcut, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import fs from "fs";
@@ -65,7 +65,6 @@ protocol.registerSchemesAsPrivileged([
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
-    // mainWindow.webContents.openDevTools();
   }
 
   createTray();
@@ -86,7 +85,9 @@ ipcMain.on("set-rpc-state", (_, { details, state }) => {
       largeImageKey: "logo",
       largeImageText: `v${app.getVersion()}`,
     })
-    .catch(console.error);
+    .catch((error: any) => {
+      console.log(error.message);
+    });
 });
 
 app.on("window-all-closed", () => {

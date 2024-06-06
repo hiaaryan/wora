@@ -35,7 +35,7 @@ export default function Tray() {
     }));
   };
 
-  const handleSeek = (value: number) => {
+  const handleSeek = (value: any) => {
     window.ipc.send("tray-command", { type: "seek", seek: value });
     setTrayData((prevTrayData) => ({
       ...prevTrayData,
@@ -54,7 +54,7 @@ export default function Tray() {
       <Head>
         <title>Tray</title>
       </Head>
-      <div className="h-screen w-screen overflow-hidden bg-white/80 p-5 text-xs text-black antialiased dark:bg-neutral-900/80 dark:text-white">
+      <div className="h-screen w-screen select-none overflow-hidden bg-white/80 p-5 text-xs text-black antialiased dark:bg-neutral-900/80 dark:text-white">
         <div className="flex h-full w-full items-center">
           <div className="flex h-full w-full flex-col items-center justify-between gap-4">
             <div className="flex h-full w-full items-center gap-6">

@@ -5,27 +5,9 @@ interface DiscordState {
   state: string;
 }
 
-const idleStates: string[] = [
-  "Exploring New Genres 🌍",
-  "Organizing Playlists 🎶",
-  "Rediscovering Classics 🎼",
-  "Chillin' with Tunes 🎧",
-  "Syncing to the Rhythm 🎵",
-  "Grooving to the Beats 🕺",
-  "Curating a Mixtape 📼",
-  "Jamming Out 🎸",
-  "Finding Hidden Gems 💎",
-  "Vibing with Vinyls 💿",
-];
-
-function getRandomIdleState(): string {
-  const randomIndex = Math.floor(Math.random() * idleStates.length);
-  return idleStates[randomIndex];
-}
-
 const defaultState: DiscordState = {
   details: "Music Player for Audiophiles 🎧",
-  state: getRandomIdleState(),
+  state: "Idle... 💤",
 };
 
 const updateDiscordState = (

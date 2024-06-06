@@ -45,25 +45,24 @@ import {
 } from "./helpers/utilFunctions";
 import useAudioMetadata from "./helpers/useAudioMetadata";
 import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
+interface PlayerCommand {
+  type: "play" | "seek";
+  seek?: number;
+}
+
 function Player() {
   const [play, setPlay] = useState(false);
   const [seek, setSeek] = useState("0:00");
   const [seekSeconds, setSeekSeconds] = useState([0]);
   const [durationSeconds, setDurationSeconds] = useState(0);
   const [duration, setDuration] = useState("0:00");
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState<number[]>([0.5]);
   const [mute, setMute] = useState(false);
   const soundRef = useRef<Howl | null>(null);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
-  const [repeat, setRepeat] = useState(false);
-  const [file, setFile] = useState(
-    "/Users/hiaaryan/Documents/FLACs/Crew/01. Naina (From Crew).flac",
-  );
-  interface PlayerCommand {
-    type: "play" | "seek";
-    seek?: number;
-  }
+  const [repeat, setRepeat] = useState<boolean>(false);
+  const [file, setFile] = useState("/url");
 
   const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
@@ -80,8 +79,6 @@ function Player() {
       format: ["flac"],
       loop: repeat,
     });
-
-    resetDiscordState();
 
     soundRef.current = sound;
 
@@ -138,8 +135,8 @@ function Player() {
 
     return () => {
       clearInterval(updateInterval);
-      sound.unload();
       resetDiscordState();
+      sound.unload();
     };
   }, [file, data, lyrics]);
 
@@ -152,7 +149,6 @@ function Player() {
         case "seek":
           handleSeek(command.seek);
           break;
-        // More Commands Soon
         default:
           break;
       }
@@ -161,7 +157,7 @@ function Player() {
 
   const handleVolume = (value: any) => {
     setVolume(value);
-    Howler.volume(value);
+    soundRef.current.volume(value);
   };
 
   const handleSeek = (value: any) => {
@@ -206,7 +202,7 @@ function Player() {
           <div className="wora-border h-full w-full rounded-xl bg-white dark:bg-black">
             <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-60-d dark:bg-black dark:text-white">
               <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
-                <div className="my-80 flex max-w-3xl flex-col">
+                <div className="my-72 flex max-w-3xl flex-col">
                   {isSyncedLyrics(lyrics) ? (
                     <Lyrics
                       lyrics={parseLyrics(lyrics)}
@@ -345,7 +341,7 @@ function Player() {
                     <IconVolume
                       stroke={2}
                       size={17.5}
-                      className="wora-transition !opacity-30 hover:!opacity-100"
+                      className="wora-transition !opacity-40 hover:!opacity-100"
                     />
                   ) : (
                     <IconVolumeOff
@@ -357,7 +353,7 @@ function Player() {
                 </Button>
                 <Slider
                   onValueChange={handleVolume}
-                  defaultValue={[volume]}
+                  defaultValue={volume}
                   max={1}
                   step={0.01}
                 />
