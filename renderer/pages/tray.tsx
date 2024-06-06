@@ -11,11 +11,11 @@ import {
   IconPlayerSkipForward,
 } from "@tabler/icons-react";
 interface trayData {
-  play: boolean;
+  play?: boolean;
   seek: number;
-  duration: number;
-  metadata: IAudioMetadata;
-  cover: string;
+  duration?: number;
+  metadata?: IAudioMetadata;
+  cover?: string;
 }
 
 export default function Tray() {
@@ -35,7 +35,7 @@ export default function Tray() {
     }));
   };
 
-  const handleSeek = (value: any) => {
+  const handleSeek = (value: number) => {
     window.ipc.send("tray-command", { type: "seek", seek: value });
     setTrayData((prevTrayData) => ({
       ...prevTrayData,
@@ -45,7 +45,10 @@ export default function Tray() {
 
   useEffect(() => {
     window.ipc.on("tray-update", (data: trayData) => {
-      setTrayData(data);
+      setTrayData((prevTrayData) => ({
+        ...prevTrayData,
+        ...data,
+      }));
     });
   }, []);
 

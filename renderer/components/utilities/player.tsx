@@ -62,7 +62,9 @@ function Player() {
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState<boolean>(false);
-  const [file, setFile] = useState("/url");
+  const [file, setFile] = useState(
+    "/Users/hiaaryan/Documents/FLACs/Amar Singh Chamkila/02 Naram Kaalja.flac",
+  );
 
   const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
@@ -95,12 +97,10 @@ function Player() {
         }
 
         window.ipc.send("player-update", {
-          play: true,
           seek: currentSeek,
-          duration: sound.duration(),
-          metadata: data,
-          cover: cover,
         });
+
+        console.log(cover);
 
         if (parsedLyrics.length > 0) {
           const currentLyricLine = parsedLyrics.find((line, index) => {
@@ -122,14 +122,27 @@ function Player() {
       setPlay(false);
       setDuration("0:00");
       resetDiscordState();
+      window.ipc.send("player-update", {
+        play: false,
+        seek: 0,
+      });
     });
 
     sound.on("pause", () => {
       resetDiscordState();
       setPlay(false);
+      window.ipc.send("player-update", {
+        play: false,
+      });
     });
 
     sound.on("play", () => {
+      window.ipc.send("player-update", {
+        play: true,
+        cover: cover,
+        metadata: data,
+        duration: sound.duration(),
+      });
       setPlay(true);
     });
 
