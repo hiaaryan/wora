@@ -1,15 +1,11 @@
 import React from "react";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Head from "next/head";
 
 export default function HomePage() {
   return (
     <React.Fragment>
-      <Head>
-        <title>Home</title>
-      </Head>
-      <ScrollArea className="mt-2.5 h-full w-[88.15vw]">
+      <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">

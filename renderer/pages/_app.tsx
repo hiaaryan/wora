@@ -6,12 +6,18 @@ import Navbar from "@/components/utilities/navbar";
 import Player from "@/components/utilities/player";
 import { useRouter } from "next/router";
 import { ThemeProvider } from "next-themes";
+import Head from "next/head";
 
 const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
     document.body.classList.add(mavenPro.className);
+    window.ipc.invoke("get-settings").then((response) => {
+      if (response[0]) {
+        console.log(true);
+      }
+    });
   }, []);
 
   const router = useRouter();
@@ -20,12 +26,15 @@ export default function App({ Component, pageProps }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <Head>
+        <title>Home</title>
+      </Head>
       {isNoLayoutPage ? (
         <Component {...pageProps} />
       ) : (
-        <div className="wora-transition text-xs antialiased dark:bg-black/10 dark:text-white">
+        <div className="wora-transition bg-white text-xs antialiased dark:bg-black dark:text-white">
           <Actions />
-          <div className="select-none bg-white dark:bg-black dark:text-white">
+          <div className="select-none dark:text-white">
             <div className="flex gap-8">
               <div className="sticky top-0 z-50 h-dvh p-8 pr-0 pt-12">
                 <Navbar />
@@ -35,7 +44,7 @@ export default function App({ Component, pageProps }) {
                   <Component {...pageProps} />
                   <Player
                     file={
-                      "/Users/hiaaryan/Documents/FLACs/Namaste London/06 Annan Faanan.flac"
+                      "/Users/hiaaryan/Documents/FLACs/Rockstar/12 Tum Ho.flac"
                     }
                     autoPlay={true}
                   />

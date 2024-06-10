@@ -13,6 +13,15 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription);
     };
   },
+  async invoke(channel: string, ...args: unknown[]) {
+    try {
+      const result = await ipcRenderer.invoke(channel, ...args);
+      return result;
+    } catch (error) {
+      console.error(`Error invoking channel ${channel}:`, error);
+      throw error;
+    }
+  },
 };
 
 contextBridge.exposeInMainWorld("ipc", handler);

@@ -1,13 +1,15 @@
 import path from "path";
-import { app, dialog, globalShortcut, ipcMain } from "electron";
+import { Menu, Tray, app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
-import fs from "fs";
 import { protocol, net } from "electron";
-import { createNowPlayingWindow, createTray } from "./helpers/create-tray";
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-let client = new (require("discord-rpc-revamp").Client)();
+import { AutoClient } from "discord-auto-rpc";
+import {
+  getSettings,
+  initializeUser,
+  saveMusicFiles,
+} from "./helpers/dbConnect";
+import { initDatabase } from "./helpers/db";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -22,9 +24,7 @@ protocol.registerSchemesAsPrivileged([
     scheme: "music",
     privileges: {
       secure: true,
-      allowServiceWorkers: true,
       supportFetchAPI: true,
-      bypassCSP: true,
       stream: true,
     },
   },
@@ -33,15 +33,17 @@ protocol.registerSchemesAsPrivileged([
 (async () => {
   await app.whenReady();
 
-  protocol.handle("music", (request) => {
-    return net.fetch("file://" + request.url.slice("music://".length));
+  protocol.registerFileProtocol("music", (request, callback) => {
+    const url = request.url.replace("music://", "");
+    callback({ path: url });
   });
 
   const mainWindow = createWindow("main", {
     width: 1500,
     height: 900,
-    frame: false,
+    titleBarStyle: "hidden",
     transparent: true,
+    trafficLightPosition: { x: 20, y: 15 },
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -52,13 +54,7 @@ protocol.registerSchemesAsPrivileged([
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 
-  ipcMain.on("closeApp", () => {
-    mainWindow.close();
-  });
-
-  ipcMain.on("minimizeApp", () => {
-    mainWindow.minimize();
-  });
+  initDatabase();
 
   if (isProd) {
     await mainWindow.loadURL("app://./home");
@@ -67,69 +63,28 @@ protocol.registerSchemesAsPrivileged([
     await mainWindow.loadURL(`http://localhost:${port}/home`);
   }
 
-  createTray();
-  createNowPlayingWindow();
-
   ipcMain.on("tray-command", (_, data) => {
     mainWindow.webContents.send("player-command", data);
   });
 })();
 
-client.connect({ clientId: "1243707416588320800" }).catch(console.error);
+const client = new AutoClient({ transport: "ipc" });
 
 ipcMain.on("set-rpc-state", (_, { details, state }) => {
-  client
-    .setActivity({
+  const setActivity = () => {
+    client.setActivity({
       details,
       state,
       largeImageKey: "logo",
       largeImageText: `v${app.getVersion()}`,
-    })
-    .catch((error: any) => {
-      console.log(error.message);
+      instance: false,
     });
+  };
+
+  setActivity();
 });
 
-app.on("window-all-closed", () => {
-  app.quit();
-});
-
-const audioExtensions = [
-  ".mp3",
-  ".mpeg",
-  ".opus",
-  ".ogg",
-  ".oga",
-  ".wav",
-  ".aac",
-  ".caf",
-  ".m4a",
-  ".m4b",
-  ".mp4",
-  ".weba",
-  ".webm",
-  ".dolby",
-  ".flac",
-];
-
-const callFiles = async (dirPath: string) => {
-  return readFilesRecursively(dirPath);
-};
-
-function readFilesRecursively(dir: string): string[] {
-  let results: string[] = [];
-  const list = fs.readdirSync(dir);
-  list.forEach((file) => {
-    const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(readFilesRecursively(filePath));
-    } else if (audioExtensions.includes(path.extname(filePath).toLowerCase())) {
-      results.push(filePath);
-    }
-  });
-  return results;
-}
+client.endlessLogin({ clientId: "1243707416588320800" });
 
 ipcMain.on("openDialog", () => {
   dialog
@@ -137,9 +92,42 @@ ipcMain.on("openDialog", () => {
       properties: ["openDirectory", "createDirectory"],
     })
     .then((result) => {
-      console.log(callFiles(result.filePaths[0]));
+      console.log(result.filePaths[0]);
     })
     .catch((err) => {
       console.log(err);
     });
+});
+
+ipcMain.handle("initialize-user", (_, name, picture, musicFolder) => {
+  initializeUser(name, picture, musicFolder);
+  const userData = getUserData();
+  saveMusicFiles(musicFolder);
+  return userData;
+});
+
+ipcMain.handle("get-settings", async () => {
+  const settings = await getSettings();
+  return settings[0];
+});
+
+let tray = null;
+
+app.whenReady().then(() => {
+  tray = new Tray("./resources/TrayTemplate.png");
+  const contextMenu = Menu.buildFromTemplate([
+    { label: "About", type: "normal", role: "about" },
+    {
+      label: "Quit",
+      type: "normal",
+      role: "quit",
+      accelerator: "Cmd+Q",
+    },
+  ]);
+  tray.setToolTip("Wora");
+  tray.setContextMenu(contextMenu);
+});
+
+app.on("window-all-closed", () => {
+  app.quit();
 });

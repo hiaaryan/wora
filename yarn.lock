@@ -2821,6 +2821,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/discord-rpc@npm:^4.0.2":
+  version: 4.0.8
+  resolution: "@types/discord-rpc@npm:4.0.8"
+  dependencies:
+    "@types/events": "npm:*"
+  checksum: 10c0/134e3dcc972bd92dbe3037c01efd4e010bfd7bdb890b4a5871fc928ef2b38ab8eca661f392195c348638319fedb40f6c5f87d8bea850cca60312ec1fa0a68dc2
+  languageName: node
+  linkType: hard
+
 "@types/eslint-scope@npm:^3.7.3":
   version: 3.7.7
   resolution: "@types/eslint-scope@npm:3.7.7"
@@ -2845,6 +2854,13 @@ __metadata:
   version: 1.0.5
   resolution: "@types/estree@npm:1.0.5"
   checksum: 10c0/b3b0e334288ddb407c7b3357ca67dbee75ee22db242ca7c56fe27db4e1a31989cb8af48a84dd401deb787fe10cc6b2ab1ee82dc4783be87ededbe3d53c79c70d
+  languageName: node
+  linkType: hard
+
+"@types/events@npm:*":
+  version: 3.0.3
+  resolution: "@types/events@npm:3.0.3"
+  checksum: 10c0/3a56f8c51eb4ebc0d05dcadca0c6636c816acc10216ce36c976fad11e54a01f4bb979a07211355686015884753b37f17d74bfdc7aaf4ebb027c1e8a501c7b21d
   languageName: node
   linkType: hard
 
@@ -2903,12 +2919,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.14.1":
-  version: 20.14.1
-  resolution: "@types/node@npm:20.14.1"
+"@types/node@npm:^20.14.2":
+  version: 20.14.2
+  resolution: "@types/node@npm:20.14.2"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/12b7879047f50cc217bbea3add7c45e542070f6e9fb2092be97542152b7022512bcb2bf848d04f77e295c4c8699acd484e79a4a4dbe9bcfa4e89dd543d530611
+  checksum: 10c0/2d86e5f2227aaa42212e82ea0affe72799111b888ff900916376450b02b09b963ca888b20d9c332d8d2b833ed4781987867a38eaa2e4863fa8439071468b0a6f
   languageName: node
   linkType: hard
 
@@ -3150,7 +3166,7 @@ __metadata:
     "@tabler/icons-react": "npm:^3.5.0"
     "@types/better-sqlite3": "npm:^7.6.10"
     "@types/howler": "npm:^2.2.11"
-    "@types/node": "npm:^20.14.1"
+    "@types/node": "npm:^20.14.2"
     "@types/react": "npm:^18.3.3"
     album-art: "npm:^4.0.0"
     autoprefixer: "npm:^10.4.19"
@@ -3159,10 +3175,10 @@ __metadata:
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.0.0"
-    discord-rpc-revamp: "npm:^2.0.4"
-    drizzle-kit: "npm:^0.22.2"
-    drizzle-orm: "npm:^0.31.1"
-    electron: "npm:^30.0.9"
+    discord-auto-rpc: "npm:^1.0.17"
+    drizzle-kit: "npm:^0.22.6"
+    drizzle-orm: "npm:^0.31.2"
+    electron: "npm:^30.1.0"
     electron-builder: "npm:^24.13.3"
     electron-serve: "npm:^1.3.0"
     electron-store: "npm:^8.2.0"
@@ -3173,13 +3189,13 @@ __metadata:
     next-themes: "npm:^0.3.0"
     nextron: "npm:^8.15.0"
     postcss: "npm:^8.4.38"
-    prettier: "npm:^3.3.0"
-    prettier-plugin-tailwindcss: "npm:^0.6.1"
+    prettier: "npm:^3.3.1"
+    prettier-plugin-tailwindcss: "npm:^0.6.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     tailwind-gradient-mask-image: "npm:^1.2.0"
     tailwind-merge: "npm:^2.3.0"
-    tailwindcss: "npm:^3.4.3"
+    tailwindcss: "npm:^3.4.4"
     tailwindcss-animate: "npm:^1.0.7"
     typescript: "npm:^5.4.5"
   languageName: unknown
@@ -3863,9 +3879,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001406":
-  version: 1.0.30001623
-  resolution: "caniuse-lite@npm:1.0.30001623"
-  checksum: 10c0/bf4fdae0cc9ec9282741e2c2dd3d35d853049ad69b33115cc39ee2d74fcbe03319aec27932b3480b626a4524e715c5b148c60d4d29ddd709db9008505ccf1a85
+  version: 1.0.30001629
+  resolution: "caniuse-lite@npm:1.0.30001629"
+  checksum: 10c0/e95136a423c0c5e7f9d026ef3f9be8d06cadc4c83ad65eedfaeaba6b5eb814489ea186e90bae1085f3be7348577e25f8fe436b384c2f983324ad8dea4a7dfe1d
   languageName: node
   linkType: hard
 
@@ -4372,10 +4388,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-rpc-revamp@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "discord-rpc-revamp@npm:2.0.4"
-  checksum: 10c0/be83d422c5e68a0ae4ae52003ce8d5d2b8dc9407be26626f84a0614ea1901fdc838f120674572f6e201f22b0a5faa7171818628299d2f4bd952b74901dfa4698
+"discord-auto-rpc@npm:^1.0.17":
+  version: 1.0.17
+  resolution: "discord-auto-rpc@npm:1.0.17"
+  dependencies:
+    "@types/discord-rpc": "npm:^4.0.2"
+    discord-rpc: "npm:^3.2.0"
+  checksum: 10c0/8b783929fafc8eec4cc1a19f7c1d1debf020a561f63517f3651a661c1e694a006e0ef15a7d24c74293c113b12eb6abdf98acd5aeccd9c4dba0173df06d95d204
+  languageName: node
+  linkType: hard
+
+"discord-rpc@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "discord-rpc@npm:3.2.0"
+  dependencies:
+    node-fetch: "npm:^2.6.1"
+    ws: "npm:^7.3.1"
+  peerDependencies:
+    register-scheme: "*"
+  checksum: 10c0/e128234560a0fd31052cc5ed70ab3a3642bce687d90df3e431ddf87d4dd5ddd9ffcc23b6f7ae7b3a6aaee7b333e6f7a38d2eb6ee7d661810aae9b9755f183215
   languageName: node
   linkType: hard
 
@@ -4445,22 +4476,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"drizzle-kit@npm:^0.22.2":
-  version: 0.22.2
-  resolution: "drizzle-kit@npm:0.22.2"
+"drizzle-kit@npm:^0.22.6":
+  version: 0.22.6
+  resolution: "drizzle-kit@npm:0.22.6"
   dependencies:
     "@esbuild-kit/esm-loader": "npm:^2.5.5"
     esbuild: "npm:^0.19.7"
     esbuild-register: "npm:^3.5.0"
   bin:
     drizzle-kit: bin.cjs
-  checksum: 10c0/0d77a4a8c681feac014c3c81f16c2bfffbb2493c7eb7082802d17cb3a0105af1762675d23cf586df62476d89dcfc949f327f6a272a2677432b46945ab9a16dcd
+  checksum: 10c0/8fb7dc06f9b921c848fdd1eeed2399a71e170d0f1c355b376b6fb9ac0f2fdaa00682042a99dc60b6301f2e82603f15b0bedb5bede8a06ea0883ddaa9bed82587
   languageName: node
   linkType: hard
 
-"drizzle-orm@npm:^0.31.1":
-  version: 0.31.1
-  resolution: "drizzle-orm@npm:0.31.1"
+"drizzle-orm@npm:^0.31.2":
+  version: 0.31.2
+  resolution: "drizzle-orm@npm:0.31.2"
   peerDependencies:
     "@aws-sdk/client-rds-data": ">=3"
     "@cloudflare/workers-types": ">=3"
@@ -4470,6 +4501,7 @@ __metadata:
     "@op-engineering/op-sqlite": ">=2"
     "@opentelemetry/api": ^1.4.1
     "@planetscale/database": ">=1"
+    "@tidbcloud/serverless": "*"
     "@types/better-sqlite3": "*"
     "@types/pg": "*"
     "@types/react": ">=18"
@@ -4503,6 +4535,8 @@ __metadata:
     "@opentelemetry/api":
       optional: true
     "@planetscale/database":
+      optional: true
+    "@tidbcloud/serverless":
       optional: true
     "@types/better-sqlite3":
       optional: true
@@ -4538,7 +4572,7 @@ __metadata:
       optional: true
     sqlite3:
       optional: true
-  checksum: 10c0/91d460669cef212ec77088e8c8891e11d5d0319ad2be261379fe0eea9b36d88b126450c58df383201f231fe216fa2d7e5c7502a53b0b4a98913d5f95840e74ee
+  checksum: 10c0/7fb7604dc50204047fc78745c1a956f395dd582f05db9dbf76cfcc658fb180fc3012cfec03fd669140e67184d2ca32419bb3c09aafeb5db5dbe0c2db73f2fe5a
   languageName: node
   linkType: hard
 
@@ -4621,16 +4655,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^30.0.9":
-  version: 30.0.9
-  resolution: "electron@npm:30.0.9"
+"electron@npm:^30.1.0":
+  version: 30.1.0
+  resolution: "electron@npm:30.1.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/98f28e9f905a4734af708e156bab85b924ab196439e383ea5b7c83b884106a1e5684dfb175fb4fd518c91b9276f955aef6e0e06ba9b1f5fe6c8a555bcff46749
+  checksum: 10c0/e17c5fdf275f8cd457086adfa05db7507d08dd9264024d80eae8e55eb01927d062b63223a1a15b3ac024ebe2c34cc4b3ceb5cc0ac3ded4721c4ac9be4e5fe33c
   languageName: node
   linkType: hard
 
@@ -6679,7 +6713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.12":
+"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -7152,9 +7186,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-tailwindcss@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "prettier-plugin-tailwindcss@npm:0.6.1"
+"prettier-plugin-tailwindcss@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "prettier-plugin-tailwindcss@npm:0.6.2"
   peerDependencies:
     "@ianvs/prettier-plugin-sort-imports": "*"
     "@prettier/plugin-pug": "*"
@@ -7203,16 +7237,16 @@ __metadata:
       optional: true
     prettier-plugin-svelte:
       optional: true
-  checksum: 10c0/533006f456e4b4da43e7fc7d5218e464a3d9f32ae47deb2d654e51436cf3d3956ccf4e3b7ccacb71f47ab5b271668907c1f018ba9e5afa615d94c056d68c8630
+  checksum: 10c0/e2cd438c2f1433b61ebb5764c4c58efcd04e56bf15498c0dce974ab3d7559b7293d15eec3a5f2de9f1646a381551f3ec47bd2ea57ced7c7e8d69f62555128ac1
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "prettier@npm:3.3.0"
+"prettier@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "prettier@npm:3.3.1"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/d033c356320aa2e468bf29c931b094ac730d2f4defd5eb2989d8589313dec901d2fc866e3788f3d161e420b142ea4ec3dda535dbe0169ef4d0026397a68ba9cf
+  checksum: 10c0/c25a709c9f0be670dc6bcb190b622347e1dbeb6c3e7df8b0711724cb64d8647c60b839937a4df4df18e9cfb556c2b08ca9d24d9645eb5488a7fc032a2c4d5cb3
   languageName: node
   linkType: hard
 
@@ -8144,9 +8178,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "tailwindcss@npm:3.4.3"
+"tailwindcss@npm:^3.4.4":
+  version: 3.4.4
+  resolution: "tailwindcss@npm:3.4.4"
   dependencies:
     "@alloc/quick-lru": "npm:^5.2.0"
     arg: "npm:^5.0.2"
@@ -8173,7 +8207,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 10c0/11e5546494f2888f693ebaa271b218b3a8e52fe59d7b629e54f2dffd6eaafd5ded2e9f0c37ad04e6a866dffb2b116d91becebad77e1441beee8bf016bb2392f9
+  checksum: 10c0/e4f7e1a2e1897871a4744f421ccb5639e8d51012e3644b0c35cf723527fdc8f9cddd3fa3b0fc28c198b0ea6ce44ead21c89cfec549d80bad9b1f3dd9d8bf2d54
   languageName: node
   linkType: hard
 
@@ -8737,6 +8771,21 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10c0/56fece1a4018c6a6c8e28fbc88c87e0fbf4ea8fd64fc6c63b18f4acc4bd13e0ad2515189786dd2c30d3eec9663d70f4ecf699330002f8ccb547e4a18231fc9f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^7.3.1":
+  version: 7.5.9
+  resolution: "ws@npm:7.5.9"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/aec4ef4eb65821a7dde7b44790f8699cfafb7978c9b080f6d7a98a7f8fc0ce674c027073a78574c94786ba7112cc90fa2cc94fc224ceba4d4b1030cff9662494
   languageName: node
   linkType: hard
 

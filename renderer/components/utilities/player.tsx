@@ -79,6 +79,7 @@ function Player({ file, autoPlay }) {
       loop: repeat,
       volume: volume[0],
       autoplay: autoPlay,
+      html5: true,
     });
 
     soundRef.current = sound;
@@ -90,16 +91,6 @@ function Player({ file, autoPlay }) {
         setDurationSeconds(sound.duration());
         setSeek(convertTime(Math.round(currentSeek)));
         setDuration(convertTime(Math.round(sound.duration())));
-
-        if (data) {
-          updateDiscordState(data, currentSeek, true);
-        }
-
-        window.ipc.send("player-update", {
-          seek: currentSeek,
-        });
-
-        console.log(cover);
 
         if (parsedLyrics.length > 0) {
           const currentLyricLine = parsedLyrics.find((line, index) => {
@@ -121,35 +112,39 @@ function Player({ file, autoPlay }) {
       setPlay(false);
       setDuration("0:00");
       resetDiscordState();
-      window.ipc.send("player-update", {
-        play: false,
-        seek: 0,
-      });
     });
 
     sound.on("pause", () => {
       resetDiscordState();
       setPlay(false);
-      window.ipc.send("player-update", {
-        play: false,
-      });
     });
 
     sound.on("play", () => {
-      window.ipc.send("player-update", {
-        play: true,
-        cover: cover,
-        metadata: data,
-        duration: sound.duration(),
-      });
       setPlay(true);
+      updateDiscordState(data, true);
+
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: data.common.title,
+          artist: data.common.artist,
+          album: data.common.album,
+          artwork: [{ src: cover }],
+        });
+
+        navigator.mediaSession.setActionHandler("play", () => {
+          soundRef.current.play();
+        });
+
+        navigator.mediaSession.setActionHandler("pause", () => {
+          soundRef.current.pause();
+        });
+      }
     });
 
     return () => {
       clearInterval(updateInterval);
       resetDiscordState();
       sound.unload();
-
       setPlay(false);
       setSeek("0:00");
       setSeekSeconds([0]);
@@ -157,29 +152,8 @@ function Player({ file, autoPlay }) {
       setDuration("0:00");
       setCurrentLyric(null);
       setShowLyrics(false);
-      window.ipc.send("player-update", {
-        play: false,
-        seek: 0,
-        metadata: data,
-        cover: cover,
-      });
     };
   }, [file, data, lyrics]);
-
-  useEffect(() => {
-    window.ipc.on("player-command", (command: PlayerCommand) => {
-      switch (command.type) {
-        case "play":
-          handlePlayPause();
-          break;
-        case "seek":
-          handleSeek(command.seek);
-          break;
-        default:
-          break;
-      }
-    });
-  }, []);
 
   const handleVolume = (value: any) => {
     setVolume(value);
@@ -225,7 +199,7 @@ function Player({ file, autoPlay }) {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border h-full w-full rounded-xl bg-white dark:bg-black">
+          <div className="wora-border wora-bg h-full w-full rounded-xl backdrop-blur-xl dark:backdrop-blur-xl">
             <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-60-d dark:bg-black dark:text-white">
               <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
                 <div className="my-72 flex max-w-3xl flex-col">
@@ -252,7 +226,7 @@ function Player({ file, autoPlay }) {
           </div>
         )}
       </div>
-      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-white p-6 dark:bg-black">
+      <div className="wora-border wora-bg z-50 h-[6.5rem] w-full rounded-xl p-6 backdrop-blur-xl dark:backdrop-blur-xl">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">

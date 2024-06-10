@@ -35,11 +35,11 @@ export default function Tray() {
     }));
   };
 
-  const handleSeek = (value: number) => {
+  const handleSeek = (value: number[]) => {
     window.ipc.send("tray-command", { type: "seek", seek: value });
     setTrayData((prevTrayData) => ({
       ...prevTrayData,
-      seek: value,
+      seek: value[0],
     }));
   };
 
