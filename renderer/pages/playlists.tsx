@@ -1,5 +1,4 @@
 import React from "react";
-import Head from "next/head";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IconPlus } from "@tabler/icons-react";
@@ -12,9 +11,6 @@ export default function Playlists() {
 
   return (
     <React.Fragment>
-      <Head>
-        <title>Playlists</title>
-      </Head>
       <ScrollArea className="mt-2.5 h-full w-[88.15vw]">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">

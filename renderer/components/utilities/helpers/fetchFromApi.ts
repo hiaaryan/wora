@@ -57,7 +57,7 @@ export const fetchMetadata = async (
 
     const art = coverArt
       ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
-      : "https://iili.io/HlHy9Yx.png";
+      : "/coverArt.png";
 
     return { metadata, art };
   } catch (error) {

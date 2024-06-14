@@ -1,16 +1,16 @@
 interface DiscordState {
   details: string;
-  state: string;
+  state?: string;
+  timestamp?: boolean;
 }
 
 const defaultState: DiscordState = {
-  details: "Music Player for Audiophiles 🎧",
-  state: "Idle... 💤",
+  details: "Idle...",
+  timestamp: true,
 };
 
-const updateDiscordState = (metadata: any, isPlaying: boolean): void => {
-  if (!isPlaying || !metadata) {
-    window.ipc.send("set-rpc-state", defaultState);
+const updateDiscordState = (metadata: any): void => {
+  if (!metadata) {
     return;
   }
 

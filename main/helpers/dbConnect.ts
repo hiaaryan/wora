@@ -1,5 +1,6 @@
-import { db, settings } from "./db";
+import { db, musicFiles, settings } from "./db";
 import fs from "fs";
+import { parseFile, selectCover } from "music-metadata";
 import path from "path";
 
 export const initializeUser = (
@@ -47,10 +48,36 @@ function readFilesRecursively(dir: string): string[] {
   return results;
 }
 
-export const saveMusicFiles = (musicFolder: any) => {
+export const initializeData = async (musicFolder: any) => {
   const files = readFilesRecursively(musicFolder);
-  files.forEach((file: any) => {
-    db.insert(musicFiles).values({ filePath: file });
+  await db.delete(musicFiles);
+
+  files.forEach(async (file: any) => {
+    const metadata = await parseFile(file, {
+      skipPostHeaders: true,
+    });
+
+    const coverArt = selectCover(metadata.common.picture);
+
+    const art = coverArt
+      ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
+      : "/coverArt.png";
+
+    await db.insert(musicFiles).values({
+      filePath: file,
+      name: metadata.common.title,
+      artist: metadata.common.artist,
+      album: metadata.common.album,
+      coverArt: art,
+    });
+  });
+
+  await db.delete(settings);
+
+  await db.insert(settings).values({
+    fullName: "Aaryan Kapoor",
+    profilePicture: "/ak.jpeg",
+    musicFolder,
   });
 };
 

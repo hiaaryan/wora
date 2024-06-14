@@ -6,8 +6,8 @@ import { protocol, net } from "electron";
 import { AutoClient } from "discord-auto-rpc";
 import {
   getSettings,
+  initializeData,
   initializeUser,
-  saveMusicFiles,
 } from "./helpers/dbConnect";
 import { initDatabase } from "./helpers/db";
 
@@ -51,10 +51,10 @@ protocol.registerSchemesAsPrivileged([
     },
   });
 
+  initDatabase();
+
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
-
-  initDatabase();
 
   if (isProd) {
     await mainWindow.loadURL("app://./home");
@@ -70,15 +70,21 @@ protocol.registerSchemesAsPrivileged([
 
 const client = new AutoClient({ transport: "ipc" });
 
-ipcMain.on("set-rpc-state", (_, { details, state }) => {
+ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
   const setActivity = () => {
-    client.setActivity({
+    const activity = {
       details,
       state,
       largeImageKey: "logo",
       largeImageText: `v${app.getVersion()}`,
       instance: false,
-    });
+    };
+
+    if (timestamp) {
+      (activity as any).startTimestamp = Date.now();
+    }
+
+    client.setActivity(activity);
   };
 
   setActivity();
@@ -86,17 +92,23 @@ ipcMain.on("set-rpc-state", (_, { details, state }) => {
 
 client.endlessLogin({ clientId: "1243707416588320800" });
 
-ipcMain.on("openDialog", () => {
-  dialog
+ipcMain.handle("set-music-folder", async () => {
+  const diag = await dialog
     .showOpenDialog({
       properties: ["openDirectory", "createDirectory"],
     })
-    .then((result) => {
-      console.log(result.filePaths[0]);
+    .then(async (result) => {
+      if (result.canceled) {
+        return result;
+      }
+
+      await initializeData(result.filePaths[0]);
     })
     .catch((err) => {
       console.log(err);
     });
+
+  return diag;
 });
 
 ipcMain.handle("initialize-user", (_, name, picture, musicFolder) => {

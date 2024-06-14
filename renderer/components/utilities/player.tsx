@@ -45,23 +45,20 @@ import {
 } from "./helpers/utilFunctions";
 import useAudioMetadata from "./helpers/useAudioMetadata";
 import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
-interface PlayerCommand {
-  type: "play" | "seek";
-  seek?: number;
-}
 
-function Player({ file, autoPlay }) {
+function Player() {
   const [play, setPlay] = useState(false);
-  const [seek, setSeek] = useState("0:00");
-  const [seekSeconds, setSeekSeconds] = useState([0]);
-  const [durationSeconds, setDurationSeconds] = useState(0);
-  const [duration, setDuration] = useState("0:00");
+  const [seek, setSeek] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState<number[]>([0.5]);
   const [mute, setMute] = useState(false);
   const soundRef = useRef<Howl | null>(null);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState<boolean>(false);
+  const [file, setFile] = useState<string | null>(
+    "/Users/hiaaryan/Documents/FLACs/Bhaag Milkha Bhaag/08 Bhaag Milkha Bhaag (Rock Version).flac",
+  );
 
   const { data, cover, lyrics } = useAudioMetadata(file);
   let parsedLyrics: LyricLine[] = [];
@@ -75,22 +72,32 @@ function Player({ file, autoPlay }) {
 
     const sound = new Howl({
       src: ["music://" + file],
-      format: ["flac"],
+      format: [file.split(".").pop()],
       loop: repeat,
       volume: volume[0],
-      autoplay: autoPlay,
       html5: true,
+      //autoplay: true,
     });
+
+    // setPlay(true);
 
     soundRef.current = sound;
 
-    const updateInterval = setInterval(() => {
-      if (sound.playing()) {
-        const currentSeek = sound.seek() as number;
-        setSeekSeconds([currentSeek]);
-        setDurationSeconds(sound.duration());
-        setSeek(convertTime(Math.round(currentSeek)));
-        setDuration(convertTime(Math.round(sound.duration())));
+    return () => {
+      sound.unload();
+    };
+  }, [file]);
+
+  useEffect(() => {
+    if (!file) return;
+    if (!soundRef) return;
+    if (!data) return;
+
+    setInterval(() => {
+      if (soundRef.current.playing()) {
+        const currentSeek = soundRef.current.seek() as number;
+        setSeek(currentSeek);
+        setDuration(soundRef.current.duration());
 
         if (parsedLyrics.length > 0) {
           const currentLyricLine = parsedLyrics.find((line, index) => {
@@ -106,54 +113,76 @@ function Player({ file, autoPlay }) {
       }
     }, 1000);
 
-    sound.on("end", () => {
-      setSeekSeconds([0]);
-      setSeek("0:00");
+    soundRef.current.on("end", () => {
+      setSeek(0);
       setPlay(false);
-      setDuration("0:00");
       resetDiscordState();
     });
 
-    sound.on("pause", () => {
-      resetDiscordState();
+    soundRef.current.on("pause", () => {
       setPlay(false);
+      resetDiscordState();
     });
 
-    sound.on("play", () => {
+    soundRef.current.on("play", () => {
       setPlay(true);
-      updateDiscordState(data, true);
+      updateDiscordState(data);
 
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: data.common.title,
-          artist: data.common.artist,
-          album: data.common.album,
-          artwork: [{ src: cover }],
-        });
+      if (data) {
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: data.common.title,
+            artist: data.common.artist,
+            album: data.common.album,
+            artwork: [{ src: cover }],
+          });
 
-        navigator.mediaSession.setActionHandler("play", () => {
-          soundRef.current.play();
-        });
+          navigator.mediaSession.setActionHandler("play", () => {
+            soundRef.current.play();
+          });
 
-        navigator.mediaSession.setActionHandler("pause", () => {
-          soundRef.current.pause();
-        });
+          navigator.mediaSession.setActionHandler("pause", () => {
+            soundRef.current.pause();
+          });
+        }
       }
     });
 
     return () => {
-      clearInterval(updateInterval);
       resetDiscordState();
-      sound.unload();
       setPlay(false);
-      setSeek("0:00");
-      setSeekSeconds([0]);
-      setDurationSeconds(0);
-      setDuration("0:00");
+      setSeek(0);
+      setDuration(0);
+    };
+  }, [soundRef, data]);
+
+  useEffect(() => {
+    if (!file) return;
+    if (!lyrics) return;
+
+    setInterval(() => {
+      if (soundRef.current.playing()) {
+        const currentSeek = soundRef.current.seek() as number;
+
+        if (parsedLyrics.length > 0) {
+          const currentLyricLine = parsedLyrics.find((line, index) => {
+            const nextLine = parsedLyrics[index + 1];
+            return (
+              currentSeek >= line.time &&
+              (!nextLine || currentSeek < nextLine.time)
+            );
+          });
+
+          setCurrentLyric(currentLyricLine || null);
+        }
+      }
+    }, 1000);
+
+    return () => {
       setCurrentLyric(null);
       setShowLyrics(false);
     };
-  }, [file, data, lyrics]);
+  }, [lyrics]);
 
   const handleVolume = (value: any) => {
     setVolume(value);
@@ -162,8 +191,7 @@ function Player({ file, autoPlay }) {
 
   const handleSeek = (value: any) => {
     soundRef.current.seek(value);
-    setSeekSeconds(value);
-    setSeek(convertTime(value));
+    setSeek(value);
   };
 
   const handleRepeat = () => {
@@ -181,9 +209,8 @@ function Player({ file, autoPlay }) {
 
   const handleLyricClick = (time: number) => {
     soundRef.current.seek(time);
-    setSeekSeconds([time]);
-    setSeek(convertTime(Math.round(time)));
-    setDuration(convertTime(Math.round(soundRef.current.duration())));
+    setSeek(Math.round(time));
+    setDuration(Math.round(soundRef.current.duration()));
   };
 
   const toggleLyrics = () => {
@@ -199,9 +226,9 @@ function Player({ file, autoPlay }) {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border wora-bg h-full w-full rounded-xl backdrop-blur-xl dark:backdrop-blur-xl">
-            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-60-d dark:bg-black dark:text-white">
-              <div className="no-scrollbar gradient-mask-b-40-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
+          <div className="wora-border h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70 dark:backdrop-blur-xl">
+            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-70-d dark:bg-black dark:text-white">
+              <div className="no-scrollbar gradient-mask-b-30-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
                 <div className="my-72 flex max-w-3xl flex-col">
                   {isSyncedLyrics(lyrics) ? (
                     <Lyrics
@@ -213,7 +240,7 @@ function Player({ file, autoPlay }) {
                     <div>
                       {lyrics.split("\n").map((line) => {
                         return (
-                          <p className="my-10 font-semibold text-black opacity-75 dark:text-white">
+                          <p className="py-6 font-semibold text-black opacity-70 dark:text-white">
                             {line}
                           </p>
                         );
@@ -226,7 +253,7 @@ function Player({ file, autoPlay }) {
           </div>
         )}
       </div>
-      <div className="wora-border wora-bg z-50 h-[6.5rem] w-full rounded-xl p-6 backdrop-blur-xl dark:backdrop-blur-xl">
+      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-white/70 p-6 backdrop-blur-xl dark:bg-black/70 dark:backdrop-blur-xl">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
@@ -283,12 +310,12 @@ function Player({ file, autoPlay }) {
                     <IconRepeat
                       stroke={2}
                       size={15}
-                      className="!opacity-40 hover:!opacity-100"
+                      className="!opacity-30 hover:!opacity-100"
                     />
                   ) : (
                     <div>
                       <IconRepeat stroke={2} size={15} />
-                      <div className="absolute -top-2 left-0 right-0 mx-auto h-px w-2/3 rounded-full bg-black dark:bg-white"></div>
+                      <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-black dark:bg-white"></div>
                     </div>
                   )}
                 </Button>
@@ -319,15 +346,15 @@ function Player({ file, autoPlay }) {
                 </div>
               </div>
               <div className="relative flex w-full items-center gap-3">
-                <p className="absolute -left-10">{seek}</p>
+                <p className="absolute -left-10">{convertTime(seek)}</p>
                 <Slider
                   defaultValue={[0]}
-                  value={seekSeconds}
+                  value={[seek]}
                   onValueChange={handleSeek}
-                  max={durationSeconds}
+                  max={duration}
                   step={0.01}
                 />
-                <p className="absolute -right-10">{duration}</p>
+                <p className="absolute -right-10">{convertTime(duration)}</p>
               </div>
             </div>
             <div className="absolute right-0 flex w-1/3 items-center justify-end gap-8">
@@ -341,7 +368,7 @@ function Player({ file, autoPlay }) {
                     <IconVolume
                       stroke={2}
                       size={17.5}
-                      className="wora-transition !opacity-40 hover:!opacity-100"
+                      className="wora-transition !opacity-30 hover:!opacity-100"
                     />
                   ) : (
                     <IconVolumeOff
@@ -369,7 +396,7 @@ function Player({ file, autoPlay }) {
                   </Button>
                 )}
                 <Dialog>
-                  <DialogTrigger className="opacity-40 duration-500 hover:opacity-100">
+                  <DialogTrigger className="opacity-30 duration-500 hover:opacity-100">
                     <IconInfoCircle stroke={2} size={15} />
                   </DialogTrigger>
                   <DialogContent className="flex items-start gap-8">
