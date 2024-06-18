@@ -15,13 +15,19 @@ export const initDatabase = () => {
         profilePicture TEXT,
         musicFolder TEXT
       );
+      CREATE TABLE IF NOT EXISTS albums (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        artist TEXT,
+        coverArt BLOB
+      );
       CREATE TABLE IF NOT EXISTS musicFiles (
         id INTEGER PRIMARY KEY,
         filePath TEXT,
         name TEXT,
         artist TEXT,
-        album TEXT,
-        coverArt BLOB
+        albumId INTEGER,
+        FOREIGN KEY (albumId) REFERENCES albums(id)
       );
   `);
 };
@@ -33,11 +39,17 @@ export const settings = sqliteTable("settings", {
   musicFolder: text("musicFolder"),
 });
 
+export const albums = sqliteTable("albums", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name"),
+  artist: text("artist"),
+  coverArt: blob("coverArt"),
+});
+
 export const musicFiles = sqliteTable("musicFiles", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   filePath: text("filePath"),
   name: text("name"),
   artist: text("artist"),
-  album: text("album"),
-  coverArt: blob("coverArt"),
+  albumId: integer("albumId").references(() => albums.id),
 });

@@ -44,28 +44,21 @@ import {
   parseLyrics,
 } from "./helpers/utilFunctions";
 import useAudioMetadata from "./helpers/useAudioMetadata";
+import { Badge } from "../ui/badge";
 import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
+import { usePlayer } from "@/context/playerContext";
 
 function Player() {
   const [play, setPlay] = useState(false);
   const [seek, setSeek] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState<number[]>([0.5]);
   const [mute, setMute] = useState(false);
   const soundRef = useRef<Howl | null>(null);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [repeat, setRepeat] = useState<boolean>(false);
-  const [file, setFile] = useState<string | null>(
-    "/Users/hiaaryan/Documents/FLACs/Bhaag Milkha Bhaag/08 Bhaag Milkha Bhaag (Rock Version).flac",
-  );
-
+  const { file } = usePlayer();
   const { data, cover, lyrics } = useAudioMetadata(file);
-  let parsedLyrics: LyricLine[] = [];
-
-  if (lyrics && isSyncedLyrics(lyrics)) {
-    parsedLyrics = parseLyrics(lyrics);
-  }
 
   useEffect(() => {
     if (!file) return;
@@ -74,114 +67,74 @@ function Player() {
       src: ["music://" + file],
       format: [file.split(".").pop()],
       loop: repeat,
-      volume: volume[0],
       html5: true,
-      //autoplay: true,
+      autoplay: true,
+      volume: volume[0],
+      onload: () => {
+        setSeek(0);
+      },
     });
-
-    // setPlay(true);
 
     soundRef.current = sound;
 
-    return () => {
-      sound.unload();
-    };
+    return () => sound.unload();
   }, [file]);
 
   useEffect(() => {
-    if (!file) return;
-    if (!soundRef) return;
+    resetDiscordState();
+
     if (!data) return;
 
-    setInterval(() => {
+    const updateSeek = () => {
       if (soundRef.current.playing()) {
-        const currentSeek = soundRef.current.seek() as number;
-        setSeek(currentSeek);
-        setDuration(soundRef.current.duration());
-
-        if (parsedLyrics.length > 0) {
-          const currentLyricLine = parsedLyrics.find((line, index) => {
-            const nextLine = parsedLyrics[index + 1];
-            return (
-              currentSeek >= line.time &&
-              (!nextLine || currentSeek < nextLine.time)
-            );
-          });
-
-          setCurrentLyric(currentLyricLine || null);
-        }
+        setSeek(soundRef.current.seek());
       }
-    }, 1000);
-
-    soundRef.current.on("end", () => {
-      setSeek(0);
-      setPlay(false);
-      resetDiscordState();
-    });
-
-    soundRef.current.on("pause", () => {
-      setPlay(false);
-      resetDiscordState();
-    });
-
-    soundRef.current.on("play", () => {
-      setPlay(true);
-      updateDiscordState(data);
-
-      if (data) {
-        if ("mediaSession" in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: data.common.title,
-            artist: data.common.artist,
-            album: data.common.album,
-            artwork: [{ src: cover }],
-          });
-
-          navigator.mediaSession.setActionHandler("play", () => {
-            soundRef.current.play();
-          });
-
-          navigator.mediaSession.setActionHandler("pause", () => {
-            soundRef.current.pause();
-          });
-        }
-      }
-    });
-
-    return () => {
-      resetDiscordState();
-      setPlay(false);
-      setSeek(0);
-      setDuration(0);
     };
-  }, [soundRef, data]);
+
+    const interval = setInterval(updateSeek, 1000);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: data.common.title,
+        artist: data.common.artist,
+        album: data.common.album,
+        artwork: [{ src: cover }],
+      });
+
+      navigator.mediaSession.setActionHandler("play", handlePlayPause);
+      navigator.mediaSession.setActionHandler("pause", handlePlayPause);
+    }
+
+    soundRef.current.on("end", () => setPlay(false));
+    soundRef.current.on("pause", () => setPlay(false));
+    soundRef.current.on("play", () => setPlay(true));
+
+    return () => clearInterval(interval);
+  }, [data]);
 
   useEffect(() => {
-    if (!file) return;
-    if (!lyrics) return;
+    if (!lyrics || !soundRef.current) return;
 
-    setInterval(() => {
+    const parsedLyrics = isSyncedLyrics(lyrics) ? parseLyrics(lyrics) : [];
+
+    const updateLyrics = () => {
       if (soundRef.current.playing()) {
-        const currentSeek = soundRef.current.seek() as number;
+        const currentSeek = soundRef.current.seek();
+        const currentLyricLine = parsedLyrics.find((line, index) => {
+          const nextLine = parsedLyrics[index + 1];
+          return (
+            currentSeek >= line.time &&
+            (!nextLine || currentSeek < nextLine.time)
+          );
+        });
 
-        if (parsedLyrics.length > 0) {
-          const currentLyricLine = parsedLyrics.find((line, index) => {
-            const nextLine = parsedLyrics[index + 1];
-            return (
-              currentSeek >= line.time &&
-              (!nextLine || currentSeek < nextLine.time)
-            );
-          });
-
-          setCurrentLyric(currentLyricLine || null);
-        }
+        setCurrentLyric(currentLyricLine || null);
       }
-    }, 1000);
-
-    return () => {
-      setCurrentLyric(null);
-      setShowLyrics(false);
     };
+
+    const interval = setInterval(updateLyrics, 1000);
+
+    return () => clearInterval(interval);
   }, [lyrics]);
 
   const handleVolume = (value: any) => {
@@ -209,8 +162,7 @@ function Player() {
 
   const handleLyricClick = (time: number) => {
     soundRef.current.seek(time);
-    setSeek(Math.round(time));
-    setDuration(Math.round(soundRef.current.duration()));
+    setSeek(time);
   };
 
   const toggleLyrics = () => {
@@ -226,10 +178,17 @@ function Player() {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70 dark:backdrop-blur-xl">
-            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl bg-white px-8 gradient-mask-b-70-d dark:bg-black dark:text-white">
-              <div className="no-scrollbar gradient-mask-b-30-d h-full w-full overflow-hidden overflow-y-auto text-3xl font-medium">
-                <div className="my-72 flex max-w-3xl flex-col">
+          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+            <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
+              {isSyncedLyrics(lyrics) ? (
+                <Badge>Synced</Badge>
+              ) : (
+                <Badge>Unsynced</Badge>
+              )}
+            </div>
+            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
+              <div className="no-scrollbar gradient-mask-b-30-d h-full w-full overflow-hidden overflow-y-auto text-2xl font-medium">
+                <div className="flex max-w-3xl flex-col py-[33vh]">
                   {isSyncedLyrics(lyrics) ? (
                     <Lyrics
                       lyrics={parseLyrics(lyrics)}
@@ -240,7 +199,7 @@ function Player() {
                     <div>
                       {lyrics.split("\n").map((line) => {
                         return (
-                          <p className="py-6 font-semibold text-black opacity-70 dark:text-white">
+                          <p className="my-2 py-4 font-semibold opacity-40">
                             {line}
                           </p>
                         );
@@ -253,15 +212,21 @@ function Player() {
           </div>
         )}
       </div>
-      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-white/70 p-6 backdrop-blur-xl dark:bg-black/70 dark:backdrop-blur-xl">
+      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-black/70 p-6 backdrop-blur-xl">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
-                <Image alt="album" src={cover} fill className="object-cover" />
+                <Image
+                  alt="album"
+                  src={cover}
+                  fill
+                  loading="lazy"
+                  className="object-cover"
+                />
               </div>
               <div className="w-1/3 gradient-mask-r-70">
-                <p className="text-nowrap text-sm">
+                <p className="text-nowrap">
                   {data ? data.common.title : "Echoes of Emptiness"}
                 </p>
                 <p className="text-nowrap opacity-50">
@@ -277,27 +242,24 @@ function Player() {
                 <Button variant="ghost">
                   <IconPlayerSkipBack
                     stroke={2}
-                    className="fill-black dark:fill-white"
+                    className="fill-white"
                     size={15}
                   />
                 </Button>
                 <Button variant="ghost" onClick={handlePlayPause}>
                   {!play ? (
-                    <IconPlayerPlay
-                      stroke={2}
-                      className="h-6 w-6 fill-black dark:fill-white"
-                    />
+                    <IconPlayerPlay stroke={2} className="h-6 w-6 fill-white" />
                   ) : (
                     <IconPlayerPause
                       stroke={2}
-                      className="h-6 w-6 fill-black dark:fill-white"
+                      className="h-6 w-6 fill-white"
                     />
                   )}
                 </Button>
                 <Button variant="ghost">
                   <IconPlayerSkipForward
                     stroke={2}
-                    className="h-4 w-4 fill-black dark:fill-white"
+                    className="h-4 w-4 fill-white"
                   />
                 </Button>
                 <Button
@@ -315,7 +277,7 @@ function Player() {
                   ) : (
                     <div>
                       <IconRepeat stroke={2} size={15} />
-                      <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-black dark:bg-white"></div>
+                      <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-white"></div>
                     </div>
                   )}
                 </Button>
@@ -346,15 +308,19 @@ function Player() {
                 </div>
               </div>
               <div className="relative flex w-full items-center gap-3">
-                <p className="absolute -left-10">{convertTime(seek)}</p>
+                <p className="absolute -left-10">
+                  {convertTime(soundRef.current?.seek() || 0)}
+                </p>
                 <Slider
                   defaultValue={[0]}
-                  value={[seek]}
+                  value={[soundRef.current?.seek() || 0]}
                   onValueChange={handleSeek}
-                  max={duration}
+                  max={soundRef.current?.duration() || 0}
                   step={0.01}
                 />
-                <p className="absolute -right-10">{convertTime(duration)}</p>
+                <p className="absolute -right-10">
+                  {convertTime(soundRef.current?.duration() || 0)}
+                </p>
               </div>
             </div>
             <div className="absolute right-0 flex w-1/3 items-center justify-end gap-8">

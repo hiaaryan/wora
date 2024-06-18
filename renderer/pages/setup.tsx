@@ -16,9 +16,9 @@ export default function Setup() {
   };
 
   return (
-    <div className="wora-transition h-screen w-screen bg-white text-xs antialiased dark:bg-black dark:text-white">
+    <div className="wora-transition h-screen w-screen bg-black text-xs text-white antialiased">
       <Actions />
-      <div className="flex h-full w-full select-none items-center p-8 dark:text-white">
+      <div className="flex h-full w-full select-none items-center p-8">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <Image
@@ -26,21 +26,13 @@ export default function Setup() {
               width={124}
               height={0}
               alt="logo"
-              className="hidden dark:block"
-            />
-            <Image
-              src="/assets/Full.png"
-              width={124}
-              height={0}
-              alt="logo"
-              className="block dark:hidden"
             />
             <div className="text-sm font-medium opacity-50">
               A beautiful player for audiophiles 🎧
             </div>
           </div>
           <Button
-            className="absolute bottom-8 left-8 w-48 justify-between font-medium"
+            className="absolute bottom-8 left-8 w-48 justify-between"
             onClick={handleClick}
           >
             Get Started

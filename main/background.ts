@@ -5,9 +5,10 @@ import { createWindow } from "./helpers";
 import { protocol, net } from "electron";
 import { AutoClient } from "discord-auto-rpc";
 import {
+  getAlbumSongs,
+  getAlbums,
   getSettings,
   initializeData,
-  initializeUser,
 } from "./helpers/dbConnect";
 import { initDatabase } from "./helpers/db";
 
@@ -51,8 +52,6 @@ protocol.registerSchemesAsPrivileged([
     },
   });
 
-  initDatabase();
-
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 
@@ -62,10 +61,15 @@ protocol.registerSchemesAsPrivileged([
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
   }
+})();
 
-  ipcMain.on("tray-command", (_, data) => {
-    mainWindow.webContents.send("player-command", data);
-  });
+(async () => {
+  initDatabase();
+  const settings = await getSettings();
+
+  if (settings[0]) {
+    await initializeData(settings[0].musicFolder);
+  }
 })();
 
 const client = new AutoClient({ transport: "ipc" });
@@ -111,16 +115,19 @@ ipcMain.handle("set-music-folder", async () => {
   return diag;
 });
 
-ipcMain.handle("initialize-user", (_, name, picture, musicFolder) => {
-  initializeUser(name, picture, musicFolder);
-  const userData = getUserData();
-  saveMusicFiles(musicFolder);
-  return userData;
-});
-
 ipcMain.handle("get-settings", async () => {
   const settings = await getSettings();
   return settings[0];
+});
+
+ipcMain.handle("get-albums", async () => {
+  const albums = await getAlbums();
+  return albums;
+});
+
+ipcMain.handle("get-album-songs", async (_, id: number) => {
+  const data = await getAlbumSongs(id);
+  return data;
 });
 
 let tray = null;

@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Head from "next/head";
+import Link from "next/link";
 
 export default function Albums() {
+  const [albums, setAlbums] = useState([]);
+
+  useEffect(() => {
+    window.ipc.invoke("get-albums").then((response) => {
+      setAlbums(response);
+    });
+  }, []);
+
   return (
     <React.Fragment>
-      <Head>
-        <title>Home</title>
-      </Head>
-      <ScrollArea className="mt-2.5 h-full w-[88.15vw]">
+      <ScrollArea className="mt-2.5 h-full w-full rounded-xl pt-2 gradient-mask-b-80">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
@@ -18,25 +23,32 @@ export default function Albums() {
                 Hey Aaryan! Ready for a Jam Session?
               </div>
             </div>
-            <div className="relative flex h-72 w-full gap-8">
-              <div className="group/album wora-border w-52 cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-black/5 dark:hover:bg-white/10">
-                <div className="flex h-full flex-col justify-between">
-                  <div className="relative h-2/3 w-full overflow-hidden rounded-xl shadow-xl transition duration-300">
-                    <Image
-                      alt="album"
-                      src={"/images/bills.jpeg"}
-                      fill
-                      className="object-cover"
-                    />
+            <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
+              {albums.map((album) => (
+                <Link key={album.id} href={`/album/${album.id}`}>
+                  <div className="group/album wora-border h-[21rem] cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-white/10">
+                    <div className="flex h-full flex-col justify-between">
+                      <div className="relative h-2/3 w-full overflow-hidden rounded-xl shadow-xl transition duration-300">
+                        <Image
+                          alt={album.name}
+                          src={album.coverArt}
+                          fill
+                          loading="lazy"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex w-full flex-col">
+                        <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
+                          {album.name}
+                        </p>
+                        <p className="text-nowrap opacity-50 gradient-mask-r-70">
+                          {album.artist}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex w-full flex-col">
-                    <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
-                      Never Say Die
-                    </p>
-                    <p className="opacity-50">CHVRCHES</p>
-                  </div>
-                </div>
-              </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

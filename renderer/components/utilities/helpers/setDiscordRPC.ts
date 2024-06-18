@@ -14,6 +14,8 @@ const updateDiscordState = (metadata: any): void => {
     return;
   }
 
+  console.log(metadata);
+
   const details = `${metadata.common.title} → ${metadata.common.album}`;
   const state = `by ${metadata.common.artist}`;
 

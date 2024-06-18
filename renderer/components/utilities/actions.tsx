@@ -6,15 +6,7 @@ function Actions() {
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex h-full items-center gap-2">
           <Image
-            src={"/assets/Logo.ico"}
-            className="block dark:hidden"
-            alt="logo"
-            width={16}
-            height={16}
-          />
-          <Image
             src={"/assets/Logo [Dark].ico"}
-            className="hidden dark:block"
             alt="logo"
             width={16}
             height={16}

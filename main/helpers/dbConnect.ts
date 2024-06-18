@@ -1,18 +1,28 @@
-import { db, musicFiles, settings } from "./db";
+import { eq } from "drizzle-orm";
+import { albums, db, musicFiles, settings } from "./db";
 import fs from "fs";
 import { parseFile, selectCover } from "music-metadata";
 import path from "path";
 
-export const initializeUser = (
-  fullName: string,
-  profilePicture: string,
-  musicFolder: string,
-) => {
-  db.insert(settings).values({ fullName, profilePicture, musicFolder });
-};
-
 export const getSettings = async () => {
   return db.select().from(settings).limit(1);
+};
+
+export const getAlbums = async () => {
+  return await db.select().from(albums);
+};
+
+export const getAlbumSongs = async (id: number) => {
+  const album = await db.select().from(albums).where(eq(albums.id, id));
+  const songs = await db
+    .select()
+    .from(musicFiles)
+    .where(eq(musicFiles.albumId, id));
+
+  return {
+    album,
+    songs,
+  };
 };
 
 const audioExtensions = [
@@ -49,10 +59,12 @@ function readFilesRecursively(dir: string): string[] {
 }
 
 export const initializeData = async (musicFolder: any) => {
-  const files = readFilesRecursively(musicFolder);
   await db.delete(musicFiles);
+  await db.delete(albums);
 
-  files.forEach(async (file: any) => {
+  const files = readFilesRecursively(musicFolder);
+
+  for (const file of files) {
     const metadata = await parseFile(file, {
       skipPostHeaders: true,
     });
@@ -63,22 +75,36 @@ export const initializeData = async (musicFolder: any) => {
       ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
       : "/coverArt.png";
 
+    let albumsFound: any = await db
+      .select()
+      .from(albums)
+      .where(eq(albums.name, metadata.common.album));
+
+    let album: any | undefined = albumsFound[0];
+
+    if (!album) {
+      const [newAlbumId] = (await db
+        .insert(albums)
+        .values({
+          name: metadata.common.album,
+          artist:
+            metadata.common.albumartist ||
+            metadata.common.artist ||
+            "Various Artists",
+          coverArt: art,
+        })
+        .returning({ id: albums.id })) as { id: number }[];
+
+      album = { id: newAlbumId.id, name: metadata.common.album, coverArt: art };
+    }
+
     await db.insert(musicFiles).values({
       filePath: file,
       name: metadata.common.title,
       artist: metadata.common.artist,
-      album: metadata.common.album,
-      coverArt: art,
+      albumId: album.id,
     });
-  });
-
-  await db.delete(settings);
-
-  await db.insert(settings).values({
-    fullName: "Aaryan Kapoor",
-    profilePicture: "/ak.jpeg",
-    musicFolder,
-  });
+  }
 };
 
 // const getMusicFiles = (userId) => {

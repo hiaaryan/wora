@@ -2,12 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.wora-bg {
-  @apply bg-black text-white dark:bg-white dark:text-black;
-}
-
 .wora-border {
-  @apply border border-black/5 dark:border-white/10;
+  @apply border border-white/10;
 }
 
 .wora-transition {

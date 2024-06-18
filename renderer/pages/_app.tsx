@@ -7,12 +7,13 @@ import Player from "@/components/utilities/player";
 import { useRouter } from "next/router";
 import { ThemeProvider } from "next-themes";
 import Head from "next/head";
+import { PlayerProvider } from "@/context/playerContext";
 
 const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  const noLayoutPages = ["/tray", "/setup"];
+  const noLayoutPages = ["/setup"];
   const isNoLayoutPage = noLayoutPages.includes(router.pathname);
 
   useEffect(() => {
@@ -22,27 +23,26 @@ export default function App({ Component, pageProps }) {
       if (!response) {
         router.push("/setup");
       }
-      console.log(response);
     });
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <div>
       <Head>
-        <title>Home</title>
+        <title>Wora</title>
       </Head>
-      <div className="h-screen w-screen bg-white text-xs antialiased dark:bg-black dark:text-white">
-        {isNoLayoutPage ? (
-          <Component {...pageProps} />
-        ) : (
-          <div>
-            <Actions />
-            <div className="select-none dark:text-white">
+      <PlayerProvider>
+        <div className="h-screen w-screen bg-black text-xs text-white antialiased">
+          {isNoLayoutPage ? (
+            <Component {...pageProps} />
+          ) : (
+            <div>
+              <Actions />
               <div className="flex gap-8">
                 <div className="sticky top-0 z-50 h-dvh p-8 pr-0 pt-12">
                   <Navbar />
                 </div>
-                <div className="h-screen flex-grow p-8 pl-0 pt-12">
+                <div className="h-screen flex-grow p-8 pl-0 pt-10">
                   <div className="wora-transition relative flex h-full w-full flex-col">
                     <Component {...pageProps} />
                     <Player />
@@ -50,9 +50,9 @@ export default function App({ Component, pageProps }) {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </ThemeProvider>
+          )}
+        </div>
+      </PlayerProvider>
+    </div>
   );
 }
