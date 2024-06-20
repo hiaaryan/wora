@@ -8,8 +8,12 @@ export const getSettings = async () => {
   return db.select().from(settings).limit(1);
 };
 
+export const getSongs = async () => {
+  return await db.select().from(musicFiles).orderBy(musicFiles.name);
+};
+
 export const getAlbums = async () => {
-  return await db.select().from(albums);
+  return await db.select().from(albums).orderBy(albums.name);
 };
 
 export const getAlbumSongs = async (id: number) => {
@@ -58,31 +62,38 @@ function readFilesRecursively(dir: string): string[] {
   return results;
 }
 
-export const initializeData = async (musicFolder: any) => {
-  await db.delete(musicFiles);
-  await db.delete(albums);
+export const initializeData = async (musicFolder: string) => {
+  const currentFiles = readFilesRecursively(musicFolder);
+  const dbFiles = await db.select().from(musicFiles);
 
-  const files = readFilesRecursively(musicFolder);
+  // @hiaaryan: Detect Deleted Files
+  const deletedFiles = dbFiles.filter(
+    (dbFile) => !currentFiles.includes(dbFile.filePath),
+  );
+  for (const file of deletedFiles) {
+    await db.delete(musicFiles).where(eq(musicFiles.filePath, file.filePath));
+  }
 
-  for (const file of files) {
+  // @hiaaryan: Detect New or Updated Files
+  for (const file of currentFiles) {
+    const dbFile = dbFiles.find((dbFile) => dbFile.filePath === file);
     const metadata = await parseFile(file, {
       skipPostHeaders: true,
     });
-
     const coverArt = selectCover(metadata.common.picture);
-
     const art = coverArt
       ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
       : "/coverArt.png";
 
-    let albumsFound: any = await db
+    let albumsFound = await db
       .select()
       .from(albums)
       .where(eq(albums.name, metadata.common.album));
 
-    let album: any | undefined = albumsFound[0];
+    let album: any = albumsFound[0];
 
     if (!album) {
+      // @hiaaryan: Create New Album
       const [newAlbumId] = (await db
         .insert(albums)
         .values({
@@ -91,43 +102,78 @@ export const initializeData = async (musicFolder: any) => {
             metadata.common.albumartist ||
             metadata.common.artist ||
             "Various Artists",
+          year: metadata.common.year,
           coverArt: art,
         })
         .returning({ id: albums.id })) as { id: number }[];
 
       album = { id: newAlbumId.id, name: metadata.common.album, coverArt: art };
+    } else {
+      // @hiaaryan: Update Album if Artist or CoverArt is different
+      if (
+        album.artist !==
+          (metadata.common.albumartist || metadata.common.artist) ||
+        album.year !== metadata.common.year ||
+        album.coverArt !== art
+      ) {
+        await db
+          .update(albums)
+          .set({
+            artist:
+              metadata.common.albumartist ||
+              metadata.common.artist ||
+              "Various Artists",
+            year: metadata.common.year,
+            coverArt: art,
+          })
+          .where(eq(albums.id, album.id));
+      }
     }
 
-    await db.insert(musicFiles).values({
-      filePath: file,
-      name: metadata.common.title,
-      artist: metadata.common.artist,
-      albumId: album.id,
-    });
+    if (!dbFile) {
+      // @hiaaryan: Add New File
+      await db.insert(musicFiles).values({
+        filePath: file,
+        name: metadata.common.title,
+        artist: metadata.common.artist,
+        duration: Math.round(metadata.format.duration),
+        albumId: album.id,
+      });
+    } else if (
+      dbFile.name !== metadata.common.title ||
+      dbFile.artist !== metadata.common.artist ||
+      dbFile.duration !== Math.round(metadata.format.duration) ||
+      dbFile.albumId !== album.id
+    ) {
+      // @hiaaryan: Update File
+      await db
+        .update(musicFiles)
+        .set({
+          name: metadata.common.title,
+          artist: metadata.common.artist,
+          duration: Math.round(metadata.format.duration),
+          albumId: album.id,
+        })
+        .where(eq(musicFiles.filePath, file));
+    }
   }
+
+  // @hiaryan: Detect Empty Albums
+  const allAlbums = await db.select().from(albums);
+  for (const album of allAlbums) {
+    const songsInAlbum = await db
+      .select()
+      .from(musicFiles)
+      .where(eq(musicFiles.albumId, album.id));
+    if (songsInAlbum.length === 0) {
+      await db.delete(albums).where(eq(albums.id, album.id));
+    }
+  }
+
+  await db.delete(settings);
+  await db.insert(settings).values({
+    fullName: "Aaryan Kapoor",
+    profilePicture: "/ak.jpeg",
+    musicFolder,
+  });
 };
-
-// const getMusicFiles = (userId) => {
-//   return db.select(musicFiles).where({ userId });
-// };
-
-// const checkForFileChanges = (musicFolder, userId) => {
-//   const dbFiles = db
-//     .select(musicFiles)
-//     .where({ userId })
-//     .map((file) => file.filePath);
-//   const folderFiles = fs
-//     .readdirSync(musicFolder)
-//     .filter((file) => file.endsWith(".mp3"))
-//     .map((file) => path.join(musicFolder, file));
-
-//   const newFiles = folderFiles.filter((file) => !dbFiles.includes(file));
-//   const missingFiles = dbFiles.filter((file) => !folderFiles.includes(file));
-
-//   newFiles.forEach((file) => db.insert(musicFiles, { filePath: file, userId }));
-//   missingFiles.forEach((file) =>
-//     db.delete(musicFiles).where({ filePath: file }),
-//   );
-
-//   return { newFiles, missingFiles };
-// };

@@ -1,4 +1,4 @@
-import Actions from "@/components/utilities/actions";
+import Actions from "@/components/ui/actions";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { IconArrowRight } from "@tabler/icons-react";

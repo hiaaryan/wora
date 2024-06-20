@@ -38,19 +38,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import {
-  convertTime,
-  isSyncedLyrics,
-  parseLyrics,
-} from "./helpers/utilFunctions";
-import useAudioMetadata from "./helpers/useAudioMetadata";
+import { convertTime, isSyncedLyrics, parseLyrics } from "@/lib/helpers";
+import { useAudioMetadata } from "@/lib/helpers";
 import { Badge } from "../ui/badge";
-import updateDiscordState, { resetDiscordState } from "./helpers/setDiscordRPC";
+import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
 
 function Player() {
   const [play, setPlay] = useState(false);
-  const [seek, setSeek] = useState(0);
+  const [_, setSeek] = useState(0);
   const [volume, setVolume] = useState<number[]>([0.5]);
   const [mute, setMute] = useState(false);
   const soundRef = useRef<Howl | null>(null);
@@ -70,8 +66,12 @@ function Player() {
       html5: true,
       autoplay: true,
       volume: volume[0],
+      mute: mute,
       onload: () => {
         setSeek(0);
+      },
+      onloaderror: (id, error) => {
+        console.error(error, id);
       },
     });
 
@@ -105,9 +105,20 @@ function Player() {
       navigator.mediaSession.setActionHandler("pause", handlePlayPause);
     }
 
-    soundRef.current.on("end", () => setPlay(false));
-    soundRef.current.on("pause", () => setPlay(false));
-    soundRef.current.on("play", () => setPlay(true));
+    soundRef.current.on("end", () => {
+      setPlay(false);
+      resetDiscordState();
+    });
+
+    soundRef.current.on("pause", () => {
+      setPlay(false);
+      resetDiscordState();
+    });
+
+    soundRef.current.on("play", () => {
+      setPlay(true);
+      updateDiscordState(data);
+    });
 
     return () => clearInterval(interval);
   }, [data]);
@@ -137,41 +148,53 @@ function Player() {
     return () => clearInterval(interval);
   }, [lyrics]);
 
+  const withSoundRef =
+    (callback: Function) =>
+    (...args: any[]) => {
+      if (soundRef.current) {
+        callback(...args);
+      }
+    };
+
   const handleVolume = (value: any) => {
     setVolume(value);
-    soundRef.current.volume(value);
+    if (soundRef.current) {
+      soundRef.current.volume(value);
+    }
   };
 
-  const handleSeek = (value: any) => {
+  const handleSeek = withSoundRef((value: any) => {
     soundRef.current.seek(value);
     setSeek(value);
-  };
+  });
 
-  const handleRepeat = () => {
+  const handleRepeat = withSoundRef(() => {
     soundRef.current.loop(!repeat);
     setRepeat(!repeat);
-  };
+  });
 
-  const handlePlayPause = () => {
+  const handlePlayPause = withSoundRef(() => {
     if (soundRef.current.playing()) {
       soundRef.current.pause();
     } else {
       soundRef.current.play();
     }
-  };
+  });
 
-  const handleLyricClick = (time: number) => {
+  const handleLyricClick = withSoundRef((time: number) => {
     soundRef.current.seek(time);
     setSeek(time);
-  };
+  });
 
   const toggleLyrics = () => {
     setShowLyrics(!showLyrics);
   };
 
   const toggleMute = () => {
-    soundRef.current.mute(!soundRef.current.mute());
     setMute(!mute);
+    if (soundRef.current) {
+      soundRef.current.mute(!soundRef.current.mute());
+    }
   };
 
   return (
@@ -226,7 +249,7 @@ function Player() {
                 />
               </div>
               <div className="w-1/3 gradient-mask-r-70">
-                <p className="text-nowrap">
+                <p className="text-nowrap text-sm font-medium">
                   {data ? data.common.title : "Echoes of Emptiness"}
                 </p>
                 <p className="text-nowrap opacity-50">

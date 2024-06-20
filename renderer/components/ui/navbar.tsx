@@ -3,7 +3,6 @@ import {
   IconFocusCentered,
   IconInbox,
   IconSearch,
-  IconSquare,
   IconVinyl,
 } from "@tabler/icons-react";
 import {
@@ -15,23 +14,29 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
+  Command,
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "../ui/command";
-import React from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { usePlayer } from "@/context/playerContext";
 
-function Navbar() {
-  const [open, setOpen] = React.useState(false);
+const Navbar = () => {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  const [songs, setSongs] = useState([]);
+  const [search, setSearch] = useState("");
+  const { setFile } = usePlayer();
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
+  useEffect(() => {
+    const down = (e: any) => {
       if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
@@ -42,13 +47,46 @@ function Navbar() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const openSearch = () => {
-    setOpen(true);
+  useEffect(() => {
+    window.ipc.invoke("get-albums").then(setAlbums);
+    window.ipc.invoke("get-songs").then(setSongs);
+  }, []);
+
+  const openSearch = () => setOpen(true);
+
+  const combinedResults = useMemo(() => {
+    if (!search) return [];
+    const lowerSearch = search.toLowerCase();
+    return [
+      ...albums
+        .filter(
+          (album) =>
+            album.name.toLowerCase().includes(lowerSearch) ||
+            album.artist.toLowerCase().includes(lowerSearch),
+        )
+        .map((album) => ({ ...album, type: "Album" })),
+      ...songs
+        .filter(
+          (song) =>
+            song.name.toLowerCase().includes(lowerSearch) ||
+            song.artist.toLowerCase().includes(lowerSearch),
+        )
+        .map((song) => ({ ...song, type: "Song" })),
+    ];
+  }, [search, albums, songs]);
+
+  const handleItemClick = (item: any) => {
+    if (item.type === "Album") {
+      router.push(`/albums/${item.id}`);
+    } else if (item.type === "Song") {
+      setFile(item.filePath);
+    }
+    setOpen(false);
   };
 
   return (
     <div className="wora-border h-full w-20 rounded-xl p-6">
-      <div className="flex h-full flex-col gap-8">
+      <div className="flex h-full flex-col items-center gap-8">
         <TooltipProvider>
           <div className="flex flex-col">
             <Tooltip delayDuration={0}>
@@ -123,38 +161,55 @@ function Navbar() {
           </div>
         </TooltipProvider>
         <CommandDialog open={open} onOpenChange={setOpen}>
-          <CommandInput placeholder="Type a command or search..." />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions">
-              <CommandItem>Calendar</CommandItem>
-              <CommandItem>
-                <span>Search Emoji</span>
-              </CommandItem>
-              <CommandItem>
-                <span>Launch</span>
-              </CommandItem>
-            </CommandGroup>
-            <CommandSeparator />
-            <CommandGroup heading="Settings">
-              <CommandItem>
-                <span>Profile</span>
-                <CommandShortcut>⌘P</CommandShortcut>
-              </CommandItem>
-              <CommandItem>
-                <span>Mail</span>
-                <CommandShortcut>⌘B</CommandShortcut>
-              </CommandItem>
-              <CommandItem>
-                <span>Settings</span>
-                <CommandShortcut>⌘S</CommandShortcut>
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
+          <Command>
+            <CommandInput
+              placeholder="Search for a song, artist, album or playlist..."
+              value={search}
+              onValueChange={setSearch}
+            />
+            <CommandList>
+              {search && (
+                <CommandGroup heading="Search Results" className="pb-2">
+                  {combinedResults.map((item) => (
+                    <CommandItem
+                      key={`${item.type}-${item.id}`}
+                      value={`${item.name}-${item.type}-${item.id}`}
+                    >
+                      <div
+                        className="flex h-full w-full items-center gap-2 gradient-mask-r-70"
+                        onClick={() => handleItemClick(item)}
+                      >
+                        {item.type === "Album" && (
+                          <Image
+                            src={item.coverArt}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                            className="rounded-md shadow-xl"
+                          />
+                        )}
+                        <div>
+                          <p className="w-full overflow-hidden text-xs">
+                            {item.name}
+                            <span className="ml-1 opacity-50">
+                              ({item.type})
+                            </span>
+                          </p>
+                          <p className="w-full overflow-hidden text-xs opacity-50">
+                            {item.artist}
+                          </p>
+                        </div>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+            </CommandList>
+          </Command>
         </CommandDialog>
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;

@@ -19,6 +19,7 @@ export const initDatabase = () => {
         id INTEGER PRIMARY KEY,
         name TEXT,
         artist TEXT,
+        year INTEGER,
         coverArt BLOB
       );
       CREATE TABLE IF NOT EXISTS musicFiles (
@@ -26,6 +27,7 @@ export const initDatabase = () => {
         filePath TEXT,
         name TEXT,
         artist TEXT,
+        duration INTEGER,
         albumId INTEGER,
         FOREIGN KEY (albumId) REFERENCES albums(id)
       );
@@ -43,6 +45,7 @@ export const albums = sqliteTable("albums", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name"),
   artist: text("artist"),
+  year: integer("year"),
   coverArt: blob("coverArt"),
 });
 
@@ -51,5 +54,6 @@ export const musicFiles = sqliteTable("musicFiles", {
   filePath: text("filePath"),
   name: text("name"),
   artist: text("artist"),
+  duration: integer("duration"),
   albumId: integer("albumId").references(() => albums.id),
 });

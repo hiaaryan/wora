@@ -1,10 +1,26 @@
+import defaultTheme from "tailwindcss/defaultTheme";
+
 module.exports = {
-  darkMode: ["class"],
   content: [
     "./renderer/pages/**/*.{js,ts,jsx,tsx}",
     "./renderer/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    fontSize: {
+      xs: [...defaultTheme.fontSize.xs],
+      sm: ["0.825rem", "1.15rem"],
+      base: [...defaultTheme.fontSize.base],
+      lg: [...defaultTheme.fontSize.lg],
+      xl: [...defaultTheme.fontSize.xl],
+      "2xl": [...defaultTheme.fontSize["2xl"]],
+      "3xl": [...defaultTheme.fontSize["3xl"]],
+      "4xl": [...defaultTheme.fontSize["4xl"]],
+      "5xl": [...defaultTheme.fontSize["5xl"]],
+      "6xl": [...defaultTheme.fontSize["6xl"]],
+      "7xl": [...defaultTheme.fontSize["7xl"]],
+      "8xl": [...defaultTheme.fontSize["8xl"]],
+      "9xl": [...defaultTheme.fontSize["9xl"]],
+    },
     extend: {
       keyframes: {
         "accordion-down": {

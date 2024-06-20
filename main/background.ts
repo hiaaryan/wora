@@ -2,12 +2,13 @@ import path from "path";
 import { Menu, Tray, app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
-import { protocol, net } from "electron";
+import { protocol } from "electron";
 import { AutoClient } from "discord-auto-rpc";
 import {
   getAlbumSongs,
   getAlbums,
   getSettings,
+  getSongs,
   initializeData,
 } from "./helpers/dbConnect";
 import { initDatabase } from "./helpers/db";
@@ -20,6 +21,7 @@ if (isProd) {
   app.setPath("userData", `${app.getPath("userData")} (development)`);
 }
 
+// @hiaaryan: Allow Streaming Music Files on Custom Protocol
 protocol.registerSchemesAsPrivileged([
   {
     scheme: "music",
@@ -31,9 +33,22 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
+let settings: any;
+
+// @hiaaryan: Initialize Database on Startup
+(async () => {
+  initDatabase();
+  settings = await getSettings();
+
+  if (settings[0]) {
+    await initializeData(settings[0].musicFolder);
+  }
+})();
+
 (async () => {
   await app.whenReady();
 
+  // @hiaaryan: Using Depreciated API [Seeking Not Supported with Newer API]
   protocol.registerFileProtocol("music", (request, callback) => {
     const url = request.url.replace("music://", "");
     callback({ path: url });
@@ -55,25 +70,25 @@ protocol.registerSchemesAsPrivileged([
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 
-  if (isProd) {
-    await mainWindow.loadURL("app://./home");
-  } else {
-    const port = process.argv[2];
-    await mainWindow.loadURL(`http://localhost:${port}/home`);
-  }
-})();
-
-(async () => {
-  initDatabase();
-  const settings = await getSettings();
-
   if (settings[0]) {
-    await initializeData(settings[0].musicFolder);
+    if (isProd) {
+      await mainWindow.loadURL("app://./home");
+    } else {
+      const port = process.argv[2];
+      await mainWindow.loadURL(`http://localhost:${port}/home`);
+    }
+  } else {
+    if (isProd) {
+      await mainWindow.loadURL("app://./setup");
+    } else {
+      const port = process.argv[2];
+      await mainWindow.loadURL(`http://localhost:${port}/setup`);
+    }
   }
 })();
 
+// @hiaaryan: Initialize Discord RPC
 const client = new AutoClient({ transport: "ipc" });
-
 ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
   const setActivity = () => {
     const activity = {
@@ -90,12 +105,11 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
 
     client.setActivity(activity);
   };
-
   setActivity();
 });
-
 client.endlessLogin({ clientId: "1243707416588320800" });
 
+// @hiaaryan: Called to Set Music Folder
 ipcMain.handle("set-music-folder", async () => {
   const diag = await dialog
     .showOpenDialog({
@@ -115,23 +129,8 @@ ipcMain.handle("set-music-folder", async () => {
   return diag;
 });
 
-ipcMain.handle("get-settings", async () => {
-  const settings = await getSettings();
-  return settings[0];
-});
-
-ipcMain.handle("get-albums", async () => {
-  const albums = await getAlbums();
-  return albums;
-});
-
-ipcMain.handle("get-album-songs", async (_, id: number) => {
-  const data = await getAlbumSongs(id);
-  return data;
-});
-
+// @hiaaryan: Set Tray for Wora
 let tray = null;
-
 app.whenReady().then(() => {
   tray = new Tray("./resources/TrayTemplate.png");
   const contextMenu = Menu.buildFromTemplate([
@@ -145,6 +144,27 @@ app.whenReady().then(() => {
   ]);
   tray.setToolTip("Wora");
   tray.setContextMenu(contextMenu);
+});
+
+// @hiaaryan: IPC Handlers from Renderer
+ipcMain.handle("get-settings", async () => {
+  const settings = await getSettings();
+  return settings[0];
+});
+
+ipcMain.handle("get-albums", async () => {
+  const albums = await getAlbums();
+  return albums;
+});
+
+ipcMain.handle("get-songs", async () => {
+  const songs = await getSongs();
+  return songs;
+});
+
+ipcMain.handle("get-album-songs", async (_, id: number) => {
+  const data = await getAlbumSongs(id);
+  return data;
 });
 
 app.on("window-all-closed", () => {
