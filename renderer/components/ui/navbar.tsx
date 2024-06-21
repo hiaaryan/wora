@@ -174,19 +174,13 @@ const Navbar = () => {
                     <CommandItem
                       key={`${item.type}-${item.id}`}
                       value={`${item.name}-${item.type}-${item.id}`}
+                      onSelect={() => handleItemClick(item)}
                     >
-                      <div
-                        className="flex h-full w-full items-center gap-2 gradient-mask-r-70"
-                        onClick={() => handleItemClick(item)}
-                      >
+                      <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
                         {item.type === "Album" && (
-                          <Image
-                            src={item.coverArt}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                            className="rounded-md shadow-xl"
-                          />
+                          <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
+                            <Image src={item.coverArt} alt={item.name} fill />
+                          </div>
                         )}
                         <div>
                           <p className="w-full overflow-hidden text-xs">
@@ -195,7 +189,7 @@ const Navbar = () => {
                               ({item.type})
                             </span>
                           </p>
-                          <p className="w-full overflow-hidden text-xs opacity-50">
+                          <p className="w-full text-xs opacity-50">
                             {item.artist}
                           </p>
                         </div>

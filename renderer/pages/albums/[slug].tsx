@@ -91,11 +91,11 @@ export default function Album() {
             <ContextMenu>
               <ContextMenuTrigger>
                 <div
-                  className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-6 py-4 hover:bg-white/10"
+                  className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
                   onClick={() => handleMusicClick(song.filePath)}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="relative h-10 w-10 overflow-hidden rounded shadow-xl transition duration-300">
+                    <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
                       <Image
                         alt={album && album.name}
                         src={album && album.coverArt}

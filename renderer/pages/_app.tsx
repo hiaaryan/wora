@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }) {
   }
 
   return (
-    <main className={`${mavenPro.className} select-none`}>
+    <main className={`${mavenPro.className} select-none outline-none ring-0`}>
       <Head>
         <title>Wora</title>
       </Head>
