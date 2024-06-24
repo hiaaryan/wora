@@ -5,13 +5,16 @@ import { createWindow } from "./helpers";
 import { protocol } from "electron";
 import { AutoClient } from "discord-auto-rpc";
 import {
+  addToFavourites,
   getAlbumSongs,
+  getAlbumWithSongs,
   getAlbums,
+  getAlbumsWithSongs,
   getSettings,
   getSongs,
   initializeData,
-} from "./helpers/dbConnect";
-import { initDatabase } from "./helpers/db";
+} from "./helpers/db/connectDB";
+import { initDatabase } from "./helpers/db/createDB";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -162,9 +165,18 @@ ipcMain.handle("get-songs", async () => {
   return songs;
 });
 
-ipcMain.handle("get-album-songs", async (_, id: number) => {
-  const data = await getAlbumSongs(id);
-  return data;
+ipcMain.handle("getAlbumsWithSongs", async () => {
+  const albumsWithSongs = await getAlbumsWithSongs();
+  return albumsWithSongs;
+});
+
+ipcMain.handle("getAlbumWithSongs", async (_, id: number) => {
+  const albumWithSongs = await getAlbumWithSongs(id);
+  return albumWithSongs;
+});
+
+ipcMain.on("add-to-favourites", async (_, id: number) => {
+  return addToFavourites(id);
 });
 
 app.on("window-all-closed", () => {

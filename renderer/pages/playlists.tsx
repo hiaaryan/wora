@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export default function Home() {
+export default function Playlists() {
   return (
     <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">
       <div className="flex flex-col gap-8">

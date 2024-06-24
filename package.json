@@ -12,13 +12,13 @@
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-context-menu": "^2.2.0",
-    "@radix-ui/react-dialog": "^1.1.0",
+    "@radix-ui/react-context-menu": "^2.2.1",
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-tooltip": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.1",
     "@tabler/icons-react": "^3.6.0",
     "@types/better-sqlite3": "^7.6.10",
     "axios": "^1.7.2",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
     "@types/howler": "^2.2.11",
-    "@types/node": "^20.14.6",
+    "@types/node": "^20.14.8",
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.19",
     "drizzle-kit": "^0.22.7",
@@ -57,7 +57,7 @@
     "react-dom": "^18.3.1",
     "rebuild": "^0.1.2",
     "tailwindcss": "^3.4.4",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "packageManager": "yarn@4.3.0"
 }

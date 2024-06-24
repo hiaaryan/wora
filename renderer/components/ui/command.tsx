@@ -7,9 +7,6 @@ import { Command as CommandPrimitive } from "cmdk";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { IconSearch } from "@tabler/icons-react";
-import { Maven_Pro } from "next/font/google";
-
-const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -18,8 +15,7 @@ const Command = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      mavenPro.className +
-        " wora-transition no-scrollar max-h-96 min-h-96 overflow-hidden rounded-xl",
+      "wora-transition no-scrollar max-h-96 min-h-96 overflow-hidden rounded-xl",
       className,
     )}
     {...props}

@@ -27,15 +27,15 @@ export default function Albums() {
           <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
             {albums.map((album) => (
               <Link key={album.id} href={`/albums/${album.id}`}>
-                <div className="group/album wora-border h-[21rem] cursor-pointer rounded-xl p-5 transition duration-300 hover:bg-white/10">
-                  <div className="flex h-full flex-col justify-between">
-                    <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl transition duration-300">
+                <div className="group/album wora-border wora-transition h-[21rem] cursor-pointer rounded-xl p-5 hover:bg-white/10">
+                  <div className="relative flex h-full flex-col justify-between">
+                    <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
                       <Image
                         alt={album.name}
                         src={album.coverArt}
                         fill
                         loading="lazy"
-                        className="object-cover"
+                        className="z-10 object-cover"
                       />
                     </div>
                     <div className="flex w-full flex-col">

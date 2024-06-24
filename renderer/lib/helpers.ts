@@ -141,7 +141,7 @@ export const parseLyrics = (lyrics: string): LyricLine[] => {
       if (match) {
         const minutes = parseInt(match[1], 10);
         const seconds = parseFloat(match[2]);
-        const time = minutes * 60 + seconds - 0.5; // 0.5s offset to make sure the lyrics are displayed before the actual time;
+        const time = minutes * 60 + seconds - 1; // 1s offset to make sure the lyrics are displayed before the actual time;
         let text = match[3].trim();
         if (text === "") {
           text = "...";
@@ -155,4 +155,13 @@ export const parseLyrics = (lyrics: string): LyricLine[] => {
 
 export const isSyncedLyrics = (lyrics: string): boolean => {
   return /\[\d{2}:\d{2}\.\d{2}\]/.test(lyrics);
+};
+
+export const shuffleArray = (array: any[]): any[] => {
+  const newArray = array.slice();
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
 };

@@ -1,5 +1,4 @@
 import {
-  IconArrowsShuffle2,
   IconFocusCentered,
   IconInbox,
   IconSearch,
@@ -31,13 +30,12 @@ const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [albums, setAlbums] = useState([]);
-  const [songs, setSongs] = useState([]);
   const [search, setSearch] = useState("");
-  const { setFile } = usePlayer();
+  const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
     const down = (e: any) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
@@ -48,8 +46,9 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    window.ipc.invoke("get-albums").then(setAlbums);
-    window.ipc.invoke("get-songs").then(setSongs);
+    window.ipc.invoke("getAlbumsWithSongs").then((response) => {
+      setAlbums(response.albumsWithSongs);
+    });
   }, []);
 
   const openSearch = () => setOpen(true);
@@ -59,27 +58,21 @@ const Navbar = () => {
     const lowerSearch = search.toLowerCase();
     return [
       ...albums
-        .filter(
-          (album) =>
-            album.name.toLowerCase().includes(lowerSearch) ||
-            album.artist.toLowerCase().includes(lowerSearch),
-        )
+        .filter((album) => album.name.toLowerCase().includes(lowerSearch))
         .map((album) => ({ ...album, type: "Album" })),
-      ...songs
-        .filter(
-          (song) =>
-            song.name.toLowerCase().includes(lowerSearch) ||
-            song.artist.toLowerCase().includes(lowerSearch),
-        )
-        .map((song) => ({ ...song, type: "Song" })),
+      ...albums.flatMap((album) =>
+        album.songs
+          .filter((song: any) => song.name.toLowerCase().includes(lowerSearch))
+          .map((song: any) => ({ ...song, type: "Song", albumId: album.id })),
+      ),
     ];
-  }, [search, albums, songs]);
+  }, [search, albums]);
 
   const handleItemClick = (item: any) => {
     if (item.type === "Album") {
       router.push(`/albums/${item.id}`);
     } else if (item.type === "Song") {
-      setFile(item.filePath);
+      setQueueAndPlay([item], 0);
     }
     setOpen(false);
   };
@@ -91,10 +84,12 @@ const Navbar = () => {
           <div className="flex flex-col">
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/ak.jpeg" />
-                  <AvatarFallback>AK</AvatarFallback>
-                </Avatar>
+                <Link href="/settings">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="/ak.jpeg" />
+                    <AvatarFallback>AK</AvatarFallback>
+                  </Avatar>
+                </Link>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={50}>
                 <p>Aaryan Kapoor</p>
@@ -146,16 +141,6 @@ const Navbar = () => {
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>
                 <p>Albums</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <Button variant="ghost" asChild>
-                  <IconArrowsShuffle2 stroke={2} className="w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
-                <p>Shuffle</p>
               </TooltipContent>
             </Tooltip>
           </div>
