@@ -139,15 +139,19 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleRepeat = useCallback(() => {
     // @hiaaryan: Toggle the repeat mode, disable shuffle if repeat is enabled.
-    setPlayerState((prevState) => ({
-      ...prevState,
-      repeat: !prevState.repeat,
-      shuffle: prevState.repeat ? false : prevState.shuffle,
-    }));
+    setPlayerState((prevState) => {
+      const newRepeat = !prevState.repeat;
+
+      return {
+        ...prevState,
+        repeat: newRepeat,
+        shuffle: newRepeat ? false : prevState.shuffle,
+      };
+    });
   }, []);
 
   const toggleShuffle = useCallback(() => {
-    // @hiaaryan: Toggle the shuffle mode, update the queue to reflect shuffling or original order
+    // @hiaaryan: Toggle the shuffle mode, update the queue to reflect shuffling or original order.
     setPlayerState((prevState) => {
       const newShuffle = !prevState.shuffle;
       const currentSong = prevState.song;
@@ -155,13 +159,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       let newIndex: any;
 
       if (newShuffle) {
-        // @hiaaryan: Shuffle the queue
+        // @hiaaryan: Shuffle the queue and disable repeat.
         const remainingSongs = prevState.originalQueue.filter(
           (song) => song.id !== currentSong?.id,
         );
         newQueue = [currentSong!, ...shuffleArray(remainingSongs)];
       } else {
-        // @hiaaryan: Restore the original queue
+        // @hiaaryan: Restore the original queue.
         newQueue = prevState.originalQueue.slice();
       }
 
@@ -172,6 +176,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         shuffle: newShuffle,
         queue: newQueue,
         currentIndex: newIndex,
+        repeat: newShuffle ? false : prevState.repeat,
       };
     });
   }, []);

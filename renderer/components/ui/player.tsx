@@ -91,19 +91,17 @@ function Player() {
 
   useEffect(() => {
     // @hiaaryan: Handle end of song logic based on repeat mode.
-    if (soundRef.current) {
-      soundRef.current.on("end", () => {
-        resetDiscordState();
-        setPlay(false);
-        if (repeat) {
-          soundRef.current?.play();
-          setPlay(true);
-        } else {
-          nextSong();
-        }
-      });
-    }
-  }, [repeat]);
+    soundRef.current?.on("end", () => {
+      resetDiscordState();
+      setPlay(false);
+      if (repeat) {
+        soundRef.current?.play();
+        setPlay(true);
+      } else {
+        nextSong();
+      }
+    });
+  }, [soundRef.current, song, repeat]);
 
   useEffect(() => {
     // @hiaaryan: Update media session metadata and seek position, handle play/pause.
