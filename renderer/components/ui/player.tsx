@@ -75,13 +75,7 @@ function Player() {
       autoplay: true,
       volume: volume[0],
       mute: mute,
-      onload: () => {
-        setSeek(0);
-        setPlay(true);
-      },
-      onloaderror: (id, error) => {
-        console.error(error, id);
-      },
+
     });
 
     soundRef.current = sound;
@@ -101,13 +95,12 @@ function Player() {
         nextSong();
       }
     });
-  }, [soundRef.current, song, repeat]);
+  }, [soundRef.current, repeat]);
 
   useEffect(() => {
     // @hiaaryan: Update media session metadata and seek position, handle play/pause.
-    resetDiscordState();
-
     if (!data) return;
+    if (!soundRef.current) return;
 
     const updateSeek = () => {
       if (soundRef.current?.playing()) {
@@ -141,8 +134,14 @@ function Player() {
       setPlay(false);
     });
 
+    if (soundRef.current.state() === "loaded") {
+      setSeek(0);
+      setPlay(true);
+      updateDiscordState(data);
+    }
+
     return () => clearInterval(interval);
-  }, [data]);
+  }, [soundRef.current, data]);
 
   useEffect(() => {
     // @hiaaryan: Update current lyric based on seek position if lyrics are available.
@@ -172,12 +171,12 @@ function Player() {
 
   const withSoundRef =
     (callback: Function) =>
-    (...args: any[]) => {
-      // @hiaaryan: Helper function to ensure soundRef is available before executing callback.
-      if (soundRef.current) {
-        callback(...args);
-      }
-    };
+      (...args: any[]) => {
+        // @hiaaryan: Helper function to ensure soundRef is available before executing callback.
+        if (soundRef.current) {
+          callback(...args);
+        }
+      };
 
   const handleVolume = (value: any) => {
     // @hiaaryan: Handle volume change.

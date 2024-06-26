@@ -3138,21 +3138,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "@tabler/icons-react@npm:3.6.0"
+"@tabler/icons-react@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@tabler/icons-react@npm:3.7.0"
   dependencies:
-    "@tabler/icons": "npm:3.6.0"
+    "@tabler/icons": "npm:3.7.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10c0/55a5acdddc2cbda07d8531fbc33359fc778c0887172fa0ad5944085dea95db5018988964f1105f39ff95ea34a7a434e1d29c723459d0344c28c7a57ccc655eec
+  checksum: 10c0/928572aeeecd04df0788e0d6643499a540861bcbf81ded2fd05ebd64ee54a5013bfba8ba7966345ebc3bb81ccccd8335440208eceda8eb4858d48736599b6ab1
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.6.0":
-  version: 3.6.0
-  resolution: "@tabler/icons@npm:3.6.0"
-  checksum: 10c0/08e4442cf1a08f31e5bf03863b2e94d1a57c5e150a19acba6f2cd2dd56a031bd35757bfc69effe7592ca1f62d530b12e25f65596a9ddc9311eff3e1e89e36f85
+"@tabler/icons@npm:3.7.0":
+  version: 3.7.0
+  resolution: "@tabler/icons@npm:3.7.0"
+  checksum: 10c0/062b308ff94e127fd051b7ed5d050c25fcb8bcfa4b5ef55071c66b4485beeefce463cbf5088ff25340b5239288bcbc8f4bf65bb73450e668c225ab39fcd923c8
   languageName: node
   linkType: hard
 
@@ -3615,7 +3615,7 @@ __metadata:
     "@radix-ui/react-slider": "npm:^1.2.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     "@radix-ui/react-tooltip": "npm:^1.1.1"
-    "@tabler/icons-react": "npm:^3.6.0"
+    "@tabler/icons-react": "npm:^3.7.0"
     "@types/better-sqlite3": "npm:^7.6.10"
     "@types/howler": "npm:^2.2.11"
     "@types/node": "npm:^20.14.8"
