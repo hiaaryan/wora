@@ -10,7 +10,7 @@ import React, {
 
 interface Song {
   id: number;
-  title: string;
+  name: string;
   artist: string;
   duration: number;
   filePath: string;

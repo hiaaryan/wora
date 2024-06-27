@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }) {
         <title>Wora</title>
       </Head>
       <PlayerProvider>
-        <div className="h-dvh w-dvw bg-black text-xs text-white antialiased">
+        <div className="h-dvh w-dvw rounded bg-black text-xs text-white antialiased">
           <div>
             <Actions />
             <div className="flex gap-8">

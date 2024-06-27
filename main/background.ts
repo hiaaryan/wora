@@ -10,11 +10,15 @@ import {
   getAlbumWithSongs,
   getAlbums,
   getAlbumsWithSongs,
+  getPlaylistWithSongs,
+  getPlaylists,
   getSettings,
   getSongs,
   initializeData,
+  isSongFavorite,
 } from "./helpers/db/connectDB";
 import { initDatabase } from "./helpers/db/createDB";
+import { parseFile, selectCover } from "music-metadata";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -113,7 +117,7 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
 client.endlessLogin({ clientId: "1243707416588320800" });
 
 // @hiaaryan: Called to Set Music Folder
-ipcMain.handle("set-music-folder", async () => {
+ipcMain.handle("setMusicFolder", async () => {
   const diag = await dialog
     .showOpenDialog({
       properties: ["openDirectory", "createDirectory"],
@@ -150,19 +154,14 @@ app.whenReady().then(() => {
 });
 
 // @hiaaryan: IPC Handlers from Renderer
-ipcMain.handle("get-settings", async () => {
-  const settings = await getSettings();
-  return settings[0];
-});
-
-ipcMain.handle("get-albums", async () => {
+ipcMain.handle("getAllAlbums", async () => {
   const albums = await getAlbums();
   return albums;
 });
 
-ipcMain.handle("get-songs", async () => {
-  const songs = await getSongs();
-  return songs;
+ipcMain.handle("getAllPlaylists", async () => {
+  const playlists = await getPlaylists();
+  return playlists;
 });
 
 ipcMain.handle("getAlbumsWithSongs", async () => {
@@ -175,7 +174,27 @@ ipcMain.handle("getAlbumWithSongs", async (_, id: number) => {
   return albumWithSongs;
 });
 
-ipcMain.on("add-to-favourites", async (_, id: number) => {
+ipcMain.handle("getPlaylistWithSongs", async (_, id: number) => {
+  const playlistWithSongs = await getPlaylistWithSongs(id);
+  return playlistWithSongs;
+});
+
+ipcMain.handle("getSongMetadata", async (_, file: string) => {
+  const metadata = await parseFile(file, {
+    skipPostHeaders: true,
+  });
+
+  const coverArt = selectCover(metadata.common.picture);
+  const art = coverArt
+    ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
+    : "/coverArt.png";
+
+  const favourite = await isSongFavorite(file);
+
+  return { metadata, art, favourite };
+});
+
+ipcMain.on("addToFavourites", async (_, id: number) => {
   return addToFavourites(id);
 });
 

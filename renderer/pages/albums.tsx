@@ -9,7 +9,7 @@ export default function Albums() {
   const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
-    window.ipc.invoke("get-albums").then((response) => {
+    window.ipc.invoke("getAllAlbums").then((response) => {
       setAlbums(response);
     });
   }, []);
@@ -27,11 +27,11 @@ export default function Albums() {
           <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
             {albums.map((album) => (
               <Link key={album.id} href={`/albums/${album.id}`}>
-                <div className="group/album wora-border wora-transition h-[21rem] cursor-pointer rounded-xl p-5 hover:bg-white/10">
+                <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
                   <div className="relative flex h-full flex-col justify-between">
                     <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
                       <Image
-                        alt={album.name}
+                        alt={album ? album.name : "Album Cover"}
                         src={album.coverArt}
                         fill
                         loading="lazy"

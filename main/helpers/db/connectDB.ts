@@ -23,6 +23,10 @@ export const getAlbums = async () => {
   return await db.select().from(albums).orderBy(albums.name);
 };
 
+export const getPlaylists = async () => {
+  return await db.select().from(playlists);
+};
+
 export const getAlbumsWithSongs = async () => {
   const albumsWithSongs = await db.query.albums.findMany({
     with: { songs: true },
@@ -31,13 +35,64 @@ export const getAlbumsWithSongs = async () => {
   return { albumsWithSongs };
 };
 
+export const getPlaylistWithSongs = async (id: number) => {
+  const playlistWithSongs = await db.query.playlists.findFirst({
+    where: eq(playlists.id, id),
+    with: {
+      songs: {
+        with: {
+          song: {
+            with: { album: true },
+          },
+        },
+      },
+    },
+  });
+
+  return {
+    ...playlistWithSongs,
+    songs: playlistWithSongs.songs.map((playlistSong) => ({
+      ...playlistSong.song,
+      album: playlistSong.song.album,
+    })),
+  };
+};
+
 export const getAlbumWithSongs = async (id: number) => {
   const albumWithSongs = await db.query.albums.findFirst({
     where: eq(albums.id, id),
     with: { songs: true },
   });
 
-  return { albumWithSongs };
+  return albumWithSongs;
+};
+
+export const getAlbumSongs = async (id: number) => {
+  const album = await db.query.albums.findFirst({
+    where: eq(albums.id, id),
+    with: { songs: true },
+  });
+
+  return { album };
+};
+
+export const isSongFavorite = async (file: string) => {
+  const song = await db.query.songs.findFirst({
+    where: eq(songs.filePath, file),
+  });
+
+  const isFavourite = await db.query.playlistSongs.findFirst({
+    where: and(
+      eq(playlistSongs.playlistId, 1),
+      eq(playlistSongs.songId, song.id),
+    ),
+  });
+
+  if (isFavourite) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const addToFavourites = async (songId: number) => {
@@ -63,15 +118,6 @@ export const addToFavourites = async (songId: number) => {
         and(eq(playlistSongs.playlistId, 1), eq(playlistSongs.songId, songId)),
       );
   }
-};
-
-export const getAlbumSongs = async (id: number) => {
-  const album = await db.query.albums.findFirst({
-    where: eq(albums.id, id),
-    with: { songs: true },
-  });
-
-  return { album };
 };
 
 const audioExtensions = [

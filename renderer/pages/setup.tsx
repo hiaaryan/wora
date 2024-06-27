@@ -8,7 +8,7 @@ export default function Setup() {
   const router = useRouter();
 
   const handleClick = () => {
-    window.ipc.invoke("set-music-folder", true).then((response) => {
+    window.ipc.invoke("setMusicFolder", true).then((response) => {
       if (response) return;
 
       router.push("/home");
@@ -18,8 +18,9 @@ export default function Setup() {
   return (
     <div className="wora-transition h-screen w-screen bg-black text-xs text-white antialiased">
       <Actions />
-      <div className="flex h-full w-full select-none items-center p-8">
-        <div className="flex flex-col gap-8">
+      <div className="relative flex h-full w-full select-none items-center overflow-hidden p-8">
+        <div className="absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-white blur-[1700px]" />
+        <div className="z-10 flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <Image
               src="/assets/Full [Dark].png"
@@ -27,7 +28,7 @@ export default function Setup() {
               height={0}
               alt="logo"
             />
-            <div className="text-sm font-medium opacity-50">
+            <div className="flex items-center text-sm opacity-50">
               A beautiful player for audiophiles 🎧
             </div>
           </div>

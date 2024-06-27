@@ -30,6 +30,7 @@ const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [albums, setAlbums] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
   const [search, setSearch] = useState("");
   const { setQueueAndPlay } = usePlayer();
 
@@ -57,6 +58,9 @@ const Navbar = () => {
     if (!search) return [];
     const lowerSearch = search.toLowerCase();
     return [
+      ...playlists
+        .filter((playlist) => playlist.name.toLowerCase().includes(lowerSearch))
+        .map((playlist) => ({ ...playlist, type: "Playlist" })),
       ...albums
         .filter((album) => album.name.toLowerCase().includes(lowerSearch))
         .map((album) => ({ ...album, type: "Album" })),
@@ -66,7 +70,7 @@ const Navbar = () => {
           .map((song: any) => ({ ...song, type: "Song", albumId: album.id })),
       ),
     ];
-  }, [search, albums]);
+  }, [search, albums, playlists]);
 
   const handleItemClick = (item: any) => {
     if (item.type === "Album") {

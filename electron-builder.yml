@@ -10,3 +10,34 @@ files:
       - package.json
       - app
 publish: null
+fileAssociations:
+  - ext: mp3
+    name: MP3 audio file
+  - ext: mpeg
+    name: MPEG audio file
+  - ext: opus
+    name: Opus audio file
+  - ext: ogg
+    name: OGG audio file
+  - ext: oga
+    name: OGA audio file
+  - ext: wav
+    name: WAV audio file
+  - ext: aac
+    name: AAC audio file
+  - ext: caf
+    name: CAF audio file
+  - ext: m4a
+    name: M4A audio file
+  - ext: m4b
+    name: M4B audio file
+  - ext: mp4
+    name: MP4 audio file
+  - ext: weba
+    name: WEBA audio file
+  - ext: webm
+    name: WEBM audio file
+  - ext: dolby
+    name: Dolby audio file
+  - ext: flac
+    name: FLAC audio file

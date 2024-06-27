@@ -19,45 +19,47 @@ type Song = {
   name: string;
   artist: string;
   duration: number;
+  album: {
+    name: string;
+    coverArt: string;
+  };
 };
 
-type Album = {
+type Playlist = {
   name: string;
-  artist: string;
-  year: number;
+  description: string;
   coverArt: string;
   songs: Song[];
 };
 
-export default function Album() {
+export default function Playlist() {
   const router = useRouter();
-  const [album, setAlbum] = useState<Album | null>(null);
+  const [playlist, setAlbum] = useState<Playlist | null>(null);
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
     window.ipc
-      .invoke("getAlbumWithSongs", router.query.slug)
+      .invoke("getPlaylistWithSongs", router.query.slug)
       .then((response) => {
         setAlbum(response);
-        console.log(response);
       });
   }, [router.query.slug]);
 
   const handleMusicClick = (index: number) => {
-    if (album) {
-      setQueueAndPlay(album.songs, index);
+    if (playlist) {
+      setQueueAndPlay(playlist.songs, index);
     }
   };
 
-  const playAlbum = () => {
-    if (album) {
-      setQueueAndPlay(album.songs, 0);
+  const playPlaylist = () => {
+    if (playlist) {
+      setQueueAndPlay(playlist.songs, 0);
     }
   };
 
-  const playAlbumAndShuffle = () => {
-    if (album) {
-      setQueueAndPlay(album.songs, 0, true);
+  const playPlaylistAndShuffle = () => {
+    if (playlist) {
+      setQueueAndPlay(playlist.songs, 0, true);
     }
   };
 
@@ -65,8 +67,8 @@ export default function Album() {
     <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
         <Image
-          alt={album ? album.name : "Album Cover"}
-          src={album ? album.coverArt : "/coverArt.png"}
+          alt={playlist ? playlist.name : "Album Cover"}
+          src={playlist ? playlist.coverArt : "/coverArt.png"}
           fill
           loading="lazy"
           className="object-cover object-center blur-xl gradient-mask-b-10"
@@ -78,8 +80,8 @@ export default function Album() {
           <div className="flex items-end gap-4">
             <div className="relative h-52 w-52 overflow-hidden rounded-lg shadow-xl transition duration-300">
               <Image
-                alt={album ? album.name : "Album Cover"}
-                src={album ? album.coverArt : "/coverArt.png"}
+                alt={playlist ? playlist.name : "Album Cover"}
+                src={playlist ? playlist.coverArt : "/coverArt.png"}
                 fill
                 loading="lazy"
                 className="scale-[1.01] object-cover"
@@ -88,20 +90,18 @@ export default function Album() {
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-2xl font-medium text-white">
-                  {album && album.name}
+                  {playlist && playlist.name}
                 </h1>
                 <p className="flex items-center gap-2 text-sm text-white">
-                  {album && album.artist}{" "}
-                  <IconCircleFilled stroke={2} size={5} />{" "}
-                  {album && album.year ? album.year : "Unknown"}
+                  {playlist && playlist.description}
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button onClick={playAlbum} className="w-fit">
+                <Button onClick={playPlaylist} className="w-fit">
                   <IconPlayerPlay className="fill-white" stroke={2} size={16} />{" "}
                   Play
                 </Button>
-                <Button className="w-fit" onClick={playAlbumAndShuffle}>
+                <Button className="w-fit" onClick={playPlaylistAndShuffle}>
                   <IconArrowsShuffle2 stroke={2} size={16} /> Shuffle
                 </Button>
               </div>
@@ -110,8 +110,8 @@ export default function Album() {
         </div>
       </div>
       <div className="pb-32 pt-2">
-        {album &&
-          album.songs.map((song, index) => (
+        {playlist &&
+          playlist.songs.map((song, index) => (
             <div
               key={song.id}
               className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
@@ -120,8 +120,8 @@ export default function Album() {
               <div className="flex items-center gap-4">
                 <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
                   <Image
-                    alt={album && album.name}
-                    src={album && album.coverArt}
+                    alt={playlist && playlist.name}
+                    src={playlist && song.album.coverArt}
                     fill
                     loading="lazy"
                     className="object-cover"

@@ -34,7 +34,6 @@
     "eslint-config-next": "^14.2.4",
     "howler": "^2.2.4",
     "music-metadata": "^7.14.0",
-    "music-metadata-browser": "^2.5.10",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
@@ -42,7 +41,7 @@
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
     "@types/howler": "^2.2.11",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.19",
     "drizzle-kit": "^0.22.7",

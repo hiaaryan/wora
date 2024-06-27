@@ -52,17 +52,22 @@ function Player() {
   const soundRef = useRef<Howl | null>(null);
   const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
   const [showLyrics, setShowLyrics] = useState(false);
-  const [favourite, setFavourite] = useState<boolean>(false);
+  const [showQueue, setShowQueue] = useState(false);
+  const [isFavourite, setIsFavourite] = useState<boolean>(false);
   const {
     song,
     nextSong,
     previousSong,
+    queue,
+    currentIndex,
     repeat,
     shuffle,
     toggleShuffle,
     toggleRepeat,
   } = usePlayer();
-  const { data, cover, lyrics } = useAudioMetadata(song?.filePath);
+  const { metadata, cover, lyrics, favourite } = useAudioMetadata(
+    song?.filePath,
+  );
 
   useEffect(() => {
     // @hiaaryan: Initialize Howl instance when a song is loaded.
@@ -75,7 +80,10 @@ function Player() {
       autoplay: true,
       volume: volume[0],
       mute: mute,
-
+      onload: () => {
+        setSeek(0);
+        setPlay(true);
+      },
     });
 
     soundRef.current = sound;
@@ -99,7 +107,7 @@ function Player() {
 
   useEffect(() => {
     // @hiaaryan: Update media session metadata and seek position, handle play/pause.
-    if (!data) return;
+    if (!metadata) return resetDiscordState();
     if (!soundRef.current) return;
 
     const updateSeek = () => {
@@ -112,9 +120,9 @@ function Player() {
 
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: data.common.title,
-        artist: data.common.artist,
-        album: data.common.album,
+        title: metadata.common.title,
+        artist: metadata.common.artist,
+        album: metadata.common.album,
         artwork: [{ src: cover }],
       });
 
@@ -125,7 +133,7 @@ function Player() {
     }
 
     soundRef.current.on("play", () => {
-      updateDiscordState(data);
+      updateDiscordState(metadata);
       setPlay(true);
     });
 
@@ -135,13 +143,11 @@ function Player() {
     });
 
     if (soundRef.current.state() === "loaded") {
-      setSeek(0);
-      setPlay(true);
-      updateDiscordState(data);
+      updateDiscordState(metadata);
     }
 
     return () => clearInterval(interval);
-  }, [soundRef.current, data]);
+  }, [metadata]);
 
   useEffect(() => {
     // @hiaaryan: Update current lyric based on seek position if lyrics are available.
@@ -169,14 +175,23 @@ function Player() {
     return () => clearInterval(interval);
   }, [lyrics]);
 
+  useEffect(() => {
+    // @hiaaryan: Update current lyric based on seek position if lyrics are available.
+    if (favourite) {
+      setIsFavourite(true);
+    } else {
+      setIsFavourite(false);
+    }
+  }, [soundRef.current, favourite]);
+
   const withSoundRef =
     (callback: Function) =>
-      (...args: any[]) => {
-        // @hiaaryan: Helper function to ensure soundRef is available before executing callback.
-        if (soundRef.current) {
-          callback(...args);
-        }
-      };
+    (...args: any[]) => {
+      // @hiaaryan: Helper function to ensure soundRef is available before executing callback.
+      if (soundRef.current) {
+        callback(...args);
+      }
+    };
 
   const handleVolume = (value: any) => {
     // @hiaaryan: Handle volume change.
@@ -201,11 +216,11 @@ function Player() {
     }
   });
 
-  const addToFavorites = (id: number) => {
+  const toggleFavourite = (id: number) => {
     // @hiaaryan: Add song to favorites.
     if (!id) return;
-    window.ipc.send("add-to-favourites", id);
-    setFavourite(!favourite);
+    window.ipc.send("addToFavourites", id);
+    setIsFavourite(!isFavourite);
   };
 
   const handleLyricClick = withSoundRef((time: number) => {
@@ -218,6 +233,11 @@ function Player() {
   const toggleLyrics = () => {
     // @hiaaryan: Toggle lyrics display.
     setShowLyrics(!showLyrics);
+  };
+
+  const toggleQueue = () => {
+    // @hiaaryan: Toggle queue display.
+    setShowQueue(!showQueue);
   };
 
   const toggleMute = () => {
@@ -266,25 +286,40 @@ function Player() {
           </div>
         )}
       </div>
+      <div className="!absolute right-0 top-0 w-1/3">
+        {showQueue && (
+          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+            <div className="justify-right h-lyrics flex w-full flex-col gap-4 p-8">
+              {queue.slice(currentIndex + 1).map((song) => (
+                <li key={song.id}>
+                  {song.name} by {song.artist}
+                  <br />
+                  Duration: {song.duration} seconds
+                </li>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
       <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-black/70 p-6 backdrop-blur-xl">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
                 <Image
-                  alt="album"
+                  alt="Album Cover"
                   src={cover}
                   fill
-                  loading="lazy"
+                  priority={true}
                   className="object-cover"
                 />
               </div>
               <div className="w-1/3 gradient-mask-r-70">
                 <p className="text-nowrap text-sm font-medium">
-                  {data ? data.common.title : "Echoes of Emptiness"}
+                  {metadata ? metadata.common.title : "Echoes of Emptiness"}
                 </p>
                 <p className="text-nowrap opacity-50">
-                  {data ? data.common.artist : "The Void Ensemble"}
+                  {metadata ? metadata.common.artist : "The Void Ensemble"}
                 </p>
               </div>
             </div>
@@ -357,7 +392,7 @@ function Player() {
                     </div>
                   )}
                 </Button>
-                {data && data.format.lossless && (
+                {metadata && metadata.format.lossless && (
                   <div className="absolute -left-24 mt-0.5">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
@@ -365,8 +400,8 @@ function Player() {
                       </TooltipTrigger>
                       <TooltipContent side="left" sideOffset={25}>
                         <p>
-                          Lossless [{data.format.bitsPerSample}/
-                          {(data.format.sampleRate / 1000).toFixed(1)}kHz]
+                          Lossless [{metadata.format.bitsPerSample}/
+                          {(metadata.format.sampleRate / 1000).toFixed(1)}kHz]
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -379,21 +414,25 @@ function Player() {
                         variant="ghost"
                         className="!opacity-100"
                         onClick={() => {
-                          addToFavorites(song?.id);
+                          toggleFavourite(song?.id);
                         }}
                         asChild
                       >
                         <IconHeart
                           stroke={2}
                           className={
-                            `${favourite ? "fill-red-500" : "fill-none"}` +
+                            `${isFavourite ? "fill-red-500" : "fill-none"}` +
                             " w-3.5 text-red-500"
                           }
                         />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={25}>
-                      <p>Add to Favourites</p>
+                      <p className="delay-500">
+                        {!isFavourite
+                          ? "Add to Favourites"
+                          : "Remove from Favourites"}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -456,25 +495,61 @@ function Player() {
                   <DialogTrigger className="opacity-30 duration-500 hover:opacity-100">
                     <IconInfoCircle stroke={2} size={15} />
                   </DialogTrigger>
-                  <DialogContent className="flex items-start gap-8">
-                    <div className="relative h-28 w-28 overflow-hidden rounded-lg transition duration-500">
-                      <Image
-                        alt="album"
-                        src={cover}
-                        fill
-                        className="object-cover"
-                      />
+                  <DialogContent className="flex w-full items-start gap-6">
+                    <div className="w-1/3">
+                      <div className="relative h-36 w-36 overflow-hidden rounded-lg transition duration-500">
+                        <Image
+                          alt="album"
+                          src={cover}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
-                    <DialogHeader>
-                      <DialogTitle>Track Information</DialogTitle>
-                      <DialogDescription>
-                        {data && data.common.title}{" "}
-                        {data && data.format.sampleRate}
-                      </DialogDescription>
-                    </DialogHeader>
+                    <div className="flex w-2/3 flex-col gap-4">
+                      <DialogHeader>
+                        <DialogTitle>Track Information</DialogTitle>
+                        <DialogDescription>
+                          {metadata && metadata.common.title} [
+                          {metadata && metadata.format.codec}]
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex flex-col gap-0.5 overflow-hidden text-xs gradient-mask-r-70">
+                        <p className="text-nowrap">
+                          <span className="opacity-50">Artist:</span>{" "}
+                          {metadata && metadata.common.artist}
+                        </p>
+                        <p className="text-nowrap">
+                          <span className="opacity-50">Album:</span>{" "}
+                          {metadata && metadata.common.album}
+                        </p>
+                        <p className="text-nowrap">
+                          <span className="opacity-50">Codec:</span>{" "}
+                          {metadata && metadata.format.codec}
+                        </p>
+                        {metadata && metadata.format.lossless ? (
+                          <p className="text-nowrap">
+                            <span className="opacity-50">Sample:</span> Lossless
+                            [{metadata && metadata.format.bitsPerSample}/
+                            {metadata &&
+                              (metadata.format.sampleRate / 1000).toFixed(1)}
+                            kHz]
+                          </p>
+                        ) : (
+                          <p className="text-nowrap">
+                            <span className="opacity-50">Sample:</span> Lossy
+                            Audio
+                          </p>
+                        )}
+                        <p className="text-nowrap">
+                          <span className="opacity-50">Duration:</span>{" "}
+                          {convertTime(soundRef.current?.duration())}
+                        </p>
+                      </div>
+                    </div>
                   </DialogContent>
                 </Dialog>
-                <Button variant="ghost">
+                <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>
               </div>
