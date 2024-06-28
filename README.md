@@ -21,7 +21,7 @@
 
 ## 🚀 **Getting Started**
 
-### ⚠️ Prerequisites
+### 〽️ Prerequisites
 
 - [Node.js](https://nodejs.org/) v14 or higher
 - [Git](https://git-scm.com/) for obvious reasons
@@ -73,5 +73,3 @@ Join our [Discord server](https://discord.gg/SYEByd7Zb2/) to connect with other 
 ---
 
 MIT License. Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
-
----
