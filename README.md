@@ -2,9 +2,6 @@
   <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Github.png?raw=true" alt="Wora Logo" />
 </p>
 
-<h2 align="center">Wora</h2>
-<h4 align="center">🎧 A beautiful player for audiophiles.</h4>
-
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora" alt="License"></a>
   <a href="https://discord.gg/SYEByd72b2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
@@ -12,9 +9,9 @@
   <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat" alt="GitHub Forks"></a>
 </p>
 
-## 💿 **Description**
+## ⭐️ **Description**
 
-**Wora** is an open-source lossless music player app that lets you organize and play your favorite tracks seamlessly. With Wora, you can:
+**Wora** is a beautiful player for audiophiles (pun intended). An open-source lossless music player app that lets you organize and play your favorite tracks seamlessly. With Wora, you can:
 
 - Create and manage playlists
 - Stream FLACs, WAVs, Dolby apart from regular music extensions
