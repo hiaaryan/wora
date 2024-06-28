@@ -70,10 +70,6 @@ Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUT
 4. **Push to the branch (`git push origin feature-branch`)**
 5. **Create a new Pull Request**
 
-## 🛡️ **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 💬 **Join the Community**
 
 Join our [Discord server](https://discord.gg/SYEByd72b2/) to connect with other users and developers.
@@ -82,6 +78,4 @@ Join our [Discord server](https://discord.gg/SYEByd72b2/) to connect with other 
 
 ---
 
-Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
-
----
+MIT License. Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
