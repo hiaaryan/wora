@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/hiaaryan/wora/blob/main/resources/Logo.png?raw=true" style="height: 150px; width: 150px;" alt="Wora Logo" />
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Github.png?raw=true" alt="Wora Logo" />
 </p>
 
 <h2 align="center">Wora</h2>
