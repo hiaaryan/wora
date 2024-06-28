@@ -29,6 +29,6 @@
   scrollbar-width: none; /* Firefox */
 }
 
-.h-lyrics {
+.h-utility {
   height: calc(100vh - 13.6rem);
 }

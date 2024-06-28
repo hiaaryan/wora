@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, ilike, like } from "drizzle-orm";
 import { albums, songs, settings, playlistSongs, playlists } from "./schema";
 import fs from "fs";
 import { parseFile, selectCover } from "music-metadata";
@@ -61,7 +61,11 @@ export const getPlaylistWithSongs = async (id: number) => {
 export const getAlbumWithSongs = async (id: number) => {
   const albumWithSongs = await db.query.albums.findFirst({
     where: eq(albums.id, id),
-    with: { songs: true },
+    with: {
+      songs: {
+        with: { album: true },
+      },
+    },
   });
 
   return albumWithSongs;
@@ -118,6 +122,28 @@ export const addToFavourites = async (songId: number) => {
         and(eq(playlistSongs.playlistId, 1), eq(playlistSongs.songId, songId)),
       );
   }
+};
+
+export const searchDB = async (query: string) => {
+  const lowerSearch = query.toLowerCase();
+
+  const searchAlbums = await db.query.albums.findMany({
+    where: like(albums.name, `%${lowerSearch}%`),
+  });
+
+  const searchPlaylists = await db.query.playlists.findMany({
+    where: like(playlists.name, `%${lowerSearch}%`),
+  });
+
+  const searchSongs = await db.query.songs.findMany({
+    where: like(songs.name, `%${lowerSearch}%`),
+  });
+
+  return {
+    searchAlbums,
+    searchPlaylists,
+    searchSongs,
+  };
 };
 
 const audioExtensions = [
@@ -272,7 +298,7 @@ export const initializeData = async (musicFolder: string) => {
   if (!defaultPlaylist[0]) {
     await db.insert(playlists).values({
       name: "Favourites",
-      coverArt: "/coverArt.png",
+      coverArt: "/favouritesCoverArt.png",
       description: "Songs Liked by You 🎧",
     });
   }

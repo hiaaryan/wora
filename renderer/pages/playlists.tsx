@@ -25,40 +25,32 @@ export default function Playlists() {
               Hey Aaryan! Ready for a Jam Session?
             </div>
           </div>
-          <div className="relative flex h-48 w-full gap-8">
-            <Link
-              href="/playlists/1"
-              className="wora-transition wora-border flex h-full w-1/2 items-end gap-4 rounded-xl p-6 hover:bg-white/10"
-            >
-              <div className="flex h-full w-40 items-center justify-center rounded-lg bg-red-500 shadow-xl">
-                <IconHeart size={72} className="fill-white" />
-              </div>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <h1 className="text-xl font-medium text-white">
-                    {favouritesPlaylist?.name}
-                  </h1>
-                  <p className="flex items-center gap-2 text-sm text-white">
-                    {favouritesPlaylist?.description}
-                  </p>
+          <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
+            {playlists.map((playlist) => (
+              <Link key={playlist.id} href={`/playlists/${playlist.id}`}>
+                <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
+                  <div className="relative flex h-full flex-col justify-between">
+                    <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
+                      <Image
+                        alt={playlist ? playlist.name : "Album Cover"}
+                        src={playlist.coverArt}
+                        fill
+                        loading="lazy"
+                        className="z-10 object-cover"
+                      />
+                    </div>
+                    <div className="flex w-full flex-col">
+                      <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
+                        {playlist.name}
+                      </p>
+                      <p className="text-nowrap opacity-50 gradient-mask-r-70">
+                        {playlist.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-            <div className="wora-transition wora-border flex h-full w-1/2 items-end gap-4 rounded-xl p-6 hover:bg-white/10">
-              <div className="flex h-full w-40 items-center justify-center rounded-lg bg-blue-500 shadow-xl">
-                <IconPlus size={72} className="fill-white" />
-              </div>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <h1 className="text-xl font-medium text-white">
-                    New Playlist
-                  </h1>
-                  <p className="flex items-center gap-2 text-sm text-white">
-                    A New Collection of Your Songs 💿
-                  </p>
-                </div>
-              </div>
-            </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

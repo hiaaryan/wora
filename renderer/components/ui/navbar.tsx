@@ -20,22 +20,23 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { usePlayer } from "@/context/playerContext";
+import Spinner from "./spinner";
 
 const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [albums, setAlbums] = useState([]);
-  const [playlists, setPlaylists] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
-    const down = (e: any) => {
+    const down = (e) => {
       if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
@@ -47,32 +48,36 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    window.ipc.invoke("getAlbumsWithSongs").then((response) => {
-      setAlbums(response.albumsWithSongs);
-    });
-  }, []);
+    setLoading(true);
+
+    if (!search) {
+      setSearchResults([]);
+      setLoading(false);
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(() => {
+      window.ipc.invoke("search", search).then((response) => {
+        const albums = response.searchAlbums;
+        const playlists = response.searchPlaylists;
+        const songs = response.searchSongs;
+
+        setSearchResults([
+          ...playlists.map((playlist) => ({ ...playlist, type: "Playlist" })),
+          ...albums.map((album) => ({ ...album, type: "Album" })),
+          ...songs.map((song) => ({ ...song, type: "Song" })),
+        ]);
+
+        setLoading(false);
+      });
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search]);
 
   const openSearch = () => setOpen(true);
 
-  const combinedResults = useMemo(() => {
-    if (!search) return [];
-    const lowerSearch = search.toLowerCase();
-    return [
-      ...playlists
-        .filter((playlist) => playlist.name.toLowerCase().includes(lowerSearch))
-        .map((playlist) => ({ ...playlist, type: "Playlist" })),
-      ...albums
-        .filter((album) => album.name.toLowerCase().includes(lowerSearch))
-        .map((album) => ({ ...album, type: "Album" })),
-      ...albums.flatMap((album) =>
-        album.songs
-          .filter((song: any) => song.name.toLowerCase().includes(lowerSearch))
-          .map((song: any) => ({ ...song, type: "Song", albumId: album.id })),
-      ),
-    ];
-  }, [search, albums, playlists]);
-
-  const handleItemClick = (item: any) => {
+  const handleItemClick = (item) => {
     if (item.type === "Album") {
       router.push(`/albums/${item.id}`);
     } else if (item.type === "Song") {
@@ -157,9 +162,14 @@ const Navbar = () => {
               onValueChange={setSearch}
             />
             <CommandList>
-              {search && (
+              {loading && (
+                <div className="flex h-[325px] w-full items-center justify-center text-white">
+                  <Spinner />
+                </div>
+              )}
+              {search && !loading && (
                 <CommandGroup heading="Search Results" className="pb-2">
-                  {combinedResults.map((item) => (
+                  {searchResults.map((item) => (
                     <CommandItem
                       key={`${item.type}-${item.id}`}
                       value={`${item.name}-${item.type}-${item.id}`}
@@ -179,7 +189,9 @@ const Navbar = () => {
                             </span>
                           </p>
                           <p className="w-full text-xs opacity-50">
-                            {item.artist}
+                            {item.type === "Playlist"
+                              ? item.description
+                              : item.artist}
                           </p>
                         </div>
                       </div>

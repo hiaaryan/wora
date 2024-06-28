@@ -84,6 +84,13 @@ function Player() {
         setSeek(0);
         setPlay(true);
       },
+      onend: () => {
+        resetDiscordState();
+        setPlay(false);
+        if (!repeat) {
+          nextSong();
+        }
+      },
     });
 
     soundRef.current = sound;
@@ -92,18 +99,12 @@ function Player() {
   }, [song]);
 
   useEffect(() => {
-    // @hiaaryan: Handle end of song logic based on repeat mode.
-    soundRef.current?.on("end", () => {
-      resetDiscordState();
-      setPlay(false);
-      if (repeat) {
+    if (repeat) {
+      soundRef.current?.on("end", () => {
         soundRef.current?.play();
-        setPlay(true);
-      } else {
-        nextSong();
-      }
-    });
-  }, [soundRef.current, repeat]);
+      });
+    }
+  }, [repeat]);
 
   useEffect(() => {
     // @hiaaryan: Update media session metadata and seek position, handle play/pause.
@@ -182,7 +183,7 @@ function Player() {
     } else {
       setIsFavourite(false);
     }
-  }, [soundRef.current, favourite]);
+  }, [metadata, favourite]);
 
   const withSoundRef =
     (callback: Function) =>
@@ -260,7 +261,7 @@ function Player() {
                 <Badge>Unsynced</Badge>
               )}
             </div>
-            <div className="justify-left h-lyrics flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
+            <div className="justify-left h-utility flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
               <div className="no-scrollbar gradient-mask-b-30-d h-full w-full max-w-3xl overflow-hidden overflow-y-auto text-2xl font-medium">
                 <div className="flex flex-col py-[33vh]">
                   {isSyncedLyrics(lyrics) ? (
@@ -272,11 +273,7 @@ function Player() {
                   ) : (
                     <div>
                       {lyrics.split("\n").map((line) => {
-                        return (
-                          <p className="my-2 py-4 font-semibold opacity-40">
-                            {line}
-                          </p>
-                        );
+                        return <p className="my-2 py-4 opacity-40">{line}</p>;
                       })}
                     </div>
                   )}
@@ -289,14 +286,31 @@ function Player() {
       <div className="!absolute right-0 top-0 w-1/3">
         {showQueue && (
           <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
-            <div className="justify-right h-lyrics flex w-full flex-col gap-4 p-8">
-              {queue.slice(currentIndex + 1).map((song) => (
-                <li key={song.id}>
-                  {song.name} by {song.artist}
-                  <br />
-                  Duration: {song.duration} seconds
-                </li>
-              ))}
+            <div className="justify-right h-utility no-scrollbar flex h-full w-full max-w-3xl flex-col gap-4 overflow-hidden overflow-y-auto px-8 font-medium gradient-mask-b-70">
+              <div className="flex flex-col gap-4 pb-32 pt-8">
+                {queue.slice(currentIndex + 1).map((song) => (
+                  <li
+                    key={song.id}
+                    className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
+                  >
+                    <div className="relative h-14 w-14 overflow-hidden rounded-lg">
+                      <Image
+                        alt="Album Cover"
+                        src={song.album.coverArt}
+                        fill
+                        priority={true}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="w-4/5 overflow-hidden">
+                      <p className="text-nowrap text-sm font-medium">
+                        {song.name}
+                      </p>
+                      <p className="text-nowrap opacity-50">{song.artist}</p>
+                    </div>
+                  </li>
+                ))}
+              </div>
             </div>
           </div>
         )}

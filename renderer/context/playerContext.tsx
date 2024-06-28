@@ -14,6 +14,10 @@ interface Song {
   artist: string;
   duration: number;
   filePath: string;
+  album: {
+    name: string;
+    coverArt: string;
+  };
 }
 
 interface PlayerState {

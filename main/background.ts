@@ -16,6 +16,7 @@ import {
   getSongs,
   initializeData,
   isSongFavorite,
+  searchDB,
 } from "./helpers/db/connectDB";
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
@@ -196,6 +197,11 @@ ipcMain.handle("getSongMetadata", async (_, file: string) => {
 
 ipcMain.on("addToFavourites", async (_, id: number) => {
   return addToFavourites(id);
+});
+
+ipcMain.handle("search", async (_, query: string) => {
+  const results = await searchDB(query);
+  return results;
 });
 
 app.on("window-all-closed", () => {

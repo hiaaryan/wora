@@ -2881,6 +2881,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-tabs@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@radix-ui/react-tabs@npm:1.1.0"
+  dependencies:
+    "@radix-ui/primitive": "npm:1.1.0"
+    "@radix-ui/react-context": "npm:1.1.0"
+    "@radix-ui/react-direction": "npm:1.1.0"
+    "@radix-ui/react-id": "npm:1.1.0"
+    "@radix-ui/react-presence": "npm:1.1.0"
+    "@radix-ui/react-primitive": "npm:2.0.0"
+    "@radix-ui/react-roving-focus": "npm:1.1.0"
+    "@radix-ui/react-use-controllable-state": "npm:1.1.0"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/d6cb742c36a6918dd37c6a3c531b1f6832916dde26855f6c94baf4a17d20bbb17ffd8ba9844539c568a4484a39bbdf5fc528d44534d1d46d094840836c9ff47d
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-tooltip@npm:^1.1.1":
   version: 1.1.1
   resolution: "@radix-ui/react-tooltip@npm:1.1.1"
@@ -3614,6 +3640,7 @@ __metadata:
     "@radix-ui/react-scroll-area": "npm:^1.1.0"
     "@radix-ui/react-slider": "npm:^1.2.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
+    "@radix-ui/react-tabs": "npm:^1.1.0"
     "@radix-ui/react-tooltip": "npm:^1.1.1"
     "@tabler/icons-react": "npm:^3.7.0"
     "@types/better-sqlite3": "npm:^7.6.10"
@@ -3622,14 +3649,14 @@ __metadata:
     "@types/react": "npm:^18.3.3"
     autoprefixer: "npm:^10.4.19"
     axios: "npm:^1.7.2"
-    better-sqlite3: "npm:^11.0.0"
+    better-sqlite3: "npm:^11.1.1"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.0.0"
     discord-auto-rpc: "npm:^1.0.17"
     drizzle-kit: "npm:^0.22.7"
     drizzle-orm: "npm:^0.31.2"
-    electron: "npm:^30.1.2"
+    electron: "npm:^31.1.0"
     electron-builder: "npm:^24.13.3"
     electron-serve: "npm:^1.3.0"
     electron-store: "npm:^8.2.0"
@@ -4227,14 +4254,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "better-sqlite3@npm:11.0.0"
+"better-sqlite3@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "better-sqlite3@npm:11.1.1"
   dependencies:
     bindings: "npm:^1.5.0"
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
-  checksum: 10c0/5a55f8c171055d0fd589b88da58b9e8d9de60ae701ca189270d98a0c25cdabae01abcc27bef26cc2f0b6a8f119d86373089b0a89199df5ac06382d0193651598
+  checksum: 10c0/60b67d89f22d78afb810cb18dd446e397d35b9f95895793a3934da17f257193ac0d112798f115af3fea5ea1f2318e98051abd632a443d530ff20760a08be7d57
   languageName: node
   linkType: hard
 
@@ -5356,16 +5383,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^30.1.2":
-  version: 30.1.2
-  resolution: "electron@npm:30.1.2"
+"electron@npm:^31.1.0":
+  version: 31.1.0
+  resolution: "electron@npm:31.1.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/7cf9e11b54044021569e481a1bdfa4cca07c5c3e24a23ddc402f3aff6bda9d1f200140f9d6e3d7d9c76d4a34b0d8211828705ad8990cfba6429eb077db91d7b3
+  checksum: 10c0/b9ae6f9d1a13e15cf0b7981f1231dc2c79f3465c4db822750daf6f2533524fe2ddf6f0b173c8d0c3549ef6bf21a9ff3eb362838b06deb4f795e71d5e5a307f16
   languageName: node
   linkType: hard
 

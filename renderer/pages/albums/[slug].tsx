@@ -35,6 +35,8 @@ export default function Album() {
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
+    if (!router.query.slug) return;
+
     window.ipc
       .invoke("getAlbumWithSongs", router.query.slug)
       .then((response) => {

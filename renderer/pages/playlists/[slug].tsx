@@ -26,6 +26,7 @@ type Song = {
 };
 
 type Playlist = {
+  id: number;
   name: string;
   description: string;
   coverArt: string;
@@ -38,6 +39,8 @@ export default function Playlist() {
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
+    if (!router.query.slug) return;
+
     window.ipc
       .invoke("getPlaylistWithSongs", router.query.slug)
       .then((response) => {
@@ -66,13 +69,17 @@ export default function Playlist() {
   return (
     <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
-        <Image
-          alt={playlist ? playlist.name : "Album Cover"}
-          src={playlist ? playlist.coverArt : "/coverArt.png"}
-          fill
-          loading="lazy"
-          className="object-cover object-center blur-xl gradient-mask-b-10"
-        />
+        {playlist && playlist.id === 1 ? (
+          <div className="h-full w-full bg-red-500 gradient-mask-b-10"></div>
+        ) : (
+          <Image
+            alt={playlist ? playlist.name : "Album Cover"}
+            src={playlist ? playlist.coverArt : "/coverArt.png"}
+            fill
+            loading="lazy"
+            className="object-cover object-center blur-xl gradient-mask-b-10"
+          />
+        )}
         <Button onClick={() => router.back()} className="absolute left-4 top-4">
           <IconArrowLeft stroke={2} size={16} /> Back
         </Button>
