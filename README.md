@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora" alt="License"></a>
-  <a href="https://discord.gg/SYEByd72b2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
+  <a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
   <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flta" alt="GitHub Stars"></a>
   <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat" alt="GitHub Forks"></a>
 </p>
@@ -19,19 +19,15 @@
 - View synced and unsynced lyrics
 - Admire the beautiful UI
 
-## 🖼️ **Screenshots**
-
-![Home Screen](https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Screenshot%201.png?raw=true)
-
 ## 🚀 **Getting Started**
 
-### Prerequisites
+### ⚠️ Prerequisites
 
 - [Node.js](https://nodejs.org/) v14 or higher
 - [Git](https://git-scm.com/) for obvious reasons
 - [Yarn](https://yarnpkg.com/) for dependencies
 
-### Installation
+### 👾 Installation
 
 1. **Clone the repository:**
 
@@ -68,18 +64,14 @@ Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUT
 4. **Push to the branch (`git push origin feature-branch`)**
 5. **Create a new Pull Request**
 
-## 🛡️ **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 💬 **Join the Community**
 
-Join our [Discord server](https://discord.gg/SYEByd72b2/) to connect with other users and developers.
+Join our [Discord server](https://discord.gg/SYEByd7Zb2/) to connect with other users and developers.
 
-<a href="https://discord.gg/SYEByd72b2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
+<a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
 
 ---
 
-Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
+MIT License. Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
 
 ---
