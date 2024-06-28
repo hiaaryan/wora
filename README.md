@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora" alt="License"></a>
-  <a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
+  <a href="https://discord.gg/SYEByd72b2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
   <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flta" alt="GitHub Stars"></a>
   <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat" alt="GitHub Forks"></a>
 </p>
@@ -21,9 +21,7 @@
 
 ## 🖼️ **Screenshots**
 
-![Home Screen](https://via.placeholder.com/800x400)
-
-![Playlist Management](https://via.placeholder.com/800x400)
+![Home Screen]("https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Screenshot 1.png?raw=true")
 
 ## 🚀 **Getting Started**
 
@@ -70,12 +68,18 @@ Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUT
 4. **Push to the branch (`git push origin feature-branch`)**
 5. **Create a new Pull Request**
 
+## 🛡️ **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## 💬 **Join the Community**
 
-Join our [Discord server](https://discord.gg/SYEByd7Zb2/) to connect with other users and developers.
+Join our [Discord server](https://discord.gg/SYEByd72b2/) to connect with other users and developers.
 
 <a href="https://discord.gg/SYEByd72b2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
 
 ---
 
-MIT License. Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
+Made with ❤️ by [hiaaryan](https://github.com/hiaaryan) and contributors.
+
+---
