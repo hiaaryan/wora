@@ -3,10 +3,11 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora" alt="License"></a>
-  <a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat" alt="Discord"></a>
-  <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flta" alt="GitHub Stars"></a>
-  <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat" alt="GitHub Forks"></a>
+  <a href="https://github.com/hiaaryan/wora"><img src="https://img.shields.io/github/last-commit/hiaaryan/wora/main?commit" alt="Last Commit" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora?license" alt="License" /></a>
+  <a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/SYEByd7Zb2?style=flat&discord" alt="Discord" /></a>
+  <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flat&stars" alt="GitHub Stars" /></a>
+  <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat&forks" alt="GitHub Forks" /></a>
 </p>
 
 ## ⭐️ **Description**
