@@ -15,7 +15,7 @@ export default function Albums() {
   }, []);
 
   return (
-    <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
+    <ScrollArea className="mt-2.5 h-full w-full gradient-mask-b-80">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col">

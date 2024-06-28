@@ -66,7 +66,6 @@ let settings: any;
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
-    transparent: true,
     trafficLightPosition: { x: 20, y: 15 },
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {

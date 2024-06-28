@@ -59,6 +59,7 @@ function Player() {
     nextSong,
     previousSong,
     queue,
+    history,
     currentIndex,
     repeat,
     shuffle,

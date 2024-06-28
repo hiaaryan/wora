@@ -19,6 +19,7 @@ type Song = {
   name: string;
   artist: string;
   duration: number;
+  album: any;
 };
 
 type Album = {
