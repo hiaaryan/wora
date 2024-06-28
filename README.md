@@ -21,7 +21,7 @@
 
 ## 🖼️ **Screenshots**
 
-![Home Screen](https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Screenshot 1.png?raw=true)
+![Home Screen](https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Screenshot%201.png?raw=true)
 
 ## 🚀 **Getting Started**
 
