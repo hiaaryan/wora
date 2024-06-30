@@ -1,22 +1,24 @@
 appId: com.wora.player
 productName: Wora
 copyright: Copyright © 2024 Aaryan Kapoor
+
 directories:
   output: dist
   buildResources: resources
+
 files:
   - from: .
     filter:
       - package.json
       - app
-publish: null
-linux:
-  target:
-    - AppImage
-  category: Audio
-snap:
-  publish: never
+
+publish:
+  provider: github
+  owner: hiaaryan
+  repo: wora
+
 artifactName: Wora [v${version}].${ext}
+
 fileAssociations:
   - ext: mp3
     name: MP3 Audio File
@@ -48,3 +50,15 @@ fileAssociations:
     name: Dolby Audio File
   - ext: flac
     name: FLAC Audio File
+
+linux:
+  target:
+    - deb
+
+mac:
+  target:
+    - dmg
+
+win:
+  target:
+    - nsis
