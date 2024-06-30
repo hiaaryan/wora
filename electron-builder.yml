@@ -11,6 +11,15 @@ files:
       - app
 publish: null
 artifactName: Wora [v${version}].${ext}
+linux:
+  target:
+    - deb
+mac:
+  target:
+    - dmg
+win:
+  target:
+    - nsis
 fileAssociations:
   - ext: mp3
     name: MP3 Audio File
@@ -42,12 +51,3 @@ fileAssociations:
     name: Dolby Audio File
   - ext: flac
     name: FLAC Audio File
-linux:
-  target:
-    - deb
-mac:
-  target:
-    - dmg
-win:
-  target:
-    - nsis

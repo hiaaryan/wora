@@ -12,7 +12,7 @@ jobs:
       version_changed: ${{ steps.check.outputs.version_changed }}
       new_version: ${{ steps.check.outputs.new_version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
       - name: Check Version Change
@@ -28,37 +28,18 @@ jobs:
             echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
 
-  create-release:
-    needs: check-version-change
-    if: needs.check-version-change.outputs.version_changed == 'true'
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          tag_name: v${{ needs.check-version-change.outputs.new_version }}
-          release_name: v${{ needs.check-version-change.outputs.new_version }}
-          draft: false
-          prerelease: false
-
   build:
-    needs: [check-version-change, create-release]
+    needs: check-version-change
     if: needs.check-version-change.outputs.version_changed == 'true'
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
       - name: Install Dependencies
         run: yarn install
       - name: Build for ${{ matrix.os }}
@@ -71,29 +52,25 @@ jobs:
             yarn build:win64
           fi
         shell: bash
-      - name: Get Asset details
+      - name: Get Asset Details
         id: get_asset
         run: |
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].dmg" >> $GITHUB_OUTPUT
             echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].dmg" >> $GITHUB_OUTPUT
-            echo "content_type=application/x-apple-diskimage" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].deb" >> $GITHUB_OUTPUT
             echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].deb" >> $GITHUB_OUTPUT
-            echo "content_type=application/x-executable" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].exe" >> $GITHUB_OUTPUT
             echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].exe" >> $GITHUB_OUTPUT
-            echo "content_type=application/vnd.microsoft.portable-executable" >> $GITHUB_OUTPUT
           fi
         shell: bash
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: v${{ needs.check-version-change.outputs.new_version }}
+          name: v${{ needs.check-version-change.outputs.new_version }}
+          draft: false
+          prerelease: false
+          files: ${{ steps.get_asset.outputs.asset_path }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ steps.get_asset.outputs.asset_path }}
-          asset_name: ${{ steps.get_asset.outputs.asset_name }}
-          asset_content_type: ${{ steps.get_asset.outputs.content_type }}
