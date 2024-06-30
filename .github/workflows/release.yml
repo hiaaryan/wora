@@ -1,4 +1,4 @@
-name: Release
+name: Release and Build
 
 on:
   push:
@@ -6,121 +6,75 @@ on:
       - main
 
 jobs:
-  check_version_change:
+  check-version-change:
     runs-on: ubuntu-latest
     outputs:
-      version_changed: ${{ steps.check_version.outputs.version_changed }}
-      new_version: ${{ steps.check_version.outputs.new_version }}
-
+      version_changed: ${{ steps.check.outputs.version_changed }}
+      new_version: ${{ steps.check.outputs.new_version }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
         with:
-          node-version: "22.3.0"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.yarn/cache
-          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Check for version change
-        id: check_version
+          fetch-depth: 2
+      - name: Check if only version changed
+        id: check
         run: |
-          git fetch --depth=2 origin main
-          PREV_VERSION=$(jq -r '.version' <(git show HEAD~1:package.json))
-          NEW_VERSION=$(jq -r '.version' package.json)
-          DEPENDENCIES_CHANGED=$(git diff --name-only HEAD~1 | grep -c 'package.json' || true)
-          if [ "$PREV_VERSION" != "$NEW_VERSION" ] && [ "$DEPENDENCIES_CHANGED" -eq 1 ]; then
-            echo "::set-output name=version_changed::true"
-            echo "::set-output name=new_version::$NEW_VERSION"
+          git diff HEAD^ HEAD --name-only | grep -q '^package.json$' || exit 0
+          old_version=$(git show HEAD^:package.json | jq -r '.version')
+          new_version=$(jq -r '.version' package.json)
+          if [ "$old_version" != "$new_version" ] && [ $(git diff HEAD^ HEAD --name-only | wc -l) -eq 1 ]; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$new_version" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=version_changed::false"
+            echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
 
-  create_tag_and_release:
-    if: needs.check_version_change.outputs.version_changed == 'true'
+  create-release:
+    needs: check-version-change
+    if: needs.check-version-change.outputs.version_changed == 'true'
     runs-on: ubuntu-latest
-    needs: check_version_change
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Create Tag
-        run: |
-          NEW_VERSION=${{ needs.check_version_change.outputs.new_version }}
-          git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
-          git push origin "v$NEW_VERSION"
-
-      - name: Create GitHub Release
+      - uses: actions/checkout@v3
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: "v${{ needs.check_version_change.outputs.new_version }}"
-          release_name: "v${{ needs.check_version_change.outputs.new_version }}"
-          body: "Release of version v${{ needs.check_version_change.outputs.new_version }}"
+          tag_name: v${{ needs.check-version-change.outputs.new_version }}
+          release_name: Release v${{ needs.check-version-change.outputs.new_version }}
           draft: false
           prerelease: false
 
-  build_and_upload_artifacts:
-    if: needs.check_version_change.outputs.version_changed == 'true'
-    runs-on: ubuntu-latest
-    needs: create_tag_and_release
+  build:
+    needs: [check-version-change, create-release]
+    if: needs.check-version-change.outputs.version_changed == 'true'
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: "22.3.0"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.yarn/cache
-          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-${{ runner.os }}-
-
+          node-version: "18"
       - name: Install dependencies
         run: yarn install
-
-      - name: Build Application
+      - name: Build for ${{ matrix.os }}
         run: |
-          case ${{ matrix.os }} in
-            ubuntu-*) yarn build:linux ;;
-            macos-*) yarn build:mac ;;
-            windows-*) yarn build:win64 ;;
-          esac
-
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            yarn build:mac
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            yarn build:linux
+          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+            yarn build:win64
+          fi
+        shell: bash
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create_tag_and_release.outputs.upload_url }}
-          asset_path: |
-            case ${{ matrix.os }} in
-              ubuntu-*) echo dist/*.AppImage ;;
-              macos-*) echo dist/*.dmg ;;
-              windows-*) echo dist/*.exe ;;
-            esac
-          asset_name: |
-            case ${{ matrix.os }} in
-              ubuntu-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-linux.AppImage ;;
-              macos-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-mac.dmg ;;
-              windows-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-win.exe ;;
-            esac
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/*
+          asset_name: wora-${{ needs.check-version-change.outputs.new_version }}-${{ matrix.os }}
           asset_content_type: application/octet-stream
