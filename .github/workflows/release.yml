@@ -79,8 +79,8 @@ jobs:
             echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].dmg" >> $GITHUB_OUTPUT
             echo "content_type=application/x-apple-diskimage" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].AppImage" >> $GITHUB_OUTPUT
-            echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].AppImage" >> $GITHUB_OUTPUT
+            echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].deb" >> $GITHUB_OUTPUT
+            echo "asset_path=./dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].deb" >> $GITHUB_OUTPUT
             echo "content_type=application/x-executable" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
             echo "asset_name=Wora [v${{ needs.check-version-change.outputs.new_version }}].exe" >> $GITHUB_OUTPUT
