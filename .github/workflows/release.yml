@@ -16,10 +16,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Fetch Latest LTS Node.js Version
+        id: get_lts_version
+        run: |
+          LTS_VERSION=$(curl -sL https://nodejs.org/download/release/latest-lts/ | grep -oP '(?<=node-)[^/]+(?=-linux-x64.tar.gz)')
+          echo "LTS_VERSION=$LTS_VERSION" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "lts"
+          node-version: ${{ env.LTS_VERSION }}
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -55,6 +61,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Fetch Latest LTS Node.js Version
+        id: get_lts_version
+        run: |
+          LTS_VERSION=$(curl -sL https://nodejs.org/download/release/latest-lts/ | grep -oP '(?<=node-)[^/]+(?=-linux-x64.tar.gz)')
+          echo "LTS_VERSION=$LTS_VERSION" >> $GITHUB_ENV
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.LTS_VERSION }}
+
       - name: Create Tag
         run: |
           NEW_VERSION=${{ needs.check_version_change.outputs.new_version }}
@@ -83,10 +100,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Fetch Latest LTS Node.js Version
+        id: get_lts_version
+        run: |
+          LTS_VERSION=$(curl -sL https://nodejs.org/download/release/latest-lts/ | grep -oP '(?<=node-)[^/]+(?=-linux-x64.tar.gz)')
+          echo "LTS_VERSION=$LTS_VERSION" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "lts"
+          node-version: ${{ env.LTS_VERSION }}
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -113,14 +136,4 @@ jobs:
           upload_url: ${{ needs.create_tag_and_release.outputs.upload_url }}
           asset_path: |
             case ${{ matrix.os }} in
-              ubuntu-*) echo dist/*.AppImage ;;
-              macos-*) echo dist/*.dmg ;;
-              windows-*) echo dist/*.exe ;;
-            esac
-          asset_name: |
-            case ${{ matrix.os }} in
-              ubuntu-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-linux.AppImage ;;
-              macos-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-mac.dmg ;;
-              windows-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-win.exe ;;
-            esac
-          asset_content_type: application/octet-stream
+              ubuntu-*) ec
