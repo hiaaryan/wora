@@ -151,6 +151,97 @@ export const searchDB = async (query: string) => {
   };
 };
 
+export const createPlaylist = async (data: any) => {
+  let description: string;
+  let coverArt: string;
+
+  if (data.description) {
+    description = data.description;
+  } else {
+    description = "An epic playlist created by you ✌️";
+  }
+
+  if (data.coverArt) {
+    coverArt = data.coverArt;
+  } else {
+    coverArt = "/coverArt.png";
+  }
+
+  const playlist = await db.insert(playlists).values({
+    name: data.name,
+    description: description,
+    coverArt: coverArt,
+  });
+
+  return playlist;
+};
+
+export const updatePlaylist = async (data: any) => {
+  let description: string;
+  let coverArt: string;
+
+  if (data.data.description) {
+    description = data.description;
+  } else {
+    description = "An epic playlist created by you ✌️";
+  }
+
+  if (data.coverArt) {
+    coverArt = data.data.coverArt;
+  } else {
+    coverArt = "/coverArt.png";
+  }
+
+  console.log(data);
+
+  const playlist = await db
+    .update(playlists)
+    .set({
+      name: data.data.name,
+      description: description,
+      coverArt: coverArt,
+    })
+    .where(eq(playlists.id, data.id));
+
+  return playlist;
+};
+
+export const addSongToPlaylist = async (playlistId: number, songId: number) => {
+  const checkIfExists = await db.query.playlistSongs.findFirst({
+    where: and(
+      eq(playlistSongs.playlistId, playlistId),
+      eq(playlistSongs.songId, songId),
+    ),
+  });
+
+  if (checkIfExists) {
+    return false;
+  }
+
+  const playlistSong = await db.insert(playlistSongs).values({
+    playlistId,
+    songId,
+  });
+
+  return true;
+};
+
+export const removeSongFromPlaylist = async (
+  playlistId: number,
+  songId: number,
+) => {
+  const playlistSong = await db
+    .delete(playlistSongs)
+    .where(
+      and(
+        eq(playlistSongs.playlistId, playlistId),
+        eq(playlistSongs.songId, songId),
+      ),
+    );
+
+  return true;
+};
+
 const audioExtensions = [
   ".mp3",
   ".mpeg",
@@ -304,7 +395,7 @@ export const initializeData = async (musicFolder: string) => {
     await db.insert(playlists).values({
       name: "Favourites",
       coverArt: "/favouritesCoverArt.png",
-      description: "Songs Liked by You 🎧",
+      description: "Songs liked by you ❤️",
     });
   }
 

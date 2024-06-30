@@ -12,8 +12,6 @@ export default function Playlists() {
     });
   }, []);
 
-  const favouritesPlaylist = playlists.find((playlist) => playlist.id === 1);
-
   return (
     <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">
       <div className="flex flex-col gap-8">
