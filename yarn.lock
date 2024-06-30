@@ -5331,16 +5331,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^30.1.2":
-  version: 30.1.2
-  resolution: "electron@npm:30.1.2"
+"electron@npm:^31.1.0":
+  version: 31.1.0
+  resolution: "electron@npm:31.1.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/7cf9e11b54044021569e481a1bdfa4cca07c5c3e24a23ddc402f3aff6bda9d1f200140f9d6e3d7d9c76d4a34b0d8211828705ad8990cfba6429eb077db91d7b3
+  checksum: 10c0/b9ae6f9d1a13e15cf0b7981f1231dc2c79f3465c4db822750daf6f2533524fe2ddf6f0b173c8d0c3549ef6bf21a9ff3eb362838b06deb4f795e71d5e5a307f16
   languageName: node
   linkType: hard
 
@@ -10546,7 +10546,7 @@ __metadata:
     discord-auto-rpc: "npm:^1.0.17"
     drizzle-kit: "npm:^0.22.8"
     drizzle-orm: "npm:^0.31.2"
-    electron: "npm:^30.1.2"
+    electron: "npm:^31.1.0"
     electron-builder: "npm:^24.13.3"
     electron-serve: "npm:^1.3.0"
     electron-store: "npm:^8.2.0"
