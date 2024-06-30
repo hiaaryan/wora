@@ -2,8 +2,11 @@
   "private": true,
   "name": "wora",
   "description": "🎧 A beautiful player for audiophiles.",
-  "version": "0.1.0",
-  "author": "Aaryan Kapoor",
+  "version": "0.1.1",
+  "author": {
+    "name": "Aaryan Kapoor",
+    "email": "hi.aaryankapoor@gmail.com"
+  },
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",

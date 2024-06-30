@@ -13,7 +13,6 @@ publish: null
 linux:
   target:
     - AppImage
-    - deb
   category: Audio
 snap:
   publish: never
