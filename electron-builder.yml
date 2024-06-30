@@ -10,6 +10,7 @@ files:
       - package.json
       - app
 publish: null
+artifactName: Wora [v${version}].${ext}
 fileAssociations:
   - ext: mp3
     name: MP3 Audio File
