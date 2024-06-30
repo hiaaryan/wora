@@ -52,7 +52,7 @@ jobs:
             yarn build:win64
           fi
         shell: bash
-      - name: List dist directory
+      - name: List Dist Directory
         run: ls -R dist
         shell: bash
       - name: Get Asset Path
