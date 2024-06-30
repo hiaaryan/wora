@@ -12,10 +12,7 @@ files:
       - package.json
       - app
 
-publish:
-  provider: github
-  owner: hiaaryan
-  repo: wora
+publish: never
 
 artifactName: Wora [v${version}].${ext}
 
