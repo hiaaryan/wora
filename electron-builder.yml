@@ -10,6 +10,13 @@ files:
       - package.json
       - app
 publish: null
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Audio
+snap:
+  publish: never
 artifactName: Wora [v${version}].${ext}
 fileAssociations:
   - ext: mp3
