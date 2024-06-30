@@ -1,6 +1,7 @@
 import {
   IconFocusCentered,
   IconInbox,
+  IconPlus,
   IconSearch,
   IconVinyl,
 } from "@tabler/icons-react";
@@ -150,6 +151,16 @@ const Navbar = () => {
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>
                 <p>Albums</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <Button variant="ghost" asChild>
+                  <IconPlus stroke={2} className="w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={55}>
+                <p>Create Playlist</p>
               </TooltipContent>
             </Tooltip>
           </div>
