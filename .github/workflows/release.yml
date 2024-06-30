@@ -52,18 +52,15 @@ jobs:
             yarn build:win64
           fi
         shell: bash
-      - name: List Dist Directory
-        run: ls -R dist
-        shell: bash
-      - name: Get Asset Path
+      - name: Get Asset Details
         id: get_asset
         run: |
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            echo "asset_path=${{ github.workspace }}/dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].dmg" >> $GITHUB_OUTPUT
+            echo "asset_path=./dist/*.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            echo "asset_path=${{ github.workspace }}/dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].deb" >> $GITHUB_OUTPUT
+            echo "asset_path=./dist/*.deb" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "asset_path=${{ github.workspace }}/dist/Wora [v${{ needs.check-version-change.outputs.new_version }}].exe" >> $GITHUB_OUTPUT
+            echo "asset_path=./dist/*.exe" >> $GITHUB_OUTPUT
           fi
         shell: bash
       - name: Release
