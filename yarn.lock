@@ -2907,9 +2907,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-tooltip@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@radix-ui/react-tooltip@npm:1.1.1"
+"@radix-ui/react-tooltip@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@radix-ui/react-tooltip@npm:1.1.2"
   dependencies:
     "@radix-ui/primitive": "npm:1.1.0"
     "@radix-ui/react-compose-refs": "npm:1.1.0"
@@ -2933,7 +2933,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 10c0/42965dd7b93d3e82cee80aa9d00ed52e73a97d56021e7b868dc6bc69574a3c1c049495f5009b3c786919fb7d3af1ac7d69c2fc4013687e9dcdc937e60f2bdc35
+  checksum: 10c0/76f3abcd27f7f673612631abc340a17e6ab0e5d20b901fe4828400de05d4d8a8711392417b028be86a3053a0881b80d0ed41c4e027eb64c1af9fe74db70d3786
   languageName: node
   linkType: hard
 
@@ -3627,58 +3627,6 @@ __metadata:
   checksum: 10c0/8582cbc69c79ad2d31568c412129bf23d2b1210a1dfb60c82d5a1df93334da4ee51f3057051658569e2c196d8dc33bc05ae6b974a711d0d16e801e1d0647ccd1
   languageName: node
   linkType: hard
-
-"Wora@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "Wora@workspace:."
-  dependencies:
-    "@electron/rebuild": "npm:^3.6.0"
-    "@radix-ui/react-avatar": "npm:^1.1.0"
-    "@radix-ui/react-context-menu": "npm:^2.2.1"
-    "@radix-ui/react-dialog": "npm:^1.1.1"
-    "@radix-ui/react-progress": "npm:^1.1.0"
-    "@radix-ui/react-scroll-area": "npm:^1.1.0"
-    "@radix-ui/react-slider": "npm:^1.2.0"
-    "@radix-ui/react-slot": "npm:^1.1.0"
-    "@radix-ui/react-tabs": "npm:^1.1.0"
-    "@radix-ui/react-tooltip": "npm:^1.1.1"
-    "@tabler/icons-react": "npm:^3.7.0"
-    "@types/better-sqlite3": "npm:^7.6.10"
-    "@types/howler": "npm:^2.2.11"
-    "@types/node": "npm:^20.14.9"
-    "@types/react": "npm:^18.3.3"
-    autoprefixer: "npm:^10.4.19"
-    axios: "npm:^1.7.2"
-    better-sqlite3: "npm:^11.1.1"
-    class-variance-authority: "npm:^0.7.0"
-    clsx: "npm:^2.1.1"
-    cmdk: "npm:^1.0.0"
-    discord-auto-rpc: "npm:^1.0.17"
-    drizzle-kit: "npm:^0.22.7"
-    drizzle-orm: "npm:^0.31.2"
-    electron: "npm:^31.1.0"
-    electron-builder: "npm:^24.13.3"
-    electron-serve: "npm:^1.3.0"
-    electron-store: "npm:^8.2.0"
-    embla-carousel-react: "npm:^8.1.5"
-    eslint-config-next: "npm:^14.2.4"
-    howler: "npm:^2.2.4"
-    music-metadata: "npm:^7.14.0"
-    next: "npm:^14.2.4"
-    nextron: "npm:^9.1.0"
-    postcss: "npm:^8.4.38"
-    prettier: "npm:^3.3.2"
-    prettier-plugin-tailwindcss: "npm:^0.6.5"
-    react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
-    rebuild: "npm:^0.1.2"
-    tailwind-gradient-mask-image: "npm:^1.2.0"
-    tailwind-merge: "npm:^2.3.0"
-    tailwindcss: "npm:^3.4.4"
-    tailwindcss-animate: "npm:^1.0.7"
-    typescript: "npm:^5.5.2"
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^1.0.0":
   version: 1.1.1
@@ -5204,16 +5152,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"drizzle-kit@npm:^0.22.7":
-  version: 0.22.7
-  resolution: "drizzle-kit@npm:0.22.7"
+"drizzle-kit@npm:^0.22.8":
+  version: 0.22.8
+  resolution: "drizzle-kit@npm:0.22.8"
   dependencies:
     "@esbuild-kit/esm-loader": "npm:^2.5.5"
     esbuild: "npm:^0.19.7"
     esbuild-register: "npm:^3.5.0"
   bin:
     drizzle-kit: bin.cjs
-  checksum: 10c0/535d22abc657b78438124770210edec5e9d820c8fe07e61aba45ce754a6be2f63ae0328c4daf37884b981d9aea3889b3f0566be7f67290da6257383c07fd6fcc
+  checksum: 10c0/e3bbda283de8d3985644d771fe773fcee3f31dd485cb3d32af077c52a088580921fcaae3f7b383279f8799b223d74701ebc4866b6e4952c8c813cd0cb5f80908
   languageName: node
   linkType: hard
 
@@ -5383,16 +5331,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^31.1.0":
-  version: 31.1.0
-  resolution: "electron@npm:31.1.0"
+"electron@npm:^30.1.2":
+  version: 30.1.2
+  resolution: "electron@npm:30.1.2"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/b9ae6f9d1a13e15cf0b7981f1231dc2c79f3465c4db822750daf6f2533524fe2ddf6f0b173c8d0c3549ef6bf21a9ff3eb362838b06deb4f795e71d5e5a307f16
+  checksum: 10c0/7cf9e11b54044021569e481a1bdfa4cca07c5c3e24a23ddc402f3aff6bda9d1f200140f9d6e3d7d9c76d4a34b0d8211828705ad8990cfba6429eb077db91d7b3
   languageName: node
   linkType: hard
 
@@ -8614,7 +8562,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.23, postcss@npm:^8.4.38":
+"postcss@npm:^8.4.23":
   version: 8.4.38
   resolution: "postcss@npm:8.4.38"
   dependencies:
@@ -8622,6 +8570,17 @@ __metadata:
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.2.0"
   checksum: 10c0/955407b8f70cf0c14acf35dab3615899a2a60a26718a63c848cf3c29f2467b0533991b985a2b994430d890bd7ec2b1963e36352b0774a19143b5f591540f7c06
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.39":
+  version: 8.4.39
+  resolution: "postcss@npm:8.4.39"
+  dependencies:
+    nanoid: "npm:^3.3.7"
+    picocolors: "npm:^1.0.1"
+    source-map-js: "npm:^1.2.0"
+  checksum: 10c0/16f5ac3c4e32ee76d1582b3c0dcf1a1fdb91334a45ad755eeb881ccc50318fb8d64047de4f1601ac96e30061df203f0f2e2edbdc0bfc49b9c57bc9fb9bedaea3
   languageName: node
   linkType: hard
 
@@ -10558,6 +10517,58 @@ __metadata:
   checksum: 10c0/08f70cd97dd9a20aea280847a1fe8148e17cae7d231640e41eb26d2388697cbe65b67fd9e68715251c39b080c5ae4f76d71a9a69fa101d897273efdfb1b58bf7
   languageName: node
   linkType: hard
+
+"wora@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "wora@workspace:."
+  dependencies:
+    "@electron/rebuild": "npm:^3.6.0"
+    "@radix-ui/react-avatar": "npm:^1.1.0"
+    "@radix-ui/react-context-menu": "npm:^2.2.1"
+    "@radix-ui/react-dialog": "npm:^1.1.1"
+    "@radix-ui/react-progress": "npm:^1.1.0"
+    "@radix-ui/react-scroll-area": "npm:^1.1.0"
+    "@radix-ui/react-slider": "npm:^1.2.0"
+    "@radix-ui/react-slot": "npm:^1.1.0"
+    "@radix-ui/react-tabs": "npm:^1.1.0"
+    "@radix-ui/react-tooltip": "npm:^1.1.2"
+    "@tabler/icons-react": "npm:^3.7.0"
+    "@types/better-sqlite3": "npm:^7.6.10"
+    "@types/howler": "npm:^2.2.11"
+    "@types/node": "npm:^20.14.9"
+    "@types/react": "npm:^18.3.3"
+    autoprefixer: "npm:^10.4.19"
+    axios: "npm:^1.7.2"
+    better-sqlite3: "npm:^11.1.1"
+    class-variance-authority: "npm:^0.7.0"
+    clsx: "npm:^2.1.1"
+    cmdk: "npm:^1.0.0"
+    discord-auto-rpc: "npm:^1.0.17"
+    drizzle-kit: "npm:^0.22.8"
+    drizzle-orm: "npm:^0.31.2"
+    electron: "npm:^30.1.2"
+    electron-builder: "npm:^24.13.3"
+    electron-serve: "npm:^1.3.0"
+    electron-store: "npm:^8.2.0"
+    embla-carousel-react: "npm:^8.1.5"
+    eslint-config-next: "npm:^14.2.4"
+    howler: "npm:^2.2.4"
+    music-metadata: "npm:^7.14.0"
+    next: "npm:^14.2.4"
+    nextron: "npm:^9.1.0"
+    postcss: "npm:^8.4.39"
+    prettier: "npm:^3.3.2"
+    prettier-plugin-tailwindcss: "npm:^0.6.5"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    rebuild: "npm:^0.1.2"
+    tailwind-gradient-mask-image: "npm:^1.2.0"
+    tailwind-merge: "npm:^2.3.0"
+    tailwindcss: "npm:^3.4.4"
+    tailwindcss-animate: "npm:^1.0.7"
+    typescript: "npm:^5.5.2"
+  languageName: unknown
+  linkType: soft
 
 "wordwrap@npm:~0.0.2":
   version: 0.0.3

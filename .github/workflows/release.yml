@@ -1,0 +1,126 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check_version_change:
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.check_version.outputs.version_changed }}
+      new_version: ${{ steps.check_version.outputs.new_version }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn/cache
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check for version change
+        id: check_version
+        run: |
+          git fetch --depth=2 origin main
+          PREV_VERSION=$(jq -r '.version' <(git show HEAD~1:package.json))
+          NEW_VERSION=$(jq -r '.version' package.json)
+          DEPENDENCIES_CHANGED=$(git diff --name-only HEAD~1 | grep -c 'package.json' || true)
+          if [ "$PREV_VERSION" != "$NEW_VERSION" ] && [ "$DEPENDENCIES_CHANGED" -eq 1 ]; then
+            echo "::set-output name=version_changed::true"
+            echo "::set-output name=new_version::$NEW_VERSION"
+          else
+            echo "::set-output name=version_changed::false"
+          fi
+
+  create_tag_and_release:
+    if: needs.check_version_change.outputs.version_changed == 'true'
+    runs-on: ubuntu-latest
+    needs: check_version_change
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Create Tag
+        run: |
+          NEW_VERSION=${{ needs.check_version_change.outputs.new_version }}
+          git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
+          git push origin "v$NEW_VERSION"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: "v${{ needs.check_version_change.outputs.new_version }}"
+          release_name: "v${{ needs.check_version_change.outputs.new_version }}"
+          body: "Release of version v${{ needs.check_version_change.outputs.new_version }}"
+          draft: false
+          prerelease: false
+
+  build_and_upload_artifacts:
+    if: needs.check_version_change.outputs.version_changed == 'true'
+    runs-on: ubuntu-latest
+    needs: create_tag_and_release
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn/cache
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build Application
+        run: |
+          case ${{ matrix.os }} in
+            ubuntu-*) yarn build:linux ;;
+            macos-*) yarn build:mac ;;
+            windows-*) yarn build:win64 ;;
+          esac
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ needs.create_tag_and_release.outputs.upload_url }}
+          asset_path: |
+            case ${{ matrix.os }} in
+              ubuntu-*) echo dist/*.AppImage ;;
+              macos-*) echo dist/*.dmg ;;
+              windows-*) echo dist/*.exe ;;
+            esac
+          asset_name: |
+            case ${{ matrix.os }} in
+              ubuntu-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-linux.AppImage ;;
+              macos-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-mac.dmg ;;
+              windows-*) echo ${{ github.event.repository.name }}-${{ needs.check_version_change.outputs.new_version }}-win.exe ;;
+            esac
+          asset_content_type: application/octet-stream

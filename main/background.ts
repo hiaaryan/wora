@@ -22,6 +22,7 @@ import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
 
 const isProd = process.env.NODE_ENV === "production";
+const isMac = process.platform === "darwin";
 
 if (isProd) {
   serve({ directory: "app" });
@@ -56,7 +57,7 @@ let settings: any;
 (async () => {
   await app.whenReady();
 
-  // @hiaaryan: Using Depreciated API [Seeking Not Supported with Newer API]
+  // @hiaaryan: Using Depreciated API [Seeking Not Supported with Net]
   protocol.registerFileProtocol("music", (request, callback) => {
     const url = request.url.replace("music://", "");
     callback({ path: url });
@@ -66,7 +67,7 @@ let settings: any;
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
-    transparent: true,
+    transparent: isMac,
     trafficLightPosition: { x: 20, y: 15 },
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {

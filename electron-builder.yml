@@ -12,32 +12,32 @@ files:
 publish: null
 fileAssociations:
   - ext: mp3
-    name: MP3 audio file
+    name: MP3 Audio File
   - ext: mpeg
-    name: MPEG audio file
+    name: MPEG Audio File
   - ext: opus
-    name: Opus audio file
+    name: Opus Audio File
   - ext: ogg
-    name: OGG audio file
+    name: OGG Audio File
   - ext: oga
-    name: OGA audio file
+    name: OGA Audio File
   - ext: wav
-    name: WAV audio file
+    name: WAV Audio File
   - ext: aac
-    name: AAC audio file
+    name: AAC Audio File
   - ext: caf
-    name: CAF audio file
+    name: CAF Audio File
   - ext: m4a
-    name: M4A audio file
+    name: M4A Audio File
   - ext: m4b
-    name: M4B audio file
+    name: M4B Audio File
   - ext: mp4
-    name: MP4 audio file
+    name: MP4 Audio File
   - ext: weba
-    name: WEBA audio file
+    name: WEBA Audio File
   - ext: webm
-    name: WEBM audio file
+    name: WEBM Audio File
   - ext: dolby
-    name: Dolby audio file
+    name: Dolby Audio File
   - ext: flac
-    name: FLAC audio file
+    name: FLAC Audio File

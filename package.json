@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "Wora",
+  "name": "wora",
   "description": "🎧 A beautiful player for audiophiles.",
   "version": "0.1.0",
   "author": "Aaryan Kapoor",
@@ -8,6 +8,9 @@
   "scripts": {
     "dev": "nextron",
     "build": "nextron build",
+    "build:mac": "nextron build --mac --universal",
+    "build:linux": "nextron build --linux",
+    "build:win64": "nextron build --win --x64",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -19,7 +22,7 @@
     "@radix-ui/react-slider": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
-    "@radix-ui/react-tooltip": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
     "@tabler/icons-react": "^3.7.0",
     "@types/better-sqlite3": "^7.6.10",
     "axios": "^1.7.2",
@@ -45,12 +48,12 @@
     "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.19",
-    "drizzle-kit": "^0.22.7",
-    "electron": "^31.1.0",
+    "drizzle-kit": "^0.22.8",
+    "electron": "^30.1.2",
     "electron-builder": "^24.13.3",
     "next": "^14.2.4",
     "nextron": "^9.1.0",
-    "postcss": "^8.4.38",
+    "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "react": "^18.3.1",
