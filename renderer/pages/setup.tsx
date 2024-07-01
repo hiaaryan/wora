@@ -3,22 +3,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useRouter } from "next/router";
-import Spinner from "@/components/ui/spinner";
-import { useState } from "react";
 
 export default function Setup() {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleClick = () => {
-    setLoading(true);
-    window.ipc
-      .invoke("setMusicFolder", true)
-      .then((response) => {
-        if (response) return;
-        router.push("/home");
-      })
-      .catch(() => setLoading(false));
+    window.ipc.invoke("setMusicFolder", true).then((response) => {
+      if (response) return;
+
+      router.push("/home");
+    });
   };
 
   return (
@@ -39,15 +33,11 @@ export default function Setup() {
             </div>
           </div>
           <Button
-            className="absolute bottom-8 left-8 w-40 justify-between"
+            className="absolute bottom-8 left-8 w-48 justify-between"
             onClick={handleClick}
           >
             Get Started
-            {loading ? (
-              <Spinner className="h-3.5 w-3.5" />
-            ) : (
-              <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
-            )}
+            <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>

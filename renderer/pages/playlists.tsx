@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { IconHeart, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 
 export default function Playlists() {
@@ -11,6 +12,8 @@ export default function Playlists() {
       setPlaylists(response);
     });
   }, []);
+
+  const favouritesPlaylist = playlists.find((playlist) => playlist.id === 1);
 
   return (
     <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">

@@ -1,8 +1,6 @@
 import {
-  IconArrowRight,
   IconFocusCentered,
   IconInbox,
-  IconPlus,
   IconSearch,
   IconVinyl,
 } from "@tabler/icons-react";
@@ -28,36 +26,10 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { usePlayer } from "@/context/playerContext";
 import Spinner from "./spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./dialog";
-import { Input } from "./input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Playlist name must be at least 2 characters.",
-  }),
-  description: z.string().optional(),
-});
 
 const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -91,12 +63,9 @@ const Navbar = () => {
         const songs = response.searchSongs;
 
         setSearchResults([
-          ...playlists.map((playlist: any) => ({
-            ...playlist,
-            type: "Playlist",
-          })),
-          ...albums.map((album: any) => ({ ...album, type: "Album" })),
-          ...songs.map((song: any) => ({ ...song, type: "Song" })),
+          ...playlists.map((playlist) => ({ ...playlist, type: "Playlist" })),
+          ...albums.map((album) => ({ ...album, type: "Album" })),
+          ...songs.map((song) => ({ ...song, type: "Song" })),
         ]);
 
         setLoading(false);
@@ -108,7 +77,7 @@ const Navbar = () => {
 
   const openSearch = () => setOpen(true);
 
-  const handleItemClick = (item: any) => {
+  const handleItemClick = (item) => {
     if (item.type === "Album") {
       router.push(`/albums/${item.id}`);
     } else if (item.type === "Song") {
@@ -116,22 +85,6 @@ const Navbar = () => {
     }
     setOpen(false);
   };
-
-  const createPlaylist = (data: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    window.ipc
-      .invoke("createPlaylist", data)
-      .then((response) => {
-        setDialogOpen(false);
-        setLoading(false);
-        router.push(`/playlists/${response.lastInsertRowid}`);
-      })
-      .catch(() => setLoading(false));
-  };
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
 
   return (
     <div className="wora-border h-full w-20 rounded-xl p-6">
@@ -199,86 +152,8 @@ const Navbar = () => {
                 <p>Albums</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger onClick={() => setDialogOpen(true)}>
-                <Button variant="ghost" asChild>
-                  <IconPlus stroke={2} className="w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
-                <p>Create Playlist</p>
-              </TooltipContent>
-            </Tooltip>
           </div>
         </TooltipProvider>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent>
-            <div className="flex h-full w-full items-start gap-6">
-              <div className="jusitfy-between flex h-full w-full flex-col gap-4">
-                <DialogHeader>
-                  <DialogTitle>Create Playlist</DialogTitle>
-                  <DialogDescription>
-                    Add a new playlist to your library.
-                  </DialogDescription>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(createPlaylist)}
-                    className="flex gap-4 text-xs"
-                  >
-                    <div className="h-full">
-                      <div className="relative h-36 w-36 overflow-hidden rounded-lg">
-                        <Image
-                          alt="album"
-                          src="/coverArt.png"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex h-full w-full flex-col items-end gap-4">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem className="w-full">
-                            <FormControl>
-                              <Input placeholder="Name" {...field} />
-                            </FormControl>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem className="w-full">
-                            <FormControl>
-                              <Input placeholder="Description" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        className="w-fit justify-between text-xs"
-                        type="submit"
-                      >
-                        Create Playlist
-                        {loading ? (
-                          <Spinner className="h-3.5 w-3.5" />
-                        ) : (
-                          <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
         <CommandDialog open={open} onOpenChange={setOpen}>
           <Command>
             <CommandInput
@@ -289,7 +164,7 @@ const Navbar = () => {
             <CommandList>
               {loading && (
                 <div className="flex h-[325px] w-full items-center justify-center text-white">
-                  <Spinner className="h-8 w-8" />
+                  <Spinner />
                 </div>
               )}
               {search && !loading && (

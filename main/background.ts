@@ -5,20 +5,18 @@ import { createWindow } from "./helpers";
 import { protocol } from "electron";
 import { AutoClient } from "discord-auto-rpc";
 import {
-  addSongToPlaylist,
   addToFavourites,
-  createPlaylist,
+  getAlbumSongs,
   getAlbumWithSongs,
   getAlbums,
   getAlbumsWithSongs,
   getPlaylistWithSongs,
   getPlaylists,
   getSettings,
+  getSongs,
   initializeData,
   isSongFavorite,
-  removeSongFromPlaylist,
   searchDB,
-  updatePlaylist,
 } from "./helpers/db/connectDB";
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
@@ -205,26 +203,6 @@ ipcMain.on("addToFavourites", async (_, id: number) => {
 ipcMain.handle("search", async (_, query: string) => {
   const results = await searchDB(query);
   return results;
-});
-
-ipcMain.handle("createPlaylist", async (_, data: any) => {
-  const playlist = await createPlaylist(data);
-  return playlist;
-});
-
-ipcMain.handle("updatePlaylist", async (_, data: any) => {
-  const playlist = await updatePlaylist(data);
-  return playlist;
-});
-
-ipcMain.handle("addSongToPlaylist", async (_, data: any) => {
-  const add = await addSongToPlaylist(data.playlistId, data.songId);
-  return add;
-});
-
-ipcMain.handle("removeSongFromPlaylist", async (_, data: any) => {
-  const remove = await removeSongFromPlaylist(data.playlistId, data.songId);
-  return remove;
 });
 
 app.on("window-all-closed", () => {

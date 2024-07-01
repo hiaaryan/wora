@@ -6,7 +6,6 @@ import Player from "@/components/ui/player";
 import Head from "next/head";
 import { PlayerProvider } from "@/context/playerContext";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
@@ -21,17 +20,13 @@ export default function App({ Component, pageProps }) {
     );
   }
 
-  useEffect(() => {
-    document.body.classList.add(mavenPro.className);
-  }, []);
-
   return (
-    <main className="select-none bg-black text-xs text-white antialiased">
+    <main className={`${mavenPro.className} select-none outline-none ring-0`}>
       <Head>
         <title>Wora</title>
       </Head>
       <PlayerProvider>
-        <div className="h-dvh w-dvw">
+        <div className="h-dvh w-dvw rounded bg-black text-xs text-white antialiased">
           <div>
             <Actions />
             <div className="flex gap-8">

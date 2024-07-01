@@ -17,11 +17,9 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-context-menu": "^2.2.1",
     "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.0",
@@ -43,13 +41,9 @@
     "eslint-config-next": "^14.2.4",
     "howler": "^2.2.4",
     "music-metadata": "^7.14.0",
-    "next-themes": "^0.3.0",
-    "react-hook-form": "^7.52.0",
-    "sonner": "^1.5.0",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
