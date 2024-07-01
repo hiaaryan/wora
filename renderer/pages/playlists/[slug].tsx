@@ -75,7 +75,7 @@ export default function Playlist() {
   const router = useRouter();
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
@@ -83,7 +83,6 @@ export default function Playlist() {
     window.ipc
       .invoke("getPlaylistWithSongs", router.query.slug)
       .then((response) => {
-        setLoading(false);
         setPlaylist(response);
       });
   }, [router.query.slug]);
