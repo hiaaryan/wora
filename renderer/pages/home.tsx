@@ -9,7 +9,7 @@ export default function Home() {
           <div className="flex flex-col">
             <div className="mt-4 text-base font-medium">Home</div>
             <div className="opacity-50">
-              Hey Aaryan! Ready for a Jam Session?
+              The coolest music library in the world.
             </div>
           </div>
           <div className="relative flex h-72 w-full gap-8">

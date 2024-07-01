@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/hiaaryan/wora"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/hiaaryan/wora/release.yml"></a>
   <a href="https://github.com/hiaaryan/wora"><img src="https://img.shields.io/github/last-commit/hiaaryan/wora/main?commit" alt="Last Commit" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora?license" alt="License" /></a>
   <a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord" /></a>

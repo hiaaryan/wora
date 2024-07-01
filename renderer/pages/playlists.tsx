@@ -19,7 +19,7 @@ export default function Playlists() {
           <div className="flex flex-col">
             <div className="mt-4 text-base font-medium">Playlists</div>
             <div className="opacity-50">
-              Hey Aaryan! Ready for a Jam Session?
+              Most awesome, epic playlists created by you.
             </div>
           </div>
           <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">

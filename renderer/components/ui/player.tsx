@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import {
   IconArrowsShuffle2,
+  IconClock,
   IconHeart,
   IconInfoCircle,
   IconListTree,
@@ -43,6 +44,7 @@ import { useAudioMetadata } from "@/lib/helpers";
 import { Badge } from "../ui/badge";
 import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 function Player() {
   const [play, setPlay] = useState(false);
@@ -85,6 +87,11 @@ function Player() {
         setSeek(0);
         setPlay(true);
       },
+      onloaderror: (error) => {
+        resetDiscordState();
+        setPlay(false);
+        console.log(error);
+      },
       onend: () => {
         resetDiscordState();
         setPlay(false);
@@ -109,7 +116,7 @@ function Player() {
 
   useEffect(() => {
     // @hiaaryan: Update media session metadata and seek position, handle play/pause.
-    if (!metadata) return resetDiscordState();
+    if (!metadata) return;
     if (!soundRef.current) return;
 
     const updateSeek = () => {
@@ -284,34 +291,85 @@ function Player() {
           </div>
         )}
       </div>
-      <div className="!absolute right-0 top-0 w-1/3">
+      <div className="!absolute right-0 top-0 w-96">
         {showQueue && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
-            <div className="justify-right h-utility no-scrollbar flex h-full w-full max-w-3xl flex-col gap-4 overflow-hidden overflow-y-auto px-8 font-medium gradient-mask-b-70">
-              <div className="flex flex-col gap-4 pb-32 pt-8">
-                {queue.slice(currentIndex + 1).map((song) => (
-                  <li
-                    key={song.id}
-                    className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
-                  >
-                    <div className="relative h-14 w-14 overflow-hidden rounded-lg">
-                      <Image
-                        alt="Album Cover"
-                        src={song.album.coverArt}
-                        fill
-                        priority={true}
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="w-4/5 overflow-hidden">
-                      <p className="text-nowrap text-sm font-medium">
-                        {song.name}
-                      </p>
-                      <p className="text-nowrap opacity-50">{song.artist}</p>
-                    </div>
-                  </li>
-                ))}
-              </div>
+          <div className="wora-border h-utility relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+            <div className="h-full w-full max-w-3xl px-6 pt-6">
+              <Tabs
+                defaultValue="queue"
+                className="flex h-full w-full flex-col gap-4 gradient-mask-b-70"
+              >
+                <TabsList className="w-full">
+                  <TabsTrigger value="queue" className="w-full gap-2">
+                    <IconListTree stroke={2} size={15} /> Queue
+                  </TabsTrigger>
+                  <TabsTrigger value="history" className="w-full gap-2">
+                    <IconClock stroke={2} size={15} /> History
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent
+                  value="queue"
+                  className="no-scrollbar flex-grow overflow-y-auto pb-64"
+                >
+                  <ul className="flex flex-col gap-4">
+                    {queue.slice(currentIndex + 1).map((song) => (
+                      <li
+                        key={song.id}
+                        className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
+                      >
+                        <div className="relative h-14 w-14 overflow-hidden rounded-lg">
+                          <Image
+                            alt="Album Cover"
+                            src={song.album.coverArt}
+                            fill
+                            priority={true}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="w-4/5 overflow-hidden">
+                          <p className="text-nowrap text-sm font-medium">
+                            {song.name}
+                          </p>
+                          <p className="text-nowrap opacity-50">
+                            {song.artist}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </TabsContent>
+                <TabsContent
+                  value="history"
+                  className="no-scrollbar flex-grow overflow-y-auto pb-64"
+                >
+                  <ul className="flex flex-col gap-4">
+                    {[...history].reverse().map((song) => (
+                      <li
+                        key={song.id}
+                        className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
+                      >
+                        <div className="relative h-14 w-14 overflow-hidden rounded-lg">
+                          <Image
+                            alt="Album Cover"
+                            src={song.album.coverArt}
+                            fill
+                            priority={true}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="w-4/5 overflow-hidden">
+                          <p className="text-nowrap text-sm font-medium">
+                            {song.name}
+                          </p>
+                          <p className="text-nowrap opacity-50">
+                            {song.artist}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         )}
@@ -510,56 +568,70 @@ function Player() {
                   <DialogTrigger className="opacity-30 duration-500 hover:opacity-100">
                     <IconInfoCircle stroke={2} size={15} />
                   </DialogTrigger>
-                  <DialogContent className="flex w-full items-start gap-6">
-                    <div className="w-1/3">
-                      <div className="relative h-36 w-36 overflow-hidden rounded-lg transition duration-500">
-                        <Image
-                          alt="album"
-                          src={cover}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex w-2/3 flex-col gap-4">
-                      <DialogHeader>
-                        <DialogTitle>Track Information</DialogTitle>
-                        <DialogDescription>
-                          {metadata && metadata.common.title} [
-                          {metadata && metadata.format.codec}]
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex flex-col gap-0.5 overflow-hidden text-xs gradient-mask-r-70">
-                        <p className="text-nowrap">
-                          <span className="opacity-50">Artist:</span>{" "}
-                          {metadata && metadata.common.artist}
-                        </p>
-                        <p className="text-nowrap">
-                          <span className="opacity-50">Album:</span>{" "}
-                          {metadata && metadata.common.album}
-                        </p>
-                        <p className="text-nowrap">
-                          <span className="opacity-50">Codec:</span>{" "}
-                          {metadata && metadata.format.codec}
-                        </p>
-                        {metadata && metadata.format.lossless ? (
-                          <p className="text-nowrap">
-                            <span className="opacity-50">Sample:</span> Lossless
-                            [{metadata && metadata.format.bitsPerSample}/
-                            {metadata &&
-                              (metadata.format.sampleRate / 1000).toFixed(1)}
-                            kHz]
-                          </p>
-                        ) : (
-                          <p className="text-nowrap">
-                            <span className="opacity-50">Sample:</span> Lossy
-                            Audio
-                          </p>
-                        )}
-                        <p className="text-nowrap">
-                          <span className="opacity-50">Duration:</span>{" "}
-                          {convertTime(soundRef.current?.duration())}
-                        </p>
+                  <DialogContent>
+                    <div className="flex h-full w-full items-start gap-6 overflow-hidden gradient-mask-r-70">
+                      <div className="jusitfy-between flex h-full w-full flex-col gap-4">
+                        <DialogHeader>
+                          <DialogTitle>Track Information</DialogTitle>
+                          <DialogDescription>
+                            All the deets for your currently playing song.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex gap-4 overflow-hidden text-xs">
+                          <div className="h-full">
+                            <div className="relative h-36 w-36 overflow-hidden rounded-lg">
+                              <Image
+                                alt="album"
+                                src={cover}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex h-full w-full flex-col gap-1">
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Name:</span>{" "}
+                              {metadata && metadata.common.title}
+                            </p>
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Artist:</span>{" "}
+                              {metadata && metadata.common.artist}
+                            </p>
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Album:</span>{" "}
+                              {metadata && metadata.common.album}
+                            </p>
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Codec:</span>{" "}
+                              {metadata && metadata.format.codec}
+                            </p>
+                            {metadata && metadata.format.lossless ? (
+                              <p className="text-nowrap">
+                                <span className="opacity-50">Sample:</span>{" "}
+                                Lossless [
+                                {metadata && metadata.format.bitsPerSample}/
+                                {metadata &&
+                                  (metadata.format.sampleRate / 1000).toFixed(
+                                    1,
+                                  )}
+                                kHz]
+                              </p>
+                            ) : (
+                              <p className="text-nowrap">
+                                <span className="opacity-50">Sample:</span>{" "}
+                                Lossy Audio
+                              </p>
+                            )}
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Duration:</span>{" "}
+                              {convertTime(soundRef.current?.duration())}
+                            </p>
+                            <p className="text-nowrap">
+                              <span className="opacity-50">Genre:</span>{" "}
+                              {(metadata && metadata.common.genre) || "Unknown"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </DialogContent>

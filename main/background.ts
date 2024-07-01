@@ -10,7 +10,6 @@ import {
   createPlaylist,
   getAlbumWithSongs,
   getAlbums,
-  getAlbumsWithSongs,
   getPlaylistWithSongs,
   getPlaylists,
   getSettings,
@@ -24,25 +23,13 @@ import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
 
 const isProd = process.env.NODE_ENV === "production";
-const isMac = process.platform === "darwin";
+process.traceProcessWarnings = true;
 
 if (isProd) {
   serve({ directory: "app" });
 } else {
   app.setPath("userData", `${app.getPath("userData")} (development)`);
 }
-
-// @hiaaryan: Allow Streaming Music Files on Custom Protocol
-protocol.registerSchemesAsPrivileged([
-  {
-    scheme: "music",
-    privileges: {
-      secure: true,
-      supportFetchAPI: true,
-      stream: true,
-    },
-  },
-]);
 
 let settings: any;
 
@@ -61,15 +48,13 @@ let settings: any;
 
   // @hiaaryan: Using Depreciated API [Seeking Not Supported with Net]
   protocol.registerFileProtocol("music", (request, callback) => {
-    const url = request.url.replace("music://", "");
-    callback({ path: url });
+    callback(request.url.slice("music://".length));
   });
 
   const mainWindow = createWindow("main", {
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
-    transparent: isMac,
     trafficLightPosition: { x: 20, y: 15 },
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {
@@ -101,22 +86,19 @@ let settings: any;
 // @hiaaryan: Initialize Discord RPC
 const client = new AutoClient({ transport: "ipc" });
 ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
-  const setActivity = () => {
-    const activity = {
-      details,
-      state,
-      largeImageKey: "logo",
-      largeImageText: `v${app.getVersion()}`,
-      instance: false,
-    };
-
-    if (timestamp) {
-      (activity as any).startTimestamp = Date.now();
-    }
-
-    client.setActivity(activity);
+  const setActivity = {
+    details,
+    state,
+    largeImageKey: "logo",
+    largeImageText: `v${app.getVersion()}`,
+    instance: false,
   };
-  setActivity();
+
+  if (timestamp) {
+    (setActivity as any).startTimestamp = Date.now();
+  }
+
+  client.setActivity(setActivity);
 });
 client.endlessLogin({ clientId: "1243707416588320800" });
 
@@ -166,11 +148,6 @@ ipcMain.handle("getAllAlbums", async () => {
 ipcMain.handle("getAllPlaylists", async () => {
   const playlists = await getPlaylists();
   return playlists;
-});
-
-ipcMain.handle("getAlbumsWithSongs", async () => {
-  const albumsWithSongs = await getAlbumsWithSongs();
-  return albumsWithSongs;
 });
 
 ipcMain.handle("getAlbumWithSongs", async (_, id: number) => {
@@ -230,10 +207,3 @@ ipcMain.handle("removeSongFromPlaylist", async (_, data: any) => {
 app.on("window-all-closed", () => {
   app.quit();
 });
-
-import log from "electron-log/main";
-
-// Optional, initialize the logger for any renderer process
-log.initialize();
-
-log.info("Log from the main process");

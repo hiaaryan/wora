@@ -139,15 +139,10 @@ export const searchDB = async (query: string) => {
     where: like(songs.name, `%${lowerSearch}%`),
   });
 
-  const searchArtists = await db.query.songs.findMany({
-    where: like(songs.artist, `%${lowerSearch}%`),
-  });
-
   return {
     searchAlbums,
     searchPlaylists,
     searchSongs,
-    searchArtists,
   };
 };
 

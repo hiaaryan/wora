@@ -20,9 +20,7 @@ export default function Albums() {
         <div className="flex flex-col gap-8">
           <div className="flex flex-col">
             <div className="mt-4 text-base font-medium">Albums</div>
-            <div className="opacity-50">
-              Hey Aaryan! Ready for a Jam Session?
-            </div>
+            <div className="opacity-50">All of your albums in one place.</div>
           </div>
           <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
             {albums.map((album) => (
