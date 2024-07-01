@@ -181,7 +181,7 @@ export const updatePlaylist = async (data: any) => {
   let coverArt: string;
 
   if (data.data.description) {
-    description = data.description;
+    description = data.data.description;
   } else {
     description = "An epic playlist created by you ✌️";
   }

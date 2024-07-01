@@ -34,7 +34,7 @@ const Lyrics: React.FC<LyricsProps> = React.memo(
             id={`line-${line.time}`}
             className={
               `${currentLyric?.time === line.time ? "scale-110 text-white" : "opacity-40"}` +
-              " my-2 w-fit origin-left cursor-pointer rounded-xl p-4 transition duration-500 ease-in-out hover:bg-white/10"
+              " my-2 w-fit origin-left cursor-pointer rounded-xl p-4 transition duration-300 ease-in-out hover:bg-white/10"
             }
             onClick={() => onLyricClick(line.time)}
           >

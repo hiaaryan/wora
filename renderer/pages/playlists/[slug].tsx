@@ -116,7 +116,7 @@ export default function Playlist() {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
               <IconX stroke={2} size={16} />
-              Song is removed from playlist.
+              Song removed from playlist.
             </div>,
           );
 
@@ -156,6 +156,15 @@ export default function Playlist() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  useEffect(() => {
+    if (playlist) {
+      form.reset({
+        name: playlist.name,
+        description: playlist.description,
+      });
+    }
+  }, [playlist]);
 
   return (
     <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
@@ -297,11 +306,7 @@ export default function Playlist() {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormControl>
-                            <Input
-                              placeholder="Name"
-                              defaultValue={playlist && playlist.name}
-                              {...field}
-                            />
+                            <Input placeholder="Name" {...field} />
                           </FormControl>
                           <FormMessage className="text-xs" />
                         </FormItem>
@@ -313,13 +318,9 @@ export default function Playlist() {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormControl>
-                            <Input
-                              placeholder="Description"
-                              defaultValue={playlist && playlist.description}
-                              {...field}
-                            />
+                            <Input placeholder="Description" {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
