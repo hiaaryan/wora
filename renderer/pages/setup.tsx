@@ -22,7 +22,7 @@ export default function Setup() {
   };
 
   return (
-    <div className="wora-transition h-screen w-screen bg-black text-xs text-white antialiased">
+    <div className="wora-transition h-screen w-screen">
       <Actions />
       <div className="relative flex h-full w-full select-none items-center overflow-hidden p-8">
         <div className="absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-white blur-[1700px]" />

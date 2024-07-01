@@ -11,22 +11,14 @@ import {
   IconArrowsShuffle2,
   IconArrowLeft,
   IconPlus,
-  IconHeart,
   IconCheck,
-  IconCross,
   IconX,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
 import { ContextMenu } from "@radix-ui/react-context-menu";
 import {
-  ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
-  ContextMenuSeparator,
-  ContextMenuShortcut,
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,

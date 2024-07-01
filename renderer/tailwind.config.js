@@ -21,6 +21,9 @@ module.exports = {
       "8xl": [...defaultTheme.fontSize["8xl"]],
       "9xl": [...defaultTheme.fontSize["9xl"]],
     },
+    fontFamily: {
+      sans: ["Maven Pro", ...defaultTheme.fontFamily.sans],
+    },
     extend: {
       keyframes: {
         "accordion-down": {

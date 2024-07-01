@@ -230,3 +230,10 @@ ipcMain.handle("removeSongFromPlaylist", async (_, data: any) => {
 app.on("window-all-closed", () => {
   app.quit();
 });
+
+import log from "electron-log/main";
+
+// Optional, initialize the logger for any renderer process
+log.initialize();
+
+log.info("Log from the main process");

@@ -225,10 +225,9 @@ export default function Playlist() {
       <div className="pb-32 pt-2">
         {playlist &&
           playlist.songs.map((song, index) => (
-            <ContextMenu>
+            <ContextMenu key={song.id}>
               <ContextMenuTrigger>
                 <div
-                  key={song.id}
                   className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
                   onClick={() => handleMusicClick(index)}
                 >

@@ -1,4 +1,3 @@
-import { Maven_Pro } from "next/font/google";
 import "../styles/globals.css";
 import Actions from "@/components/ui/actions";
 import Navbar from "@/components/ui/navbar";
@@ -6,27 +5,20 @@ import Player from "@/components/ui/player";
 import Head from "next/head";
 import { PlayerProvider } from "@/context/playerContext";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-
-const mavenPro = Maven_Pro({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
   if (["/setup"].includes(router.pathname)) {
     return (
-      <main className={`${mavenPro.className} select-none`}>
+      <main className="select-none bg-black font-sans text-xs text-white antialiased">
         <Component {...pageProps} />
       </main>
     );
   }
 
-  useEffect(() => {
-    document.body.classList.add(mavenPro.className);
-  }, []);
-
   return (
-    <main className="select-none bg-black text-xs text-white antialiased">
+    <main className="select-none bg-black font-sans text-xs text-white antialiased">
       <Head>
         <title>Wora</title>
       </Head>
