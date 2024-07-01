@@ -10,8 +10,30 @@ import {
   IconPlayerPlay,
   IconArrowsShuffle2,
   IconArrowLeft,
+  IconPlus,
+  IconHeart,
+  IconCheck,
+  IconCross,
+  IconX,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
+import { ContextMenu } from "@radix-ui/react-context-menu";
+import {
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 type Song = {
   id: number;
@@ -33,6 +55,7 @@ type Album = {
 export default function Album() {
   const router = useRouter();
   const [album, setAlbum] = useState<Album | null>(null);
+  const [playlists, setPlaylists] = useState([]);
   const { setQueueAndPlay } = usePlayer();
 
   useEffect(() => {
@@ -42,8 +65,11 @@ export default function Album() {
       .invoke("getAlbumWithSongs", router.query.slug)
       .then((response) => {
         setAlbum(response);
-        console.log(response);
       });
+
+    window.ipc.invoke("getAllPlaylists").then((response) => {
+      setPlaylists(response);
+    });
   }, [router.query.slug]);
 
   const handleMusicClick = (index: number) => {
@@ -64,8 +90,34 @@ export default function Album() {
     }
   };
 
+  const addSongToPlaylist = (playlistId: number, songId: number) => {
+    window.ipc
+      .invoke("addSongToPlaylist", {
+        playlistId,
+        songId,
+      })
+      .then((response) => {
+        if (response === true) {
+          toast(
+            <div className="flex w-fit items-center gap-2 text-xs">
+              <IconCheck stroke={2} size={16} />
+              Song is added to playlist.
+            </div>,
+          );
+        } else {
+          toast(
+            <div className="flex w-fit items-center gap-2 text-xs">
+              <IconX stroke={2} size={16} />
+              Song already exists in playlist.
+            </div>,
+          );
+        }
+      });
+  };
+
   return (
     <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
+      <Toaster position="top-right" />
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
         <Image
           alt={album ? album.name : "Album Cover"}
@@ -115,33 +167,64 @@ export default function Album() {
       <div className="pb-32 pt-2">
         {album &&
           album.songs.map((song, index) => (
-            <div
-              key={song.id}
-              className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
-              onClick={() => handleMusicClick(index)}
-            >
-              <div className="flex items-center gap-4">
-                <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
-                  <Image
-                    alt={album && album.name}
-                    src={album && album.coverArt}
-                    fill
-                    loading="lazy"
-                    className="object-cover"
-                  />
+            <ContextMenu>
+              <ContextMenuTrigger>
+                <div
+                  key={song.id}
+                  className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
+                  onClick={() => handleMusicClick(index)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
+                      <Image
+                        alt={album && album.name}
+                        src={album && album.coverArt}
+                        fill
+                        loading="lazy"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-medium">{song.name}</p>
+                      <p className="opacity-50">{song.artist}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1 opacity-50">
+                      <IconClock stroke={2} size={15} />
+                      {convertTime(song.duration)}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <p className="text-sm font-medium">{song.name}</p>
-                  <p className="opacity-50">{song.artist}</p>
-                </div>
-              </div>
-              <div>
-                <p className="flex items-center gap-1 opacity-50">
-                  <IconClock stroke={2} size={15} />
-                  {convertTime(song.duration)}
-                </p>
-              </div>
-            </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent className="w-64">
+                <ContextMenuItem
+                  className="flex items-center gap-2"
+                  onClick={() => handleMusicClick(index)}
+                >
+                  <IconPlayerPlay className="fill-white" stroke={2} size={14} />
+                  Play Song
+                </ContextMenuItem>
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger className="flex items-center gap-2">
+                    <IconPlus stroke={2} size={14} />
+                    Add to Playlist
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="w-52">
+                    {playlists.map((playlist) => (
+                      <ContextMenuItem
+                        key={playlist.id}
+                        onClick={() => addSongToPlaylist(playlist.id, song.id)}
+                      >
+                        <p className="w-full text-nowrap gradient-mask-r-70">
+                          {playlist.name}
+                        </p>
+                      </ContextMenuItem>
+                    ))}
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+              </ContextMenuContent>
+            </ContextMenu>
           ))}
       </div>
     </ScrollArea>
