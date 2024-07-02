@@ -11,7 +11,7 @@ function Actions() {
             width={16}
             height={16}
           />
-          Wora v0.1.0-alpha
+          Wora v0.1.0
         </div>
       </div>
     </div>

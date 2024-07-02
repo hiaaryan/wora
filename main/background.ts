@@ -10,6 +10,7 @@ import {
   createPlaylist,
   getAlbumWithSongs,
   getAlbums,
+  getLibraryStats,
   getPlaylistWithSongs,
   getPlaylists,
   getSettings,
@@ -189,6 +190,11 @@ ipcMain.handle("search", async (_, query: string) => {
 ipcMain.handle("createPlaylist", async (_, data: any) => {
   const playlist = await createPlaylist(data);
   return playlist;
+});
+
+ipcMain.handle("getLibraryStats", async () => {
+  const stats = await getLibraryStats();
+  return stats;
 });
 
 ipcMain.handle("updatePlaylist", async (_, data: any) => {

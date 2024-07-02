@@ -1,4 +1,4 @@
-import { and, eq, ilike, like } from "drizzle-orm";
+import { and, eq, ilike, like, sql } from "drizzle-orm";
 import { albums, songs, settings, playlistSongs, playlists } from "./schema";
 import fs from "fs";
 import { parseFile, selectCover } from "music-metadata";
@@ -10,6 +10,20 @@ import { sqlite } from "./createDB";
 const db: BetterSQLite3Database<typeof schema> = drizzle(sqlite, {
   schema,
 });
+
+export const getLibraryStats = async () => {
+  const songCount = await db.select({ count: sql`count(*)` }).from(songs);
+  const albumCount = await db.select({ count: sql`count(*)` }).from(albums);
+  const playlistCount = await db
+    .select({ count: sql`count(*)` })
+    .from(playlists);
+
+  return {
+    songs: songCount[0].count,
+    albums: albumCount[0].count,
+    playlists: playlistCount[0].count,
+  };
+};
 
 export const getSettings = async () => {
   const throwSettings = await db.select().from(settings).limit(1);
