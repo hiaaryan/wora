@@ -5,6 +5,7 @@ import Player from "@/components/ui/player";
 import Head from "next/head";
 import { PlayerProvider } from "@/context/playerContext";
 import { useRouter } from "next/router";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function App({ Component, pageProps }) {
   }
 
   return (
-    <main className="select-none bg-black font-sans text-xs text-white antialiased">
+    <main className="select-none rounded-lg bg-black font-sans text-xs text-white antialiased">
       <Head>
         <title>Wora</title>
       </Head>
@@ -26,6 +27,7 @@ export default function App({ Component, pageProps }) {
         <div className="h-dvh w-dvw">
           <div>
             <Actions />
+            <Toaster position="top-right" />
             <div className="flex gap-8">
               <div className="sticky top-0 z-50 h-dvh p-8 pr-0 pt-12">
                 <Navbar />

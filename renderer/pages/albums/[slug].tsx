@@ -24,7 +24,6 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 type Song = {
@@ -109,7 +108,6 @@ export default function Album() {
 
   return (
     <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
-      <Toaster position="top-right" />
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
         <Image
           alt={album ? album.name : "Album Cover"}

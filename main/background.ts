@@ -18,17 +18,18 @@ import {
   removeSongFromPlaylist,
   searchDB,
   updatePlaylist,
+  updateSettings,
 } from "./helpers/db/connectDB";
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
+import fs from "fs";
 
 const isProd = process.env.NODE_ENV === "production";
-process.traceProcessWarnings = true;
 
 if (isProd) {
   serve({ directory: "app" });
 } else {
-  app.setPath("userData", `${app.getPath("userData")} (development)`);
+  app.setPath("userData", `${app.getPath("userData")}`);
 }
 
 let settings: any;
@@ -38,8 +39,8 @@ let settings: any;
   initDatabase();
   settings = await getSettings();
 
-  if (settings[0]) {
-    await initializeData(settings[0].musicFolder);
+  if (settings) {
+    await initializeData(settings.musicFolder);
   }
 })();
 
@@ -47,8 +48,8 @@ let settings: any;
   await app.whenReady();
 
   // @hiaaryan: Using Depreciated API [Seeking Not Supported with Net]
-  protocol.registerFileProtocol("music", (request, callback) => {
-    callback(request.url.slice("music://".length));
+  protocol.registerFileProtocol("wora", (request, callback) => {
+    callback({ path: request.url.replace("wora://", "") });
   });
 
   const mainWindow = createWindow("main", {
@@ -56,6 +57,7 @@ let settings: any;
     height: 900,
     titleBarStyle: "hidden",
     trafficLightPosition: { x: 20, y: 15 },
+    transparent: true,
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -66,7 +68,7 @@ let settings: any;
   mainWindow.setMinimumSize(1500, 900);
   mainWindow.setTitle("Wora");
 
-  if (settings[0]) {
+  if (settings) {
     if (isProd) {
       await mainWindow.loadURL("app://./home");
     } else {
@@ -202,6 +204,30 @@ ipcMain.handle("addSongToPlaylist", async (_, data: any) => {
 ipcMain.handle("removeSongFromPlaylist", async (_, data: any) => {
   const remove = await removeSongFromPlaylist(data.playlistId, data.songId);
   return remove;
+});
+
+ipcMain.handle("getSettings", async () => {
+  const settings = await getSettings();
+  return settings;
+});
+
+ipcMain.handle("updateSettings", async (_, data: any) => {
+  const settings = await updateSettings(data);
+  return settings;
+});
+
+ipcMain.handle("uploadProfilePicture", async (_, file) => {
+  const uploadsDir = path.join(app.getPath("userData"), "uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const fileName = `profile_${Date.now()}${path.extname(file.name)}`;
+  const filePath = path.join(uploadsDir, fileName);
+
+  fs.writeFileSync(filePath, Buffer.from(file.data));
+
+  return filePath;
 });
 
 app.on("window-all-closed", () => {

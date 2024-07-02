@@ -12,7 +12,17 @@ const db: BetterSQLite3Database<typeof schema> = drizzle(sqlite, {
 });
 
 export const getSettings = async () => {
-  return db.select().from(settings).limit(1);
+  const throwSettings = await db.select().from(settings).limit(1);
+  return throwSettings[0];
+};
+
+export const updateSettings = async (data: any) => {
+  const update = await db.update(settings).set({
+    name: data.name,
+    profilePicture: data.profilePicture,
+  });
+
+  return true;
 };
 
 export const getSongs = async () => {
@@ -153,7 +163,7 @@ export const createPlaylist = async (data: any) => {
   if (data.description) {
     description = data.description;
   } else {
-    description = "An epic playlist created by you ✌️";
+    description = "An epic playlist created by you.";
   }
 
   if (data.coverArt) {
@@ -178,7 +188,7 @@ export const updatePlaylist = async (data: any) => {
   if (data.data.description) {
     description = data.data.description;
   } else {
-    description = "An epic playlist created by you ✌️";
+    description = "An epic playlist created by you.";
   }
 
   if (data.coverArt) {
@@ -390,14 +400,26 @@ export const initializeData = async (musicFolder: string) => {
     await db.insert(playlists).values({
       name: "Favourites",
       coverArt: "/favouritesCoverArt.png",
-      description: "Songs liked by you ❤️",
+      description: "Songs liked by you.",
     });
   }
 
-  await db.delete(settings);
-  await db.insert(settings).values({
-    fullName: "Aaryan Kapoor",
-    profilePicture: "/ak.jpeg",
-    musicFolder,
-  });
+  const getSettings = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.id, 1));
+
+  if (getSettings[0]) {
+    await db
+      .update(settings)
+      .set({
+        musicFolder,
+      })
+      .where(eq(settings.id, 1));
+    return;
+  } else {
+    await db.insert(settings).values({
+      musicFolder,
+    });
+  }
 };

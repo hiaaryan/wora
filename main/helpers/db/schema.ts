@@ -3,7 +3,7 @@ import { relations } from "drizzle-orm";
 
 export const settings = sqliteTable("settings", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  fullName: text("fullName"),
+  name: text("name"),
   profilePicture: text("profilePicture"),
   musicFolder: text("musicFolder"),
 });

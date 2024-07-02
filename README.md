@@ -69,9 +69,9 @@ Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUT
 
 ## 💬 **Join the Community**
 
-Join our [Discord server](https://discord.gg/CrAbAYMGCe/) to connect with other users and developers.
+Join our [Discord server](https://discord.gg/CrAbAYMGCe) to connect with other users and developers.
 
-<a href="https://discord.gg/SYEByd7Zb2"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord"></a>
+<a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord"></a>
 
 ---
 

@@ -77,7 +77,7 @@ function Player() {
     if (!song?.filePath) return;
 
     const sound = new Howl({
-      src: ["music://" + song?.filePath],
+      src: ["wora://" + song?.filePath],
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
@@ -588,10 +588,10 @@ function Player() {
                               />
                             </div>
                           </div>
-                          <div className="flex h-full w-full flex-col gap-1">
-                            <p className="text-nowrap">
-                              <span className="opacity-50">Name:</span>{" "}
-                              {metadata && metadata.common.title}
+                          <div className="flex h-full w-full flex-col gap-0.5">
+                            <p className="mb-4 text-nowrap">
+                              → {metadata && metadata.common.title} [
+                              {metadata && metadata.format.codec}]
                             </p>
                             <p className="text-nowrap">
                               <span className="opacity-50">Artist:</span>{" "}

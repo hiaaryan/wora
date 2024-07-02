@@ -11,9 +11,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandDialog,
@@ -21,21 +21,21 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../ui/command";
+} from "@/components/ui/command";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { usePlayer } from "@/context/playerContext";
-import Spinner from "./spinner";
+import Spinner from "@/components/ui/spinner";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./dialog";
-import { Input } from "./input";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -54,11 +54,17 @@ const formSchema = z.object({
   description: z.string().optional(),
 });
 
+type Settings = {
+  name: string;
+  profilePicture: string;
+};
+
 const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const { setQueueAndPlay } = usePlayer();
@@ -113,6 +119,8 @@ const Navbar = () => {
       router.push(`/albums/${item.id}`);
     } else if (item.type === "Song") {
       setQueueAndPlay([item], 0);
+    } else if (item.type === "Playlist") {
+      router.push(`/playlists/${item.id}`);
     }
     setOpen(false);
   };
@@ -133,6 +141,12 @@ const Navbar = () => {
     resolver: zodResolver(formSchema),
   });
 
+  useEffect(() => {
+    window.ipc.invoke("getSettings").then((response) => {
+      setSettings(response);
+    });
+  }, []);
+
   return (
     <div className="wora-border h-full w-20 rounded-xl p-6">
       <div className="flex h-full flex-col items-center gap-8">
@@ -142,13 +156,14 @@ const Navbar = () => {
               <TooltipTrigger>
                 <Link href="/settings">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/ak.jpeg" />
-                    <AvatarFallback>AK</AvatarFallback>
+                    <AvatarImage
+                      src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
+                    />
                   </Avatar>
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={50}>
-                <p>Aaryan Kapoor</p>
+                <p>{settings && settings.name ? settings.name : "Wora User"}</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -303,7 +318,8 @@ const Navbar = () => {
                       onSelect={() => handleItemClick(item)}
                     >
                       <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
-                        {item.type === "Album" && (
+                        {(item.type === "Playlist" ||
+                          item.type === "Album") && (
                           <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
                             <Image src={item.coverArt} alt={item.name} fill />
                           </div>

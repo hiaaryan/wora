@@ -10,7 +10,7 @@ export const initDatabase = () => {
   sqlite.exec(`
       CREATE TABLE IF NOT EXISTS settings (
         id INTEGER PRIMARY KEY,
-        fullName TEXT,
+        name TEXT,
         profilePicture TEXT,
         musicFolder TEXT
       );
