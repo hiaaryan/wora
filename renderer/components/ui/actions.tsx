@@ -1,17 +1,67 @@
+import {
+  IconBox,
+  IconLine,
+  IconLineDashed,
+  IconSquare,
+  IconX,
+} from "@tabler/icons-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+
+type Data = {
+  appVersion: string;
+  isNotMac: boolean;
+};
 
 function Actions() {
+  const [data, setData] = useState<Data>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  useEffect(() => {
+    window.ipc.invoke("getActionsData").then((response) => {
+      setData(response);
+    });
+  }, []);
+
   return (
-    <div className="drag absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="flex h-full items-center gap-2">
+    <div className="absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div className="drag flex h-full items-center gap-2">
           <Image
             src={"/assets/Logo [Dark].ico"}
             alt="logo"
             width={16}
             height={16}
           />
-          Wora v0.1.0
+          Wora v{data && data.appVersion}
+        </div>
+        <div className="absolute -right-2 top-0 flex h-full items-center gap-2">
+          {data && data.isNotMac && (
+            <>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setIsFullScreen(!isFullScreen);
+                  window.ipc.send("fullscreenWindow", !isFullScreen);
+                }}
+              >
+                <IconSquare size={11} stroke={2} />
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => window.ipc.send("minimizeWindow", true)}
+              >
+                <IconLineDashed size={14} stroke={2} />
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => window.ipc.send("quitApp", true)}
+              >
+                <IconX size={14} stroke={2} />
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

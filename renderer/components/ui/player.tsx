@@ -269,7 +269,7 @@ function Player() {
                 <Badge>Unsynced</Badge>
               )}
             </div>
-            <div className="justify-left h-utility flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
+            <div className="h-utility flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
               <div className="no-scrollbar gradient-mask-b-30-d h-full w-full max-w-3xl overflow-hidden overflow-y-auto text-2xl font-medium">
                 <div className="flex flex-col py-[33vh]">
                   {isSyncedLyrics(lyrics) ? (
@@ -293,8 +293,8 @@ function Player() {
       </div>
       <div className="!absolute right-0 top-0 w-96">
         {showQueue && (
-          <div className="wora-border h-utility relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
-            <div className="h-full w-full max-w-3xl px-6 pt-6">
+          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+            <div className="h-utility w-full max-w-3xl px-6 pt-6">
               <Tabs
                 defaultValue="queue"
                 className="flex h-full w-full flex-col gap-4 gradient-mask-b-70"

@@ -58,7 +58,7 @@ jobs:
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
             echo "asset_path=./dist/*.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            echo "asset_path=./dist/*.deb" >> $GITHUB_OUTPUT
+            echo "asset_path=./dist/*.AppImage" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
             echo "asset_path=./dist/*.exe" >> $GITHUB_OUTPUT
           fi

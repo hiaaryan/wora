@@ -13,7 +13,7 @@ publish: null
 artifactName: Wora [v${version}].${ext}
 linux:
   target:
-    - deb
+    - AppImage
 mac:
   target:
     - dmg

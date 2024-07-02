@@ -34,6 +34,7 @@ const formSchema = z.object({
 type Settings = {
   name: string;
   profilePicture: string;
+  musicFolder: string;
 };
 
 export default function Settings() {
@@ -141,6 +142,18 @@ export default function Settings() {
             Your music folder updated.
           </div>,
         );
+        window.ipc.invoke("getSettings").then((response) => {
+          setSettings(response);
+          setPreviewUrl(
+            response?.profilePicture
+              ? `wora://${response.profilePicture}`
+              : "/userPicture.png",
+          );
+        });
+
+        window.ipc.invoke("getLibraryStats").then((response) => {
+          setStats(response);
+        });
       })
       .catch(() => setMusicLoading(false));
   };
@@ -251,22 +264,22 @@ export default function Settings() {
               <div className="wora-border h-48 w-3/5 rounded-xl p-6">
                 <div className="flex h-full flex-col justify-between text-xs">
                   <div className="flex w-full items-center gap-4">
-                    <div className="flex w-full justify-around gap-4">
-                      <div className="flex flex-col items-center gap-4">
+                    <div className="flex w-full justify-around">
+                      <div className="flex flex-col items-center gap-5">
                         Songs
-                        <p className="text-3xl font-medium">
+                        <p className="text-4xl font-medium">
                           {stats && stats.songs}
                         </p>
                       </div>
-                      <div className="flex flex-col items-center gap-4">
+                      <div className="flex flex-col items-center gap-5">
                         Albums
-                        <p className="text-3xl font-medium">
+                        <p className="text-4xl font-medium">
                           {stats && stats.albums}
                         </p>
                       </div>
-                      <div className="flex flex-col items-center gap-4">
+                      <div className="flex flex-col items-center gap-5">
                         Playlists
-                        <p className="text-3xl font-medium">
+                        <p className="text-4xl font-medium">
                           {stats && stats.playlists}
                         </p>
                       </div>

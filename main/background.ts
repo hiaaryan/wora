@@ -66,8 +66,17 @@ let settings: any;
     },
   });
 
-  mainWindow.setMinimumSize(1500, 900);
-  mainWindow.setTitle("Wora");
+  ipcMain.on("quitApp", async () => {
+    return app.quit();
+  });
+
+  ipcMain.on("minimizeWindow", async () => {
+    return mainWindow.minimize();
+  });
+
+  ipcMain.on("fullscreenWindow", async (_, isFullScreen: boolean) => {
+    return mainWindow.setFullScreen(isFullScreen);
+  });
 
   if (settings) {
     if (isProd) {
@@ -234,6 +243,13 @@ ipcMain.handle("uploadProfilePicture", async (_, file) => {
   fs.writeFileSync(filePath, Buffer.from(file.data));
 
   return filePath;
+});
+
+ipcMain.handle("getActionsData", async () => {
+  const isNotMac = process.platform !== "darwin";
+  const appVersion = app.getVersion();
+
+  return { isNotMac, appVersion };
 });
 
 app.on("window-all-closed", () => {
