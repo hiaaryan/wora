@@ -266,11 +266,11 @@ export const getRandomLibraryItems = async () => {
     .select()
     .from(albums)
     .orderBy(sql`RANDOM()`)
-    .limit(20);
+    .limit(10);
 
   const randomSongs = await db.query.songs.findMany({
     with: { album: true },
-    limit: 20,
+    limit: 10,
     orderBy: sql`RANDOM()`,
   });
 
@@ -429,6 +429,7 @@ export const initializeData = async (musicFolder: string) => {
     .select()
     .from(playlists)
     .where(eq(playlists.id, 1));
+
   if (!defaultPlaylist[0]) {
     await db.insert(playlists).values({
       name: "Favourites",

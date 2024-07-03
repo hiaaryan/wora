@@ -145,6 +145,12 @@ const Navbar = () => {
     window.ipc.invoke("getSettings").then((response) => {
       setSettings(response);
     });
+
+    window.ipc.on("confirmSettingsUpdate", () => {
+      window.ipc.invoke("getSettings").then((response) => {
+        setSettings(response);
+      });
+    });
   }, []);
 
   return (

@@ -90,7 +90,7 @@ export default function Home() {
             }}
           >
             <CarouselPrevious className="absolute left-0 z-50 my-0" />
-            <div className="w-full gradient-mask-r-70-d">
+            <div className="w-full gradient-mask-r-80-d">
               <CarouselContent className="-ml-8">
                 {libraryItems.albums &&
                   libraryItems.albums.map((album: any, index: number) => (
@@ -124,94 +124,73 @@ export default function Home() {
             </div>
             <CarouselNext className="absolute right-0 z-50 my-0" />
           </Carousel>
-          <div className="flex flex-col">
-            <div className="text-base font-medium">Your Tracks</div>
-            <div className="opacity-50">How about some randomness?</div>
-          </div>
-          <div className="grid w-full grid-cols-5 gap-8 pb-[32vh]">
-            <Carousel
-              className="relative w-[88vw]"
-              opts={{
-                loop: true,
-              }}
-            >
-              <CarouselPrevious className="absolute left-0 z-50 my-0" />
-              <div className="w-full gradient-mask-r-70-d">
-                <CarouselContent className="-ml-8">
-                  {libraryItems.songs &&
-                    libraryItems.songs.map((song: any, index: number) => (
-                      <CarouselItem key={index} className="basis-1/5 pl-8">
-                        <ContextMenu key={song.id}>
-                          <ContextMenuTrigger>
-                            <div
-                              className="group/song wora-border wora-transition h-[21rem] cursor-pointer rounded-xl p-5 hover:bg-white/10"
-                              onClick={() => handleMusicClick(index)}
-                            >
-                              <div className="relative flex h-full flex-col justify-between">
-                                <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
-                                  <Image
-                                    alt={
-                                      song.album
-                                        ? song.album.name
-                                        : "Album Cover"
-                                    }
-                                    src={song.album.coverArt}
-                                    fill
-                                    loading="lazy"
-                                    className="z-10 object-cover"
-                                  />
-                                </div>
-                                <div className="flex w-full flex-col">
-                                  <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
-                                    {song.name}
-                                  </p>
-                                  <p className="text-nowrap opacity-50 gradient-mask-r-70">
-                                    {song.artist}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </ContextMenuTrigger>
-                          <ContextMenuContent className="w-64">
-                            <ContextMenuItem
-                              className="flex items-center gap-2"
-                              onClick={() => handleMusicClick(index)}
-                            >
-                              <IconPlayerPlay
-                                className="fill-white"
-                                stroke={2}
-                                size={14}
-                              />
-                              Play Song
-                            </ContextMenuItem>
-                            <ContextMenuSub>
-                              <ContextMenuSubTrigger className="flex items-center gap-2">
-                                <IconPlus stroke={2} size={14} />
-                                Add to Playlist
-                              </ContextMenuSubTrigger>
-                              <ContextMenuSubContent className="w-52">
-                                {playlists.map((playlist) => (
-                                  <ContextMenuItem
-                                    key={playlist.id}
-                                    onClick={() =>
-                                      addSongToPlaylist(playlist.id, song.id)
-                                    }
-                                  >
-                                    <p className="w-full text-nowrap gradient-mask-r-70">
-                                      {playlist.name}
-                                    </p>
-                                  </ContextMenuItem>
-                                ))}
-                              </ContextMenuSubContent>
-                            </ContextMenuSub>
-                          </ContextMenuContent>
-                        </ContextMenu>
-                      </CarouselItem>
-                    ))}
-                </CarouselContent>
-              </div>
-              <CarouselNext className="absolute right-0 z-50 my-0" />
-            </Carousel>
+          <div className="pb-[32vh]">
+            {libraryItems.songs &&
+              libraryItems.songs.map((song: any, index: number) => (
+                <ContextMenu key={song.id}>
+                  <ContextMenuTrigger>
+                    <div
+                      className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
+                      onClick={() => handleMusicClick(index)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
+                          <Image
+                            alt={song.album && song.album.name}
+                            src={song.album && song.album.coverArt}
+                            fill
+                            loading="lazy"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-medium">{song.name}</p>
+                          <p className="opacity-50">{song.artist}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="flex items-center gap-1 opacity-50">
+                          <IconClock stroke={2} size={15} />
+                          {convertTime(song.duration)}
+                        </p>
+                      </div>
+                    </div>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-64">
+                    <ContextMenuItem
+                      className="flex items-center gap-2"
+                      onClick={() => handleMusicClick(index)}
+                    >
+                      <IconPlayerPlay
+                        className="fill-white"
+                        stroke={2}
+                        size={14}
+                      />
+                      Play Song
+                    </ContextMenuItem>
+                    <ContextMenuSub>
+                      <ContextMenuSubTrigger className="flex items-center gap-2">
+                        <IconPlus stroke={2} size={14} />
+                        Add to Playlist
+                      </ContextMenuSubTrigger>
+                      <ContextMenuSubContent className="w-52">
+                        {playlists.map((playlist) => (
+                          <ContextMenuItem
+                            key={playlist.id}
+                            onClick={() =>
+                              addSongToPlaylist(playlist.id, song.id)
+                            }
+                          >
+                            <p className="w-full text-nowrap gradient-mask-r-70">
+                              {playlist.name}
+                            </p>
+                          </ContextMenuItem>
+                        ))}
+                      </ContextMenuSubContent>
+                    </ContextMenuSub>
+                  </ContextMenuContent>
+                </ContextMenu>
+              ))}
           </div>
         </div>
       </div>

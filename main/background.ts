@@ -38,6 +38,7 @@ if (isProd) {
 }
 
 let settings: any;
+let mainWindow: any;
 
 // @hiaaryan: Initialize Database on Startup
 (async () => {
@@ -57,7 +58,7 @@ let settings: any;
     callback({ path: request.url.replace("wora://", "") });
   });
 
-  const mainWindow = createWindow("main", {
+  mainWindow = createWindow("main", {
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
@@ -240,6 +241,7 @@ ipcMain.handle("getSettings", async () => {
 
 ipcMain.handle("updateSettings", async (_, data: any) => {
   const settings = await updateSettings(data);
+  mainWindow.webContents.send("confirmSettingsUpdate", settings);
   return settings;
 });
 

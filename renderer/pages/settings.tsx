@@ -120,7 +120,6 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    console.log("settings", settings);
     if (settings) {
       form.reset({
         name: settings.name,
