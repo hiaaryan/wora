@@ -5320,6 +5320,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"electron-log@npm:^5.1.5":
+  version: 5.1.5
+  resolution: "electron-log@npm:5.1.5"
+  checksum: 10c0/40bb497d1a515855d52d49ec86dee55b1eddf990b8cf74b24e79b1af5830413fd47afb8c060b830201e3b7d2c5f5401f5cc5c2321e91ab0c66fc8e862c9b8380
+  languageName: node
+  linkType: hard
+
 "electron-publish@npm:24.13.1":
   version: 24.13.1
   resolution: "electron-publish@npm:24.13.1"
@@ -5372,31 +5379,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"embla-carousel-react@npm:^8.1.5":
-  version: 8.1.5
-  resolution: "embla-carousel-react@npm:8.1.5"
+"embla-carousel-react@npm:^8.1.6":
+  version: 8.1.6
+  resolution: "embla-carousel-react@npm:8.1.6"
   dependencies:
-    embla-carousel: "npm:8.1.5"
-    embla-carousel-reactive-utils: "npm:8.1.5"
+    embla-carousel: "npm:8.1.6"
+    embla-carousel-reactive-utils: "npm:8.1.6"
   peerDependencies:
     react: ^16.8.0 || ^17.0.1 || ^18.0.0
-  checksum: 10c0/a8c64e948f7bbe11a5d62ca4ebd70030a7a0dea2d772ab0c545026f2facea493bd5ddabccdb915922ed41f8af44d61140ae485521fb3495af8e13d7e43405aed
+  checksum: 10c0/9de9aa4a9d02c3829f437ada0589c9f0ac449167b13cf1f238b1f786a78d7a90d5a8d65013d583283b95a3dc0549186e1ac762dbe974d2cd57dcbb29661f6aa6
   languageName: node
   linkType: hard
 
-"embla-carousel-reactive-utils@npm:8.1.5":
-  version: 8.1.5
-  resolution: "embla-carousel-reactive-utils@npm:8.1.5"
+"embla-carousel-reactive-utils@npm:8.1.6":
+  version: 8.1.6
+  resolution: "embla-carousel-reactive-utils@npm:8.1.6"
   peerDependencies:
-    embla-carousel: 8.1.5
-  checksum: 10c0/813a358f7372ddeb7a49e637e21b1580bda42797f97cbb8f7a2ad63a1803b0f2a9d2ecd5f0c088bd2447bb0a6c932f31e5c820698d83324a23548bd9242deb41
+    embla-carousel: 8.1.6
+  checksum: 10c0/e8e30e24bc3a0ff8a49b3dc724d9d53c75a3061a31ef76535d7be6bca72097ff099f45486f8ae3f3a70145895a99f21c277de01582c8c61669df8edf4560f57f
   languageName: node
   linkType: hard
 
-"embla-carousel@npm:8.1.5":
-  version: 8.1.5
-  resolution: "embla-carousel@npm:8.1.5"
-  checksum: 10c0/5fa18cf332654ce3f380874e41caa6a520a04c5d43f2832f1d797b74e822f271de61f27346155fc3a8321633f1968b7b808ad0d56152305c8696ff5d12d3200f
+"embla-carousel@npm:8.1.6":
+  version: 8.1.6
+  resolution: "embla-carousel@npm:8.1.6"
+  checksum: 10c0/a0085b97fa7aeea8c98187b58a25ca9648494afc14c8e41a3322920bd92d54659d04ed0aec0b3a7f60658bf49b22805b0ba76ffc0bae85d8719089f17402fb94
   languageName: node
   linkType: hard
 
@@ -10607,9 +10614,10 @@ __metadata:
     drizzle-orm: "npm:^0.31.2"
     electron: "npm:^30.1.2"
     electron-builder: "npm:^24.13.3"
+    electron-log: "npm:^5.1.5"
     electron-serve: "npm:^1.3.0"
     electron-store: "npm:^8.2.0"
-    embla-carousel-react: "npm:^8.1.5"
+    embla-carousel-react: "npm:^8.1.6"
     eslint-config-next: "npm:^14.2.4"
     howler: "npm:^2.2.4"
     music-metadata: "npm:^7.14.0"

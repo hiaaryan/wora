@@ -22,32 +22,33 @@ export default function Albums() {
             <div className="mt-4 text-base font-medium">Albums</div>
             <div className="opacity-50">All of your albums in one place.</div>
           </div>
-          <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
-            {albums.map((album) => (
-              <Link key={album.id} href={`/albums/${album.id}`}>
-                <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
-                  <div className="relative flex h-full flex-col justify-between">
-                    <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
-                      <Image
-                        alt={album ? album.name : "Album Cover"}
-                        src={album.coverArt}
-                        fill
-                        loading="lazy"
-                        className="z-10 object-cover"
-                      />
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
-                        {album.name}
-                      </p>
-                      <p className="text-nowrap opacity-50 gradient-mask-r-70">
-                        {album.artist}
-                      </p>
+          <div className="grid w-full grid-cols-5 gap-8 pb-[32vh]">
+            {albums &&
+              albums.map((album) => (
+                <Link key={album.id} href={`/albums/${album.id}`}>
+                  <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
+                    <div className="relative flex h-full flex-col justify-between">
+                      <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
+                        <Image
+                          alt={album ? album.name : "Album Cover"}
+                          src={album.coverArt}
+                          fill
+                          loading="lazy"
+                          className="z-10 object-cover"
+                        />
+                      </div>
+                      <div className="flex w-full flex-col">
+                        <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
+                          {album.name}
+                        </p>
+                        <p className="text-nowrap opacity-50 gradient-mask-r-70">
+                          {album.artist}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         </div>
       </div>

@@ -22,32 +22,33 @@ export default function Playlists() {
               Most awesome, epic playlists created by you.
             </div>
           </div>
-          <div className="grid w-full grid-cols-5 gap-8 pb-[33vh]">
-            {playlists.map((playlist) => (
-              <Link key={playlist.id} href={`/playlists/${playlist.id}`}>
-                <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
-                  <div className="relative flex h-full flex-col justify-between">
-                    <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
-                      <Image
-                        alt={playlist ? playlist.name : "Album Cover"}
-                        src={playlist.coverArt}
-                        fill
-                        loading="lazy"
-                        className="z-10 object-cover"
-                      />
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
-                        {playlist.name}
-                      </p>
-                      <p className="text-nowrap opacity-50 gradient-mask-r-70">
-                        {playlist.description}
-                      </p>
+          <div className="grid w-full grid-cols-5 gap-8 pb-[32vh]">
+            {playlists &&
+              playlists.map((playlist) => (
+                <Link key={playlist.id} href={`/playlists/${playlist.id}`}>
+                  <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
+                    <div className="relative flex h-full flex-col justify-between">
+                      <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
+                        <Image
+                          alt={playlist ? playlist.name : "Album Cover"}
+                          src={playlist.coverArt}
+                          fill
+                          loading="lazy"
+                          className="z-10 object-cover"
+                        />
+                      </div>
+                      <div className="flex w-full flex-col">
+                        <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
+                          {playlist.name}
+                        </p>
+                        <p className="text-nowrap opacity-50 gradient-mask-r-70">
+                          {playlist.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         </div>
       </div>

@@ -219,7 +219,7 @@ export default function Playlist() {
           </div>
         </div>
       </div>
-      <div className="pb-32 pt-2">
+      <div className="pb-[32vh] pt-2">
         {playlist &&
           playlist.songs.map((song, index) => (
             <ContextMenu key={song.id}>

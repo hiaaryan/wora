@@ -264,22 +264,22 @@ export default function Settings() {
               <div className="wora-border h-48 w-3/5 rounded-xl p-6">
                 <div className="flex h-full flex-col justify-between text-xs">
                   <div className="flex w-full items-center gap-4">
-                    <div className="flex w-full justify-around">
-                      <div className="flex flex-col items-center gap-5">
+                    <div className="mt-4 flex w-full justify-around">
+                      <div className="flex flex-col items-center gap-2">
                         Songs
-                        <p className="text-4xl font-medium">
+                        <p className="text-xl font-medium">
                           {stats && stats.songs}
                         </p>
                       </div>
-                      <div className="flex flex-col items-center gap-5">
+                      <div className="flex flex-col items-center gap-2">
                         Albums
-                        <p className="text-4xl font-medium">
+                        <p className="text-xl font-medium">
                           {stats && stats.albums}
                         </p>
                       </div>
-                      <div className="flex flex-col items-center gap-5">
+                      <div className="flex flex-col items-center gap-2">
                         Playlists
-                        <p className="text-4xl font-medium">
+                        <p className="text-xl font-medium">
                           {stats && stats.playlists}
                         </p>
                       </div>

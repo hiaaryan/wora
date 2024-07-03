@@ -154,7 +154,7 @@ export default function Album() {
           </div>
         </div>
       </div>
-      <div className="pb-32 pt-2">
+      <div className="pb-[32vh] pt-2">
         {album &&
           album.songs.map((song, index) => (
             <ContextMenu key={song.id}>

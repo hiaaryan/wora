@@ -13,6 +13,7 @@ import {
   getLibraryStats,
   getPlaylistWithSongs,
   getPlaylists,
+  getRandomLibraryItems,
   getSettings,
   initializeData,
   isSongFavorite,
@@ -24,6 +25,9 @@ import {
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile, selectCover } from "music-metadata";
 import fs from "fs";
+import log from "electron-log/main";
+
+log.initialize();
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -137,7 +141,10 @@ ipcMain.handle("setMusicFolder", async () => {
 // @hiaaryan: Set Tray for Wora
 let tray = null;
 app.whenReady().then(() => {
-  tray = new Tray("./resources/TrayTemplate.png");
+  const trayIconPath = !isProd
+    ? path.join(__dirname, `../renderer/public/assets/TrayTemplate.png`)
+    : path.join(__dirname, `../app/assets/TrayTemplate.png`);
+  tray = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([
     { label: "About", type: "normal", role: "about" },
     {
@@ -204,6 +211,11 @@ ipcMain.handle("createPlaylist", async (_, data: any) => {
 ipcMain.handle("getLibraryStats", async () => {
   const stats = await getLibraryStats();
   return stats;
+});
+
+ipcMain.handle("getRandomLibraryItems", async () => {
+  const libraryItems = await getRandomLibraryItems();
+  return libraryItems;
 });
 
 ipcMain.handle("updatePlaylist", async (_, data: any) => {

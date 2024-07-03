@@ -261,6 +261,25 @@ export const removeSongFromPlaylist = async (
   return true;
 };
 
+export const getRandomLibraryItems = async () => {
+  const randomAlbums = await db
+    .select()
+    .from(albums)
+    .orderBy(sql`RANDOM()`)
+    .limit(20);
+
+  const randomSongs = await db.query.songs.findMany({
+    with: { album: true },
+    limit: 20,
+    orderBy: sql`RANDOM()`,
+  });
+
+  return {
+    albums: randomAlbums,
+    songs: randomSongs,
+  };
+};
+
 const audioExtensions = [
   ".mp3",
   ".mpeg",
