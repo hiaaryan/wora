@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/assets/Github.png?raw=true" alt="Wora Logo" />
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Header.png?raw=true" alt="Wora Logo" />
 </p>
 
 <p align="center">
@@ -21,6 +21,17 @@
 - Quick play using command menu
 - View synced and unsynced lyrics
 - Admire the beautiful UI
+<br>
+<p align="center">
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Home%20Page.png?raw=true" alt="Screenshot 1" /><br>
+  <small>Home Page</small><br>
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Search%20Console.png?raw=true" alt="Screenshot 2" /><br>
+  <small>Search Console</small><br>
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Album%20Page.png?raw=true" alt="Screenshot 3" /><br>
+  <small>Album Page</small><br>
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Synced%20Lyrics.png?raw=true" alt="Screenshot 4" /><br>
+  <small>Online Synced Lyrics</small>
+</p>
 
 ## 🚀 **Getting Started**
 
