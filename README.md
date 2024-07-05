@@ -12,15 +12,15 @@
   <a href="https://github.com/hiaaryan/wora/watchers"><img src="https://img.shields.io/github/watchers/hiaaryan/wora?style=flat&watchers" alt="GitHub Watchers" /></a>
 </p>
 
-## ⭐️ **Description**
+## ⭐️ Description
 
 **Wora** is a beautiful player for audiophiles (pun intended). An open-source lossless music player app that lets you organize and play your favorite tracks seamlessly. With Wora, you can:
 
-- Create and manage playlists
-- Stream FLACs, WAVs, Dolby apart from regular music extensions
-- Quick play using command menu
-- View synced and unsynced lyrics
-- Admire the beautiful UI
+- Create and manage playlists 🎉
+- Stream FLACs, WAVs, Dolby apart from regular music extensions 🎧
+- Quick play using command menu ⌨️
+- View synced and unsynced lyrics 💬
+- Admire the beautiful UI ✨
 
 <p align="center">
   <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Home%20Page.png?raw=true" alt="Screenshot 1" />
@@ -29,7 +29,11 @@
   <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Synced%20Lyrics.png?raw=true" alt="Screenshot 4" />
 </p>
 
-## 🚀 **Getting Started**
+## 🚀 Getting Started
+
+A bit simpler process would be to download the latest build through [here](https://github.com/hiaaryan/wora/releases/). But if you want to fiddle around, then please follow the below steps which would help you get started. If you encounter any issues, support is available throught our discord server 🛠️
+
+<a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord" /></a>
 
 ### 〽️ Prerequisites
 
@@ -64,7 +68,7 @@
     yarn build
     ```
 
-## 🤝 **Contributing**
+## 🤝 Contributing
 
 Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUTING.md) to learn about the process and how to submit your contributions.
 
@@ -74,7 +78,7 @@ Contributions are always welcome! Please read the [Contributing Guide](CONTRIBUT
 4. Push to the branch (`git push origin feature-branch`)
 5. Create a new Pull Request
 
-## 💬 **Join the Community**
+## 💬 Join the Community
 
 Join our [Discord server](https://discord.gg/CrAbAYMGCe) to connect with other users and developers.
 
