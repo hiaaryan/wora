@@ -66,7 +66,7 @@ erDiagram
 
 ## 🎯 **How to Contribute**
 
-Once you get hold of the DB, please check out the file structure in the main branch to get yourself more familiar with the project. If you encounter any issues, support for developers is available throught our discord server 🛠️
+Once you get hold of the DB, please check out the file structure in the main branch to get yourself more familiar with the project. If you encounter any issues, support for developers is available through our discord server 🛠️
 
 <a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord" /></a>
 

@@ -31,7 +31,7 @@
 
 ## 🚀 Getting Started
 
-A bit simpler process would be to download the latest build through [here](https://github.com/hiaaryan/wora/releases/). But if you want to fiddle around, then please follow the below steps which would help you get started. If you encounter any issues, support is available throught our discord server 🛠️
+A bit simpler process would be to download the latest build through [here](https://github.com/hiaaryan/wora/releases/). But if you want to fiddle around, then please follow the below steps which would help you get started. If you encounter any issues, support is available through our discord server 🛠️
 
 <a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord" /></a>
 
