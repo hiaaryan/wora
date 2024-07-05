@@ -1,16 +1,30 @@
-# Contributor Covenant Code of Conduct
+<p align="center">
+  <img src="https://github.com/hiaaryan/wora/blob/main/renderer/public/github/Header.png?raw=true" alt="Wora Logo" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/hiaaryan/wora"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/hiaaryan/wora/release.yml"></a>
+  <a href="https://github.com/hiaaryan/wora"><img src="https://img.shields.io/github/last-commit/hiaaryan/wora/main?commit" alt="Last Commit" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/hiaaryan/wora?license" alt="License" /></a>
+  <a href="https://discord.gg/CrAbAYMGCe"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/CrAbAYMGCe?style=flat" alt="Discord" /></a>
+  <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flat&stars" alt="GitHub Stars" /></a>
+  <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat&forks" alt="GitHub Forks" /></a>
+  <a href="https://github.com/hiaaryan/wora/watchers"><img src="https://img.shields.io/github/watchers/hiaaryan/wora?style=flat&watchers" alt="GitHub Watchers" /></a>
+</p>
+
+## 🤝 Contributor Covenant Code of Conduct
 
 We as members, contributors, and leaders pledge to make participation in our
 community a harassment-free experience for everyone, regardless of age, body
 size, visible or invisible disability, ethnicity, sex characteristics, gender
 identity and expression, level of experience, education, socio-economic status,
 nationality, personal appearance, race, religion, or sexual identity
-and orientation. 🌟
+and orientation 🌟
 
 We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive, and healthy community. 🌈
+diverse, inclusive, and healthy community 🌈
 
-## Our Standards
+## 📄 Our Standards
 
 Examples of behavior that contributes to a positive environment for our
 community include:
@@ -34,7 +48,7 @@ Examples of unacceptable behavior include:
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting ❌
 
-## Enforcement Responsibilities
+## ⭐️ Enforcement Responsibilities
 
 Community leaders are responsible for clarifying and enforcing our standards of
 acceptable behavior and will take appropriate and fair corrective action in
@@ -46,7 +60,7 @@ comments, commits, code, wiki edits, issues, and other contributions that are
 not aligned to this Code of Conduct, and will communicate reasons for moderation
 decisions when appropriate. ✏️
 
-## Scope
+## 🙌 Scope
 
 This Code of Conduct applies within all community spaces, and also applies when
 an individual is officially representing the community in public spaces.
@@ -54,7 +68,7 @@ Examples of representing our community include using an official e-mail address,
 posting via an official social media account, or acting as an appointed
 representative at an online or offline event. 🌐
 
-## Enforcement
+## 👍 Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
@@ -64,7 +78,7 @@ All complaints will be reviewed and investigated promptly and fairly. ⏱️
 All community leaders are obligated to respect the privacy and security of the
 reporter of any incident. 🔒
 
-## Enforcement Guidelines
+## 🙏 Enforcement Guidelines
 
 Community leaders will follow these Community Impact Guidelines in determining
 the consequences for any action they deem in violation of this Code of Conduct:
