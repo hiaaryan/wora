@@ -51,7 +51,7 @@ body:
     id: version
     attributes:
       label: Wora Version
-      description: Which version of Wora did this bug happen on?
+      description: Which version of Wora are you using?
       placeholder: Ex. 0.3.2
     validations:
       required: true
