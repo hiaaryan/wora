@@ -38,7 +38,6 @@ if (isProd) {
 }
 
 let settings: any;
-let mainWindow: any;
 
 // @hiaaryan: Initialize Database on Startup
 (async () => {
@@ -58,7 +57,7 @@ let mainWindow: any;
     callback({ path: request.url.replace("wora://", "") });
   });
 
-  mainWindow = createWindow("main", {
+  const mainWindow = createWindow("main", {
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
@@ -70,6 +69,8 @@ let mainWindow: any;
       backgroundThrottling: false,
     },
   });
+
+  mainWindow.setMinimumSize(1500, 900);
 
   ipcMain.on("quitApp", async () => {
     return app.quit();

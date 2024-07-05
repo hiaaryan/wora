@@ -1,0 +1,85 @@
+name: Bug Report 👾
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Discord Username
+      description: How can we get in touch with you if we need more info?
+      placeholder: Ex. charlie3x, bluespin2e
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What Happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Ex. I expected the page to load, but instead I got a 404 error.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Which Version
+      description: Which version of Wora did this bug happen on?
+      placeholder: Ex. 0.3.2
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      placeholder: Ex. Windows 10, macOS 11.2
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Please provide step-by-step instructions to reproduce the issue.
+      placeholder: Ex. 1. Go to '...' 2. Click on '...' 3. Scroll down to '...'
+    validations:
+      required: true
+  - type: textarea
+    id: environment-details
+    attributes:
+      label: Environment Details
+      description: Provide any additional details about your environment that might be relevant (e.g., hardware, network conditions).
+      placeholder: Ex. Running on a high-latency network, using an external sound card.
+    validations:
+      required: false
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this issue? (e.g., Minor, Major, Critical)
+      options:
+        - Minor
+        - Major
+        - Critical
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots/Logs
+      description: Attach any screenshots or logs that might help in diagnosing the problem.
+      placeholder: Ex. Drag and drop your screenshots or logs here.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

@@ -1,0 +1,65 @@
+name: Feature Request 🌟
+description: Suggest a new feature or enhancement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature!
+  - type: input
+    id: contact
+    attributes:
+      label: Discord Username
+      description: How can we get in touch with you if we need more info?
+      placeholder: Ex. charlie3x, bluespin2e
+    validations:
+      required: false
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Describe the feature you would like to see.
+      placeholder: Ex. I would like to have a dark mode option in the settings.
+    validations:
+      required: true
+  - type: textarea
+    id: problem-solution
+    attributes:
+      label: Problem and Solution
+      description: Describe the problem this feature will solve and how you envision the solution.
+      placeholder: Ex. The app is too bright at night, a dark mode would make it easier on the eyes.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Provide any other context or screenshots about the feature request.
+      placeholder: Ex. Similar to how dark mode works in other apps.
+    validations:
+      required: false
+  - type: textarea
+    id: potential-issues
+    attributes:
+      label: Potential Issues
+      description: Are there any potential issues or challenges with this feature?
+      placeholder: Ex. It might be challenging to ensure all UI elements are visible in dark mode.
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Which Version
+      description: Which version of Wora did this bug happen on?
+      placeholder: Ex. 0.3.2
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this request, you agree to follow our [Code of Conduct](https://example.com).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

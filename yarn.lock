@@ -1919,12 +1919,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@hookform/resolvers@npm:3.7.0"
+"@hookform/resolvers@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "@hookform/resolvers@npm:3.8.0"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 10c0/0f64d5d9fedc5b0b7126f88185a1768cf3f80dafa351150dc3ba78b818e49c1f18df16b15628cf391849149c0f911c4130195987668e0337b8ab07224a718167
+  checksum: 10c0/915b5357f380209155eb9795749d155b1d274243f5795d353976bc4fdea228276f2f7e1eaa7e574526bfbbb1ba2f55c8a625d68040f43912838a559547e9d97f
   languageName: node
   linkType: hard
 
@@ -3192,21 +3192,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "@tabler/icons-react@npm:3.8.0"
+"@tabler/icons-react@npm:^3.9.0":
+  version: 3.9.0
+  resolution: "@tabler/icons-react@npm:3.9.0"
   dependencies:
-    "@tabler/icons": "npm:3.8.0"
+    "@tabler/icons": "npm:3.9.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10c0/e14e3edf352fb38c4904fe81ccba3e15cbdb8309999337c43f3d608d5f48151e56fef9410bf0cafe362f67200d30efba65602e3e1c335b93748b1c09fe1425c3
+  checksum: 10c0/89fe826ed972e99ce8fa4d9390b8bc01a8cb1f1d662c34cc97977d01a9c7b7e51e755bfcceef212cb126441775dc66dcd08e048f9af7bd6fdf70c0a4ed748cf4
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.8.0":
-  version: 3.8.0
-  resolution: "@tabler/icons@npm:3.8.0"
-  checksum: 10c0/4d622391100638678045a867b2c10e27f2c13c46aa94e0308b71179beead58a80439039b5755a7bb396b440d1b6ad5a45897f4dd4f0ebcae623bed8b88262f14
+"@tabler/icons@npm:3.9.0":
+  version: 3.9.0
+  resolution: "@tabler/icons@npm:3.9.0"
+  checksum: 10c0/7e5497442fc70aa264e723d074c85f7a4cc5622318105bada0a7ec392d2c1d0b376cb21a8ed06cc9e696f8a8d29e16c547980fb4a1edddb66b47284be885226a
   languageName: node
   linkType: hard
 
@@ -10587,7 +10587,7 @@ __metadata:
   resolution: "wora@workspace:."
   dependencies:
     "@electron/rebuild": "npm:^3.6.0"
-    "@hookform/resolvers": "npm:^3.7.0"
+    "@hookform/resolvers": "npm:^3.8.0"
     "@radix-ui/react-avatar": "npm:^1.1.0"
     "@radix-ui/react-context-menu": "npm:^2.2.1"
     "@radix-ui/react-dialog": "npm:^1.1.1"
@@ -10598,7 +10598,7 @@ __metadata:
     "@radix-ui/react-slot": "npm:^1.1.0"
     "@radix-ui/react-tabs": "npm:^1.1.0"
     "@radix-ui/react-tooltip": "npm:^1.1.2"
-    "@tabler/icons-react": "npm:^3.8.0"
+    "@tabler/icons-react": "npm:^3.9.0"
     "@types/better-sqlite3": "npm:^7.6.11"
     "@types/howler": "npm:^2.2.11"
     "@types/node": "npm:^20.14.9"

@@ -17,7 +17,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.7.0",
+    "@hookform/resolvers": "^3.8.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-context-menu": "^2.2.1",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -28,7 +28,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
-    "@tabler/icons-react": "^3.8.0",
+    "@tabler/icons-react": "^3.9.0",
     "@types/better-sqlite3": "^7.6.11",
     "axios": "^1.7.2",
     "better-sqlite3": "^11.1.2",
