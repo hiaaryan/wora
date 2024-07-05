@@ -26,7 +26,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Which Version
+      label: Wora Version
       description: Which version of Wora did this bug happen on?
       placeholder: Ex. 0.3.2
     validations:
