@@ -418,43 +418,55 @@ export const Player = () => {
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
-              <ContextMenu>
-                <ContextMenuTrigger>
-                  <Link href={`/albums/${song.album.id}`}>
-                    <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
-                      <Image
-                        alt="Album Cover"
-                        src={song ? song.album.coverArt : "/coverArt.png"}
-                        fill
-                        priority={true}
-                        className="object-cover"
-                      />
-                    </div>
-                  </Link>
-                </ContextMenuTrigger>
-                <ContextMenuContent className="w-64">
-                  <ContextMenuSub>
-                    <ContextMenuSubTrigger className="flex items-center gap-2">
-                      <IconPlus stroke={2} size={14} />
-                      Add to Playlist
-                    </ContextMenuSubTrigger>
-                    <ContextMenuSubContent className="w-52">
-                      {playlists.map((playlist) => (
-                        <ContextMenuItem
-                          key={playlist.id}
-                          onClick={() =>
-                            addSongToPlaylist(playlist.id, song.id)
-                          }
-                        >
-                          <p className="w-full text-nowrap gradient-mask-r-70">
-                            {playlist.name}
-                          </p>
-                        </ContextMenuItem>
-                      ))}
-                    </ContextMenuSubContent>
-                  </ContextMenuSub>
-                </ContextMenuContent>
-              </ContextMenu>
+              {song ? (
+                <ContextMenu>
+                  <ContextMenuTrigger>
+                    <Link href={`/albums/${song.album.id}`}>
+                      <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+                        <Image
+                          alt="Album Cover"
+                          src={song.album.coverArt}
+                          fill
+                          priority={true}
+                          className="object-cover"
+                        />
+                      </div>
+                    </Link>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-64">
+                    <ContextMenuSub>
+                      <ContextMenuSubTrigger className="flex items-center gap-2">
+                        <IconPlus stroke={2} size={14} />
+                        Add to Playlist
+                      </ContextMenuSubTrigger>
+                      <ContextMenuSubContent className="w-52">
+                        {playlists.map((playlist) => (
+                          <ContextMenuItem
+                            key={playlist.id}
+                            onClick={() =>
+                              addSongToPlaylist(playlist.id, song.id)
+                            }
+                          >
+                            <p className="w-full text-nowrap gradient-mask-r-70">
+                              {playlist.name}
+                            </p>
+                          </ContextMenuItem>
+                        ))}
+                      </ContextMenuSubContent>
+                    </ContextMenuSub>
+                  </ContextMenuContent>
+                </ContextMenu>
+              ) : (
+                <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+                  <Image
+                    alt="Album Cover"
+                    src={"/coverArt.png"}
+                    fill
+                    priority={true}
+                    className="object-cover"
+                  />
+                </div>
+              )}
               <div className="w-1/3 gradient-mask-r-70">
                 <p className="text-nowrap text-sm font-medium">
                   {metadata ? metadata.common.title : "Echoes of Emptiness"}
