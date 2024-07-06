@@ -41,18 +41,18 @@ function Actions() {
             <>
               <Button
                 variant="ghost"
+                onClick={() => window.ipc.send("minimizeWindow", true)}
+              >
+                <IconLineDashed size={14} stroke={2} />
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => {
                   setIsFullScreen(!isFullScreen);
                   window.ipc.send("fullscreenWindow", !isFullScreen);
                 }}
               >
                 <IconSquare size={11} stroke={2} />
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => window.ipc.send("minimizeWindow", true)}
-              >
-                <IconLineDashed size={14} stroke={2} />
               </Button>
               <Button
                 variant="ghost"

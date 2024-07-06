@@ -49,24 +49,12 @@ const formSchema = z.object({
   description: z.string().optional(),
 });
 
-type Song = {
-  id: number;
-  filePath: string;
-  name: string;
-  artist: string;
-  duration: number;
-  album: {
-    name: string;
-    coverArt: string;
-  };
-};
-
 type Playlist = {
   id: number;
   name: string;
   description: string;
   coverArt: string;
-  songs: Song[];
+  songs: any;
 };
 
 export default function Playlist() {

@@ -26,21 +26,12 @@ import {
 } from "@/components/ui/context-menu";
 import { toast } from "sonner";
 
-type Song = {
-  id: number;
-  filePath: string;
-  name: string;
-  artist: string;
-  duration: number;
-  album: any;
-};
-
 type Album = {
   name: string;
   artist: string;
   year: number;
   coverArt: string;
-  songs: Song[];
+  songs: any;
 };
 
 export default function Album() {
