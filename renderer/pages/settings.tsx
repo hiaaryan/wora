@@ -224,7 +224,9 @@ export default function Settings() {
                       />
                       <div className="flex flex-col">
                         <p className="text-sm font-medium">
-                          {settings && settings.name}
+                          {settings && settings.name
+                            ? settings.name
+                            : "Wora User"}
                         </p>
                         <p className="opacity-50">A great listner of music.</p>
                       </div>

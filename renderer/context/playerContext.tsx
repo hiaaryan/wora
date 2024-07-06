@@ -15,6 +15,7 @@ interface Song {
   duration: number;
   filePath: string;
   album: {
+    id: number;
     name: string;
     coverArt: string;
   };

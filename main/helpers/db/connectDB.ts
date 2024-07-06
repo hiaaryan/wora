@@ -31,6 +31,16 @@ export const getSettings = async () => {
 };
 
 export const updateSettings = async (data: any) => {
+  const currentSettings = await db.select().from(settings);
+
+  if (currentSettings[0].profilePicture) {
+    try {
+      fs.unlinkSync(currentSettings[0].profilePicture);
+    } catch (error) {
+      console.error("Error deleting old profile picture:", error);
+    }
+  }
+
   const update = await db.update(settings).set({
     name: data.name,
     profilePicture: data.profilePicture,

@@ -1,5 +1,5 @@
 import path from "path";
-import { Menu, Tray, app, dialog, ipcMain } from "electron";
+import { Menu, Tray, app, dialog, ipcMain, shell } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { protocol } from "electron";
@@ -37,6 +37,7 @@ if (isProd) {
   app.setPath("userData", `${app.getPath("userData")}`);
 }
 
+let mainWindow: any;
 let settings: any;
 
 // @hiaaryan: Initialize Database on Startup
@@ -57,7 +58,7 @@ let settings: any;
     callback({ path: request.url.replace("wora://", "") });
   });
 
-  const mainWindow = createWindow("main", {
+  mainWindow = createWindow("main", {
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
@@ -149,6 +150,22 @@ app.whenReady().then(() => {
   tray = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([
     { label: "About", type: "normal", role: "about" },
+    { type: "separator" },
+    {
+      label: "GitHub",
+      type: "normal",
+      click: () => {
+        shell.openExternal("https://github.com/hiaaryan/wora");
+      },
+    },
+    {
+      label: "Discord",
+      type: "normal",
+      click: () => {
+        shell.openExternal("https://discord.gg/CrAbAYMGCe");
+      },
+    },
+    { type: "separator" },
     {
       label: "Quit",
       type: "normal",

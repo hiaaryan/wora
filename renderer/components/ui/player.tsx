@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import {
   IconArrowsShuffle2,
+  IconCheck,
   IconClock,
   IconHeart,
   IconInfoCircle,
@@ -12,10 +13,12 @@ import {
   IconPlayerPlay,
   IconPlayerSkipBack,
   IconPlayerSkipForward,
+  IconPlus,
   IconRepeat,
   IconVolume,
   IconVolumeOff,
   IconWaveSine,
+  IconX,
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
@@ -28,10 +31,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-interface LyricLine {
-  time: number;
-  text: string;
-}
 import Lyrics from "../ui/lyrics";
 import {
   Tooltip,
@@ -45,6 +44,17 @@ import { Badge } from "../ui/badge";
 import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import Link from "next/link";
+import { toast } from "sonner";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "./context-menu";
 
 const UPDATE_INTERVAL = 1000;
 
@@ -58,6 +68,7 @@ export const Player = () => {
   const [showLyrics, setShowLyrics] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
+  const [playlists, setPlaylists] = useState([]);
   const {
     song,
     nextSong,
@@ -92,6 +103,7 @@ export const Player = () => {
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
+      volume: volume,
       onload: () => {
         setSeekPosition(0);
         setIsPlaying(true);
@@ -133,7 +145,9 @@ export const Player = () => {
         title: metadata.common.title,
         artist: metadata.common.artist,
         album: metadata.common.album,
-        artwork: [{ src: cover }],
+        artwork: [
+          { src: song.album.coverArt, sizes: "512x512", type: "image/png" },
+        ],
       });
 
       navigator.mediaSession.setActionHandler("play", handlePlayPause);
@@ -251,6 +265,37 @@ export const Player = () => {
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    window.ipc.invoke("getAllPlaylists").then((response) => {
+      setPlaylists(response);
+    });
+  }, []);
+
+  const addSongToPlaylist = (playlistId: number, songId: number) => {
+    window.ipc
+      .invoke("addSongToPlaylist", {
+        playlistId,
+        songId,
+      })
+      .then((response) => {
+        if (response === true) {
+          toast(
+            <div className="flex w-fit items-center gap-2 text-xs">
+              <IconCheck stroke={2} size={16} />
+              Song is added to playlist.
+            </div>,
+          );
+        } else {
+          toast(
+            <div className="flex w-fit items-center gap-2 text-xs">
+              <IconX stroke={2} size={16} />
+              Song already exists in playlist.
+            </div>,
+          );
+        }
+      });
+  };
 
   return (
     <div>
@@ -373,15 +418,43 @@ export const Player = () => {
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
-              <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
-                <Image
-                  alt="Album Cover"
-                  src={cover}
-                  fill
-                  priority={true}
-                  className="object-cover"
-                />
-              </div>
+              <ContextMenu>
+                <ContextMenuTrigger>
+                  <Link href={`/albums/${song.album.id}`}>
+                    <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+                      <Image
+                        alt="Album Cover"
+                        src={song ? song.album.coverArt : "/coverArt.png"}
+                        fill
+                        priority={true}
+                        className="object-cover"
+                      />
+                    </div>
+                  </Link>
+                </ContextMenuTrigger>
+                <ContextMenuContent className="w-64">
+                  <ContextMenuSub>
+                    <ContextMenuSubTrigger className="flex items-center gap-2">
+                      <IconPlus stroke={2} size={14} />
+                      Add to Playlist
+                    </ContextMenuSubTrigger>
+                    <ContextMenuSubContent className="w-52">
+                      {playlists.map((playlist) => (
+                        <ContextMenuItem
+                          key={playlist.id}
+                          onClick={() =>
+                            addSongToPlaylist(playlist.id, song.id)
+                          }
+                        >
+                          <p className="w-full text-nowrap gradient-mask-r-70">
+                            {playlist.name}
+                          </p>
+                        </ContextMenuItem>
+                      ))}
+                    </ContextMenuSubContent>
+                  </ContextMenuSub>
+                </ContextMenuContent>
+              </ContextMenu>
               <div className="w-1/3 gradient-mask-r-70">
                 <p className="text-nowrap text-sm font-medium">
                   {metadata ? metadata.common.title : "Echoes of Emptiness"}
