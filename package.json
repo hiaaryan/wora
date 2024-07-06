@@ -50,6 +50,7 @@
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "wavesurfer.js": "^7.8.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

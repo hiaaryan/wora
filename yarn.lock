@@ -10405,6 +10405,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"wavesurfer.js@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "wavesurfer.js@npm:7.8.1"
+  checksum: 10c0/1d5165f66992153d16f73688d428a30a85e819edd52a19ccc7a78370acf348bd3cf062604a2956a9f1385d30a8f204a5c68e78abdfdba1fc2558dcc16f89d463
+  languageName: node
+  linkType: hard
+
 "wcwidth@npm:^1.0.1":
   version: 1.0.1
   resolution: "wcwidth@npm:1.0.1"
@@ -10637,6 +10644,7 @@ __metadata:
     tailwindcss: "npm:^3.4.4"
     tailwindcss-animate: "npm:^1.0.7"
     typescript: "npm:^5.5.3"
+    wavesurfer.js: "npm:^7.8.1"
     zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft

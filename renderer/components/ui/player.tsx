@@ -17,7 +17,7 @@ import {
   IconVolumeOff,
   IconWaveSine,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
 import { Slider } from "../ui/slider";
 import {
@@ -46,16 +46,18 @@ import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
-function Player() {
-  const [play, setPlay] = useState(false);
-  const [_, setSeek] = useState(0);
-  const [volume, setVolume] = useState<number[]>([0.5]);
-  const [mute, setMute] = useState(false);
+const UPDATE_INTERVAL = 1000;
+
+export const Player = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [seekPosition, setSeekPosition] = useState(0);
+  const [volume, setVolume] = useState(0.5);
+  const [isMuted, setIsMuted] = useState(false);
   const soundRef = useRef<Howl | null>(null);
-  const [currentLyric, setCurrentLyric] = useState<LyricLine | null>(null);
+  const [currentLyric, setCurrentLyric] = useState(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
-  const [isFavourite, setIsFavourite] = useState<boolean>(false);
+  const [isFavourite, setIsFavourite] = useState(false);
   const {
     song,
     nextSong,
@@ -72,8 +74,17 @@ function Player() {
     song?.filePath,
   );
 
+  const handlePlayPause = useCallback(() => {
+    if (soundRef.current) {
+      if (soundRef.current.playing()) {
+        soundRef.current.pause();
+      } else {
+        soundRef.current.play();
+      }
+    }
+  }, []);
+
   useEffect(() => {
-    // @hiaaryan: Initialize Howl instance when a song is loaded.
     if (!song?.filePath) return;
 
     const sound = new Howl({
@@ -81,20 +92,18 @@ function Player() {
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
-      volume: volume[0],
-      mute: mute,
       onload: () => {
-        setSeek(0);
-        setPlay(true);
+        setSeekPosition(0);
+        setIsPlaying(true);
       },
       onloaderror: (error) => {
         resetDiscordState();
-        setPlay(false);
-        console.log(error);
+        setIsPlaying(false);
+        console.error("Error loading audio:", error);
       },
       onend: () => {
         resetDiscordState();
-        setPlay(false);
+        setIsPlaying(false);
         if (!repeat) {
           nextSong();
         }
@@ -103,29 +112,21 @@ function Player() {
 
     soundRef.current = sound;
 
-    return () => sound.unload();
-  }, [song]);
+    return () => {
+      sound.unload();
+    };
+  }, [song, nextSong]);
 
   useEffect(() => {
-    if (repeat) {
-      soundRef.current?.on("end", () => {
-        soundRef.current?.play();
-      });
-    }
-  }, [repeat]);
-
-  useEffect(() => {
-    // @hiaaryan: Update media session metadata and seek position, handle play/pause.
-    if (!metadata) return;
-    if (!soundRef.current) return;
+    if (!soundRef.current || !metadata) return;
 
     const updateSeek = () => {
       if (soundRef.current?.playing()) {
-        setSeek(soundRef.current.seek() as number);
+        setSeekPosition(soundRef.current.seek());
       }
     };
 
-    const interval = setInterval(updateSeek, 1000);
+    const interval = setInterval(updateSeek, UPDATE_INTERVAL);
 
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -141,32 +142,45 @@ function Player() {
       navigator.mediaSession.setActionHandler("previoustrack", previousSong);
     }
 
-    soundRef.current.on("play", () => {
+    const onPlay = () => {
       updateDiscordState(metadata);
-      setPlay(true);
-    });
+      setIsPlaying(true);
+    };
 
-    soundRef.current.on("pause", () => {
+    const onPause = () => {
       resetDiscordState();
-      setPlay(false);
-    });
+      setIsPlaying(false);
+    };
+
+    soundRef.current.on("play", onPlay);
+    soundRef.current.on("pause", onPause);
 
     if (soundRef.current.state() === "loaded") {
       updateDiscordState(metadata);
     }
 
-    return () => clearInterval(interval);
-  }, [metadata]);
+    return () => {
+      clearInterval(interval);
+      soundRef.current?.off("play", onPlay);
+      soundRef.current?.off("pause", onPause);
+    };
+  }, [
+    soundRef.current,
+    metadata,
+    handlePlayPause,
+    nextSong,
+    previousSong,
+    cover,
+  ]);
 
   useEffect(() => {
-    // @hiaaryan: Update current lyric based on seek position if lyrics are available.
     if (!lyrics || !soundRef.current) return;
 
     const parsedLyrics = isSyncedLyrics(lyrics) ? parseLyrics(lyrics) : [];
 
     const updateLyrics = () => {
       if (soundRef.current?.playing()) {
-        const currentSeek = soundRef.current.seek() as number;
+        const currentSeek = soundRef.current.seek();
         const currentLyricLine = parsedLyrics.find((line, index) => {
           const nextLine = parsedLyrics[index + 1];
           return (
@@ -179,83 +193,64 @@ function Player() {
       }
     };
 
-    const interval = setInterval(updateLyrics, 1000);
+    const interval = setInterval(updateLyrics, UPDATE_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [lyrics]);
+  }, [soundRef.current, lyrics]);
 
   useEffect(() => {
-    // @hiaaryan: Update current lyric based on seek position if lyrics are available.
-    if (favourite) {
-      setIsFavourite(true);
-    } else {
-      setIsFavourite(false);
-    }
-  }, [metadata, favourite]);
-
-  const withSoundRef =
-    (callback: Function) =>
-    (...args: any[]) => {
-      // @hiaaryan: Helper function to ensure soundRef is available before executing callback.
-      if (soundRef.current) {
-        callback(...args);
-      }
-    };
-
-  const handleVolume = (value: any) => {
-    // @hiaaryan: Handle volume change.
-    setVolume(value);
     if (soundRef.current) {
-      soundRef.current.volume(value);
+      soundRef.current.volume(volume);
+      soundRef.current.mute(isMuted);
     }
-  };
+  }, [volume, isMuted]);
 
-  const handleSeek = withSoundRef((value: any) => {
-    // @hiaaryan: Handle seek position change.
-    soundRef.current.seek(value);
-    setSeek(value);
-  });
-
-  const handlePlayPause = withSoundRef(() => {
-    // @hiaaryan: Toggle play/pause state.
-    if (soundRef.current.playing()) {
-      soundRef.current.pause();
-    } else {
-      soundRef.current.play();
+  // Effect for handling repeat
+  useEffect(() => {
+    if (soundRef.current) {
+      soundRef.current.loop(repeat);
     }
-  });
+  }, [repeat]);
 
-  const toggleFavourite = (id: number) => {
-    // @hiaaryan: Add song to favorites.
+  useEffect(() => {
+    setIsFavourite(!!favourite);
+  }, [favourite]);
+
+  const handleVolume = useCallback((value: number[]) => {
+    setVolume(value[0]);
+  }, []);
+
+  const handleSeek = useCallback((value: number[]) => {
+    if (soundRef.current) {
+      soundRef.current.seek(value[0]);
+      setSeekPosition(value[0]);
+    }
+  }, []);
+
+  const toggleFavourite = useCallback((id: number) => {
     if (!id) return;
     window.ipc.send("addToFavourites", id);
-    setIsFavourite(!isFavourite);
-  };
+    setIsFavourite((prev) => !prev);
+  }, []);
 
-  const handleLyricClick = withSoundRef((time: number) => {
-    // @hiaaryan: Seek to specific time on lyric click.
-    soundRef.current.seek(time);
-    setSeek(time);
-    console.log(currentLyric);
-  });
-
-  const toggleLyrics = () => {
-    // @hiaaryan: Toggle lyrics display.
-    setShowLyrics(!showLyrics);
-  };
-
-  const toggleQueue = () => {
-    // @hiaaryan: Toggle queue display.
-    setShowQueue(!showQueue);
-  };
-
-  const toggleMute = () => {
-    // @hiaaryan: Toggle mute state.
-    setMute(!mute);
+  const handleLyricClick = useCallback((time: number) => {
     if (soundRef.current) {
-      soundRef.current.mute(!soundRef.current.mute());
+      soundRef.current.seek(time);
+      setSeekPosition(time);
     }
-  };
+  }, []);
+
+  const toggleLyrics = useCallback(() => {
+    setShowLyrics((prev) => !prev);
+  }, []);
+
+  const toggleQueue = useCallback(() => {
+    setShowQueue((prev) => !prev);
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => !prev);
+  }, []);
 
   return (
     <div>
@@ -431,7 +426,7 @@ function Player() {
                   />
                 </Button>
                 <Button variant="ghost" onClick={handlePlayPause}>
-                  {!play ? (
+                  {!isPlaying ? (
                     <IconPlayerPlay stroke={2} className="h-6 w-6 fill-white" />
                   ) : (
                     <IconPlayerPause
@@ -533,7 +528,7 @@ function Player() {
                   onClick={toggleMute}
                   className="!opacity-100"
                 >
-                  {!mute ? (
+                  {!isMuted ? (
                     <IconVolume
                       stroke={2}
                       size={17.5}
@@ -549,7 +544,7 @@ function Player() {
                 </Button>
                 <Slider
                   onValueChange={handleVolume}
-                  defaultValue={volume}
+                  defaultValue={[volume]}
                   max={1}
                   step={0.01}
                 />
@@ -646,6 +641,6 @@ function Player() {
       </div>
     </div>
   );
-}
+};
 
 export default Player;

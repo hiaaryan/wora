@@ -313,6 +313,24 @@ function readFilesRecursively(dir: string): string[] {
   return results;
 }
 
+const imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"];
+
+function findFirstImageInDirectory(dir: string): string | null {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (
+      stat.isFile() &&
+      imageExtensions.includes(path.extname(file).toLowerCase())
+    ) {
+      return filePath;
+    }
+  }
+
+  return null;
+}
+
 export const initializeData = async (musicFolder: string) => {
   const currentFiles = readFilesRecursively(musicFolder);
   const dbFiles = await db.select().from(songs);
@@ -334,10 +352,24 @@ export const initializeData = async (musicFolder: string) => {
     const metadata = await parseFile(file, {
       skipPostHeaders: true,
     });
-    const coverArt = selectCover(metadata.common.picture);
-    const art = coverArt
-      ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
-      : "/coverArt.png";
+
+    const albumFolder = path.dirname(file);
+
+    const albumImage = findFirstImageInDirectory(albumFolder);
+
+    let art: string;
+
+    if (albumImage) {
+      const imageData = fs.readFileSync(albumImage);
+      const imageExt = path.extname(albumImage).slice(1);
+      art = `data:image/${imageExt};base64,${imageData.toString("base64")}`;
+    } else {
+      // If no image is found, fall back to the current method
+      const coverArt = selectCover(metadata.common.picture);
+      art = coverArt
+        ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
+        : "/coverArt.png";
+    }
 
     let albumsFound = await db
       .select()
