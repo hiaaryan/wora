@@ -42,6 +42,8 @@ interface PlayerContextType extends PlayerState {
   previousSong: () => void;
   toggleRepeat: () => void;
   toggleShuffle: () => void;
+  playNext: (song: Song) => void;
+  addToQueue: (song: Song) => void;
 }
 
 const initialPlayerState: PlayerState = {
@@ -186,6 +188,34 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
+  const playNext = useCallback((song: Song) => {
+    setPlayerState((prevState) => {
+      const newQueue = [
+        ...prevState.queue.slice(0, prevState.currentIndex + 1),
+        song,
+        ...prevState.queue.slice(prevState.currentIndex + 1),
+      ];
+      const newOriginalQueue = [
+        ...prevState.originalQueue.slice(0, prevState.currentIndex + 1),
+        song,
+        ...prevState.originalQueue.slice(prevState.currentIndex + 1),
+      ];
+      return {
+        ...prevState,
+        queue: newQueue,
+        originalQueue: newOriginalQueue,
+      };
+    });
+  }, []);
+
+  const addToQueue = useCallback((song: Song) => {
+    setPlayerState((prevState) => ({
+      ...prevState,
+      queue: [...prevState.queue, song],
+      originalQueue: [...prevState.originalQueue, song],
+    }));
+  }, []);
+
   const contextValue: PlayerContextType = {
     ...playerState,
     setSong: (song: Song) =>
@@ -196,6 +226,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     previousSong,
     toggleRepeat,
     toggleShuffle,
+    playNext,
+    addToQueue,
   };
 
   return (

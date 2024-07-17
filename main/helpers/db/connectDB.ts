@@ -171,6 +171,14 @@ export const searchDB = async (query: string) => {
 
   const searchSongs = await db.query.songs.findMany({
     where: like(songs.name, `%${lowerSearch}%`),
+    with: {
+      album: {
+        columns: {
+          id: true,
+          coverArt: true,
+        },
+      },
+    },
   });
 
   return {

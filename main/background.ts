@@ -55,7 +55,7 @@ let settings: any;
 
   // @hiaaryan: Using Depreciated API [Seeking Not Supported with Net]
   protocol.registerFileProtocol("wora", (request, callback) => {
-    callback({ path: request.url.replace("wora://", "") });
+    callback({ path: decodeURIComponent(request.url.replace("wora://", "")) });
   });
 
   mainWindow = createWindow("main", {
@@ -71,8 +71,6 @@ let settings: any;
     },
   });
 
-  mainWindow.setMinimumSize(1500, 900);
-
   ipcMain.on("quitApp", async () => {
     return app.quit();
   });
@@ -81,8 +79,8 @@ let settings: any;
     return mainWindow.minimize();
   });
 
-  ipcMain.on("fullscreenWindow", async (_, isFullScreen: boolean) => {
-    return mainWindow.setFullScreen(isFullScreen);
+  ipcMain.on("maximizeWindow", async (_, isMaximized: boolean) => {
+    return mainWindow.maximize(isMaximized);
   });
 
   if (settings) {
@@ -201,16 +199,12 @@ ipcMain.handle("getPlaylistWithSongs", async (_, id: number) => {
 ipcMain.handle("getSongMetadata", async (_, file: string) => {
   const metadata = await parseFile(file, {
     skipPostHeaders: true,
+    skipCovers: true,
   });
-
-  const coverArt = selectCover(metadata.common.picture);
-  const art = coverArt
-    ? `data:${coverArt.format};base64,${coverArt.data.toString("base64")}`
-    : "/coverArt.png";
 
   const favourite = await isSongFavorite(file);
 
-  return { metadata, art, favourite };
+  return { metadata, favourite };
 });
 
 ipcMain.on("addToFavourites", async (_, id: number) => {

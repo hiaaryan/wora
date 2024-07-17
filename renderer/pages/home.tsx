@@ -83,17 +83,17 @@ export default function Home() {
               The coolest music library in the world.
             </div>
           </div>
-          <Carousel
-            className="relative w-[88vw]"
-            opts={{
-              loop: true,
-            }}
-          >
-            <CarouselPrevious className="absolute left-0 z-50 my-0" />
-            <div className="w-full gradient-mask-r-80-d">
-              <CarouselContent className="-ml-8">
-                {libraryItems.albums &&
-                  libraryItems.albums.map((album: any, index: number) => (
+          {libraryItems.albums && libraryItems.albums.length > 5 && (
+            <Carousel
+              className="relative w-[88vw]"
+              opts={{
+                loop: true,
+              }}
+            >
+              <CarouselPrevious className="absolute left-0 z-50 my-0" />
+              <div className="w-full gradient-mask-r-80-d">
+                <CarouselContent className="-ml-8">
+                  {libraryItems.albums.map((album: any, index: number) => (
                     <CarouselItem key={index} className="basis-1/5 pl-8">
                       <Link key={album.id} href={`/albums/${album.id}`}>
                         <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
@@ -120,10 +120,11 @@ export default function Home() {
                       </Link>
                     </CarouselItem>
                   ))}
-              </CarouselContent>
-            </div>
-            <CarouselNext className="absolute right-0 z-50 my-0" />
-          </Carousel>
+                </CarouselContent>
+              </div>
+              <CarouselNext className="absolute right-0 z-50 my-0" />
+            </Carousel>
+          )}
           <div className="pb-[32vh]">
             {libraryItems.songs &&
               libraryItems.songs.map((song: any, index: number) => (

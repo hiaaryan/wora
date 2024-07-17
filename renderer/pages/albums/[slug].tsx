@@ -13,6 +13,9 @@ import {
   IconPlus,
   IconCheck,
   IconX,
+  IconHeart,
+  IconChevronsRight,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
 import { ContextMenu } from "@radix-ui/react-context-menu";
@@ -38,7 +41,7 @@ export default function Album() {
   const router = useRouter();
   const [album, setAlbum] = useState<Album | null>(null);
   const [playlists, setPlaylists] = useState([]);
-  const { setQueueAndPlay } = usePlayer();
+  const { setQueueAndPlay, addToQueue, playNext } = usePlayer();
 
   useEffect(() => {
     if (!router.query.slug) return;
@@ -147,7 +150,7 @@ export default function Album() {
       </div>
       <div className="pb-[32vh] pt-2">
         {album &&
-          album.songs.map((song, index) => (
+          album.songs.map((song: any, index: number) => (
             <ContextMenu key={song.id}>
               <ContextMenuTrigger>
                 <div
@@ -169,7 +172,7 @@ export default function Album() {
                       <p className="opacity-50">{song.artist}</p>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-center">
                     <p className="flex items-center gap-1 opacity-50">
                       <IconClock stroke={2} size={15} />
                       {convertTime(song.duration)}
@@ -185,9 +188,39 @@ export default function Album() {
                   <IconPlayerPlay className="fill-white" stroke={2} size={14} />
                   Play Song
                 </ContextMenuItem>
+                <ContextMenuItem
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    playNext(song);
+                    toast(
+                      <div className="flex w-fit items-center gap-2 text-xs">
+                        <IconCheck stroke={2} size={16} />
+                        Song added to queue.
+                      </div>,
+                    );
+                  }}
+                >
+                  <IconChevronsRight stroke={2} size={14} />
+                  Play Next
+                </ContextMenuItem>
+                <ContextMenuItem
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    addToQueue(song);
+                    toast(
+                      <div className="flex w-fit items-center gap-2 text-xs">
+                        <IconCheck stroke={2} size={16} />
+                        Song added to queue.
+                      </div>,
+                    );
+                  }}
+                >
+                  <IconPlus className="fill-white" stroke={2} size={14} />
+                  Add to Queue
+                </ContextMenuItem>
                 <ContextMenuSub>
                   <ContextMenuSubTrigger className="flex items-center gap-2">
-                    <IconPlus stroke={2} size={14} />
+                    <IconHeart stroke={2} size={14} />
                     Add to Playlist
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent className="w-52">

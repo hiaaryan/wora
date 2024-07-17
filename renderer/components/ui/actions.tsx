@@ -16,7 +16,7 @@ type Data = {
 
 function Actions() {
   const [data, setData] = useState<Data>(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     window.ipc.invoke("getActionsData").then((response) => {
@@ -25,9 +25,9 @@ function Actions() {
   }, []);
 
   return (
-    <div className="absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
+    <div className="drag absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
       <div className="relative flex h-full w-full items-center justify-center">
-        <div className="drag flex h-full items-center gap-2">
+        <div className="flex h-full items-center gap-2">
           <Image
             src={"/assets/Logo [Dark].ico"}
             alt="logo"
@@ -48,8 +48,8 @@ function Actions() {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  setIsFullScreen(!isFullScreen);
-                  window.ipc.send("fullscreenWindow", !isFullScreen);
+                  setIsMaximized(!isMaximized);
+                  window.ipc.send("maximizeWindow", !isMaximized);
                 }}
               >
                 <IconSquare size={11} stroke={2} />

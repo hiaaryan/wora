@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   IconArrowsShuffle2,
   IconCheck,
@@ -9,6 +9,7 @@ import {
   IconListTree,
   IconMicrophone2,
   IconMicrophone2Off,
+  IconPhoto,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
@@ -22,7 +23,7 @@ import {
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
-import { Slider } from "../ui/slider";
+import { Slider } from "@/components/ui/slider";
 import {
   Dialog,
   DialogContent,
@@ -30,20 +31,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import Lyrics from "../ui/lyrics";
+} from "@/components/ui/dialog";
+import Lyrics from "@/components/ui/lyrics";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "@/components/ui/tooltip";
 import { convertTime, isSyncedLyrics, parseLyrics } from "@/lib/helpers";
 import { useAudioMetadata } from "@/lib/helpers";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -54,13 +55,13 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from "./context-menu";
+} from "@/components/ui/context-menu";
 
 const UPDATE_INTERVAL = 1000;
 
 export const Player = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [seekPosition, setSeekPosition] = useState(0);
+  const [_, setSeekPosition] = useState(0);
   const [volume, setVolume] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
   const soundRef = useRef<Howl | null>(null);
@@ -81,9 +82,7 @@ export const Player = () => {
     toggleShuffle,
     toggleRepeat,
   } = usePlayer();
-  const { metadata, cover, lyrics, favourite } = useAudioMetadata(
-    song?.filePath,
-  );
+  const { metadata, lyrics, favourite } = useAudioMetadata(song?.filePath);
 
   const handlePlayPause = useCallback(() => {
     if (soundRef.current) {
@@ -99,11 +98,10 @@ export const Player = () => {
     if (!song?.filePath) return;
 
     const sound = new Howl({
-      src: ["wora://" + song?.filePath],
+      src: ["wora://" + encodeURIComponent(song?.filePath)],
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
-      volume: volume,
       onload: () => {
         setSeekPosition(0);
         setIsPlaying(true);
@@ -130,11 +128,11 @@ export const Player = () => {
   }, [song, nextSong]);
 
   useEffect(() => {
-    if (!soundRef.current || !metadata) return;
+    if (!song) return;
 
     const updateSeek = () => {
       if (soundRef.current?.playing()) {
-        setSeekPosition(soundRef.current.seek());
+        setSeekPosition(soundRef.current?.seek());
       }
     };
 
@@ -142,9 +140,9 @@ export const Player = () => {
 
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: metadata.common.title,
-        artist: metadata.common.artist,
-        album: metadata.common.album,
+        title: song.name,
+        artist: song.artist,
+        album: song.album.name,
         artwork: [
           { src: song.album.coverArt, sizes: "512x512", type: "image/png" },
         ],
@@ -156,39 +154,27 @@ export const Player = () => {
       navigator.mediaSession.setActionHandler("previoustrack", previousSong);
     }
 
-    const onPlay = () => {
-      updateDiscordState(metadata);
+    soundRef.current.on("play", () => {
+      updateDiscordState(song);
       setIsPlaying(true);
-    };
+    });
 
-    const onPause = () => {
+    soundRef.current.on("pause", () => {
       resetDiscordState();
       setIsPlaying(false);
-    };
-
-    soundRef.current.on("play", onPlay);
-    soundRef.current.on("pause", onPause);
+    });
 
     if (soundRef.current.state() === "loaded") {
-      updateDiscordState(metadata);
+      updateDiscordState(song);
     }
 
     return () => {
       clearInterval(interval);
-      soundRef.current?.off("play", onPlay);
-      soundRef.current?.off("pause", onPause);
     };
-  }, [
-    soundRef.current,
-    metadata,
-    handlePlayPause,
-    nextSong,
-    previousSong,
-    cover,
-  ]);
+  }, [song, handlePlayPause, nextSong, previousSong]);
 
   useEffect(() => {
-    if (!lyrics || !soundRef.current) return;
+    if (!lyrics || !song) return;
 
     const parsedLyrics = isSyncedLyrics(lyrics) ? parseLyrics(lyrics) : [];
 
@@ -210,7 +196,7 @@ export const Player = () => {
     const interval = setInterval(updateLyrics, UPDATE_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [soundRef.current, lyrics]);
+  }, [song, lyrics]);
 
   useEffect(() => {
     if (soundRef.current) {
@@ -434,6 +420,16 @@ export const Player = () => {
                     </Link>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-64">
+                    <Link href={`/albums/${song.album.id}`}>
+                      <ContextMenuItem className="flex items-center gap-2">
+                        <IconPhoto
+                          className="fill-white"
+                          stroke={2}
+                          size={14}
+                        />
+                        Go to Album
+                      </ContextMenuItem>
+                    </Link>
                     <ContextMenuSub>
                       <ContextMenuSubTrigger className="flex items-center gap-2">
                         <IconPlus stroke={2} size={14} />
@@ -443,9 +439,10 @@ export const Player = () => {
                         {playlists.map((playlist) => (
                           <ContextMenuItem
                             key={playlist.id}
-                            onClick={() =>
-                              addSongToPlaylist(playlist.id, song.id)
-                            }
+                            onClick={() => {
+                              addSongToPlaylist(playlist.id, song.id);
+                              setIsFavourite(true);
+                            }}
                           >
                             <p className="w-full text-nowrap gradient-mask-r-70">
                               {playlist.name}
@@ -469,10 +466,10 @@ export const Player = () => {
               )}
               <div className="w-1/3 gradient-mask-r-70">
                 <p className="text-nowrap text-sm font-medium">
-                  {metadata ? metadata.common.title : "Echoes of Emptiness"}
+                  {song ? song.name : "Echoes of Emptiness"}
                 </p>
                 <p className="text-nowrap opacity-50">
-                  {metadata ? metadata.common.artist : "The Void Ensemble"}
+                  {song ? song.artist : "The Void Ensemble"}
                 </p>
               </div>
             </div>
@@ -662,7 +659,7 @@ export const Player = () => {
                             <div className="relative h-36 w-36 overflow-hidden rounded-lg">
                               <Image
                                 alt="album"
-                                src={cover}
+                                src={song?.album.coverArt || "/coverArt.png"}
                                 fill
                                 className="object-cover"
                               />

@@ -327,11 +327,16 @@ const Navbar = () => {
                         {(item.type === "Playlist" ||
                           item.type === "Album") && (
                           <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
-                            <Image src={item.coverArt} alt={item.name} fill />
+                            <Image
+                              className="object-cover"
+                              src={item.coverArt}
+                              alt={item.name}
+                              fill
+                            />
                           </div>
                         )}
                         <div>
-                          <p className="w-full overflow-hidden text-xs">
+                          <p className="w-full overflow-hidden text-nowrap text-xs">
                             {item.name}
                             <span className="ml-1 opacity-50">
                               ({item.type})

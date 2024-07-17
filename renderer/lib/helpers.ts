@@ -84,13 +84,13 @@ const defaultState: DiscordState = {
   timestamp: true,
 };
 
-export const updateDiscordState = (metadata: any): void => {
-  if (!metadata) {
+export const updateDiscordState = (song: any): void => {
+  if (!song) {
     return;
   }
 
-  const details = `${metadata.common.title} → ${metadata.common.album}`;
-  const state = `by ${metadata.common.artist}`;
+  const details = `${song.name} → ${song.album.name}`;
+  const state = `by ${song.artist}`;
 
   window.ipc.send("set-rpc-state", { details, state });
 };
@@ -101,7 +101,6 @@ export const resetDiscordState = (): void => {
 
 export const useAudioMetadata = (file: string) => {
   const [metadata, setMetadata] = useState<IAudioMetadata | null>(null);
-  const [cover, setCover] = useState<string | null>("/coverArt.png");
   const [lyrics, setLyrics] = useState<string | null>(null);
   const [favourite, setFavourite] = useState<boolean>(false);
 
@@ -110,7 +109,6 @@ export const useAudioMetadata = (file: string) => {
       try {
         const response = await fetchMetadata(file);
         setMetadata(response.metadata);
-        setCover(response.art);
         if (response.metadata) {
           const fetchedLyrics = await fetchLyrics(
             `${response.metadata.common.title} ${response.metadata.common.artist}`,
@@ -128,7 +126,7 @@ export const useAudioMetadata = (file: string) => {
     getData();
   }, [file]);
 
-  return { metadata, cover, lyrics, favourite };
+  return { metadata, lyrics, favourite };
 };
 
 interface LyricLine {
@@ -140,7 +138,6 @@ export const convertTime = (seconds: number) => {
   const convertedSeconds = Math.round(seconds);
   const minutes = Math.floor(convertedSeconds / 60);
   const remainingSeconds = convertedSeconds % 60;
-  // Pad seconds with leading zero if less than 10
   const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
   return `${minutes}:${formattedSeconds}`;
 };
