@@ -80,7 +80,11 @@ let settings: any;
   });
 
   ipcMain.on("maximizeWindow", async (_, isMaximized: boolean) => {
-    return mainWindow.maximize(isMaximized);
+    if (isMaximized) {
+      return mainWindow.maximize(isMaximized);
+    } else {
+      return mainWindow.unmaximize();
+    }
   });
 
   if (settings) {
