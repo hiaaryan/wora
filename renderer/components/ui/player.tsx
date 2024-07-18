@@ -102,6 +102,7 @@ export const Player = () => {
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
+      volume: volume,
       onload: () => {
         setSeekPosition(0);
         setIsPlaying(true);
