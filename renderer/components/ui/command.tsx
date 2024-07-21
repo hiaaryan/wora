@@ -40,14 +40,14 @@ const CommandInput = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
   <div
-    className="flex items-center border-b border-white/10 p-3.5"
+    className="flex items-center border-b border-black/5 p-3.5 text-black dark:border-white/10 dark:text-white"
     cmdk-input-wrapper=""
   >
     <IconSearch className="mr-2 h-5 w-5 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex w-full bg-transparent text-xs outline-none placeholder:text-white/50",
+        "flex w-full bg-transparent text-xs outline-none placeholder:text-black/50 dark:placeholder:text-white/50",
         className,
       )}
       {...props}
@@ -121,7 +121,7 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "wora-transition relative flex cursor-pointer select-none items-center text-nowrap rounded-lg p-2 text-xs outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-white/10 data-[selected=true]:text-white data-[disabled=true]:opacity-50",
+      "wora-transition relative flex cursor-pointer select-none items-center text-nowrap rounded-lg p-2 text-xs outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-black/5 data-[selected=true]:text-black data-[disabled=true]:opacity-50 dark:data-[selected=true]:bg-white/10 dark:data-[selected=true]:text-white",
       className,
     )}
     {...props}

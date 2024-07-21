@@ -25,10 +25,14 @@ export default function Playlists() {
           <div className="grid w-full grid-cols-5 gap-8 pb-[32vh]">
             {playlists &&
               playlists.map((playlist) => (
-                <Link key={playlist.id} href={`/playlists/${playlist.id}`}>
-                  <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-white/10">
+                <Link
+                  key={playlist.id}
+                  href={`/playlists/${playlist.id}`}
+                  passHref
+                >
+                  <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-black/5 dark:hover:bg-white/10">
                     <div className="relative flex h-full flex-col justify-between">
-                      <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-xl">
+                      <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-lg">
                         <Image
                           alt={playlist ? playlist.name : "Album Cover"}
                           src={playlist.coverArt}

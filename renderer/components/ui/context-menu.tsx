@@ -31,7 +31,7 @@ const ContextMenuSubTrigger = React.forwardRef<
   <ContextMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      "wora-transition flex cursor-default select-none items-center rounded-lg p-2 text-xs hover:bg-white/10 data-[state=open]:bg-white/10 data-[state=open]:text-white",
+      "wora-transition flex cursor-pointer select-none items-center rounded-lg p-2 text-xs outline-none hover:bg-black/5 data-[state=open]:bg-black/5 data-[state=open]:text-black dark:hover:bg-white/10 dark:data-[state=open]:bg-white/10 dark:data-[state=open]:text-white",
       inset && "pl-8",
       className,
     )}
@@ -50,7 +50,7 @@ const ContextMenuSubContent = React.forwardRef<
   <ContextMenuPrimitive.SubContent
     ref={ref}
     className={cn(
-      "wora-border z-50 min-w-20 overflow-hidden rounded-xl bg-black p-2 text-white shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      "wora-border z-50 min-w-20 overflow-hidden rounded-xl bg-white p-2 text-black shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:bg-black dark:text-white",
       className,
     )}
     {...props}
@@ -66,7 +66,7 @@ const ContextMenuContent = React.forwardRef<
     <ContextMenuPrimitive.Content
       ref={ref}
       className={cn(
-        "wora-border z-50 min-w-20 overflow-hidden rounded-xl bg-black p-2 text-white shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "wora-border z-50 min-w-20 overflow-hidden rounded-xl bg-white p-2 text-black shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:bg-black dark:text-white",
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ const ContextMenuItem = React.forwardRef<
   <ContextMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "wora-transition flex cursor-default select-none items-center rounded-lg p-2 text-xs hover:bg-white/10 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-neutral-800 dark:focus:text-neutral-50",
+      "wora-transition flex cursor-pointer select-none items-center rounded-lg p-2 text-xs outline-none hover:bg-black/5 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:focus:bg-neutral-800 dark:focus:text-neutral-50",
       inset && "pl-8",
       className,
     )}

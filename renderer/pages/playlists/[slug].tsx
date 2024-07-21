@@ -3,9 +3,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import { convertTime } from "@/lib/helpers";
 import {
-  IconClock,
   IconPlayerPlay,
   IconArrowsShuffle2,
   IconArrowLeft,
@@ -15,12 +13,6 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
-import { ContextMenu } from "@radix-ui/react-context-menu";
-import {
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import { toast } from "sonner";
 import Spinner from "@/components/ui/spinner";
 import {
@@ -41,6 +33,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Songs from "@/components/ui/songs";
+import { ContextMenuItem } from "@/components/ui/context-menu";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -73,12 +67,6 @@ export default function Playlist() {
       });
   }, [router.query.slug]);
 
-  const handleMusicClick = (index: number) => {
-    if (playlist) {
-      setQueueAndPlay(playlist.songs, index);
-    }
-  };
-
   const playPlaylist = () => {
     if (playlist) {
       setQueueAndPlay(playlist.songs, 0);
@@ -91,10 +79,10 @@ export default function Playlist() {
     }
   };
 
-  const removeSongFromPlaylist = (playlistId: number, songId: number) => {
+  const removeSongFromPlaylist = (songId: number) => {
     window.ipc
       .invoke("removeSongFromPlaylist", {
-        playlistId,
+        playlistId: playlist.id,
         songId,
       })
       .then((response) => {
@@ -114,6 +102,18 @@ export default function Playlist() {
         }
       });
   };
+
+  const toRenderAdditionalMenuItems = (song: any) => (
+    <>
+      <ContextMenuItem
+        className="flex items-center gap-2"
+        onClick={() => removeSongFromPlaylist(song.id)}
+      >
+        <IconX stroke={2} size={14} />
+        Remove from Playlist
+      </ContextMenuItem>
+    </>
+  );
 
   const updatePlaylist = (data: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -171,7 +171,7 @@ export default function Playlist() {
         </Button>
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
-            <div className="relative h-52 w-52 overflow-hidden rounded-lg shadow-xl transition duration-300">
+            <div className="relative h-52 w-52 overflow-hidden rounded-lg shadow-lg transition duration-300">
               <Image
                 alt={playlist ? playlist.name : "Album Cover"}
                 src={playlist ? playlist.coverArt : "/coverArt.png"}
@@ -182,10 +182,10 @@ export default function Playlist() {
             </div>
             <div className="flex flex-col gap-4">
               <div>
-                <h1 className="text-2xl font-medium text-white">
+                <h1 className="text-2xl font-medium">
                   {playlist && playlist.name}
                 </h1>
-                <p className="flex items-center gap-2 text-sm text-white">
+                <p className="flex items-center gap-2 text-sm">
                   {playlist && playlist.description}
                 </p>
               </div>
@@ -208,55 +208,10 @@ export default function Playlist() {
         </div>
       </div>
       <div className="pb-[32vh] pt-2">
-        {playlist &&
-          playlist.songs.map((song, index) => (
-            <ContextMenu key={song.id}>
-              <ContextMenuTrigger>
-                <div
-                  className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-white/10"
-                  onClick={() => handleMusicClick(index)}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
-                      <Image
-                        alt={song.name}
-                        src={song.album.coverArt}
-                        fill
-                        loading="lazy"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-sm font-medium">{song.name}</p>
-                      <p className="opacity-50">{song.artist}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="flex items-center gap-1 opacity-50">
-                      <IconClock stroke={2} size={15} />
-                      {convertTime(song.duration)}
-                    </p>
-                  </div>
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="w-64">
-                <ContextMenuItem
-                  className="flex items-center gap-2"
-                  onClick={() => handleMusicClick(index)}
-                >
-                  <IconPlayerPlay className="fill-white" stroke={2} size={14} />
-                  Play Song
-                </ContextMenuItem>
-                <ContextMenuItem
-                  className="flex items-center gap-2"
-                  onClick={() => removeSongFromPlaylist(playlist.id, song.id)}
-                >
-                  <IconX stroke={2} size={14} />
-                  Remove from Playlist
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          ))}
+        <Songs
+          library={playlist?.songs}
+          renderAdditionalMenuItems={toRenderAdditionalMenuItems}
+        />
       </div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>

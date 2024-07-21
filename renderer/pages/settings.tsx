@@ -287,7 +287,7 @@ export default function Settings() {
                     </div>
                   </div>
                   <div className="flex w-full items-center gap-2">
-                    <div className="flex h-9 w-full items-center rounded-lg bg-white/10 px-3 py-1 text-xs transition duration-300 focus:bg-white/20 focus:outline-none">
+                    <div className="flex h-9 w-full items-center rounded-lg bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
                       {settings && settings.musicFolder}
                     </div>
                     <Button
@@ -309,7 +309,18 @@ export default function Settings() {
               <div className="wora-border relative h-48 w-full overflow-hidden rounded-xl p-6">
                 <div className="flex h-full w-full flex-col items-center justify-center leading-3">
                   <div className="relative h-14 w-14">
-                    <Image fill src={"/assets/Full [Dark].svg"} alt="Logo" />
+                    <Image
+                      fill
+                      src={"/assets/Full [Dark].svg"}
+                      className="hidden dark:block"
+                      alt="Logo"
+                    />
+                    <Image
+                      fill
+                      src={"/assets/Full.svg"}
+                      className="block dark:hidden"
+                      alt="Logo"
+                    />
                   </div>
                   <div className="flex items-center">
                     Made with
@@ -317,23 +328,9 @@ export default function Settings() {
                       stroke={2}
                       className="inline-flex h-3.5 fill-red-500 stroke-red-500"
                     />
-                    by hiaaryan.
+                    by hiaaryan & contributors.
                   </div>
                 </div>
-                <Image
-                  height={512}
-                  width={512}
-                  src={"/assets/Logo.png"}
-                  className="absolute -top-64 right-0 opacity-50"
-                  alt="Logo"
-                />
-                <Image
-                  height={512}
-                  width={512}
-                  src={"/assets/Logo.png"}
-                  className="absolute -bottom-64 left-0 opacity-50"
-                  alt="Logo"
-                />
               </div>
             </div>
           </div>

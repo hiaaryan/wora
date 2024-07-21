@@ -5,7 +5,11 @@
 @tailwind utilities;
 
 .wora-border {
-  @apply border border-white/10;
+  @apply border border-black/[0.040] dark:border-white/[0.090];
+}
+
+.wora-bg {
+  @apply bg-black/5 dark:bg-white/10;
 }
 
 .wora-transition {

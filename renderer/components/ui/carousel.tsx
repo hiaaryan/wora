@@ -7,7 +7,13 @@ import useEmblaCarousel, {
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconChevronCompactLeft,
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -215,7 +221,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <IconArrowLeft stroke={2} size={24} />
+      <IconChevronLeft stroke={2} size={28} />
     </Button>
   );
 });
@@ -242,7 +248,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <IconArrowRight stroke={2} size={24} />
+      <IconChevronRight stroke={2} size={28} />
     </Button>
   );
 });

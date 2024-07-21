@@ -15,7 +15,10 @@ export default function Setup() {
     window.ipc
       .invoke("setMusicFolder", true)
       .then((response) => {
-        if (response) return;
+        if (response) {
+          setLoading(false);
+          return;
+        }
         router.push("/home");
       })
       .catch(() => setLoading(false));
@@ -25,7 +28,7 @@ export default function Setup() {
     <div className="wora-transition h-screen w-screen">
       <Actions />
       <div className="relative flex h-full w-full select-none items-center overflow-hidden p-8">
-        <div className="absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-white blur-[1700px]" />
+        <div className="absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-black blur-[1700px] dark:bg-white" />
         <div className="z-10 flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <Image
@@ -33,16 +36,24 @@ export default function Setup() {
               width={124}
               height={0}
               alt="logo"
+              className="hidden dark:block"
+            />
+            <Image
+              src="/assets/Full.png"
+              width={124}
+              height={0}
+              alt="logo"
+              className="block dark:hidden"
             />
             <div className="flex items-center text-sm opacity-50">
               A beautiful player for audiophiles 🎧
             </div>
           </div>
           <Button
-            className="absolute bottom-8 left-8 w-40 justify-between"
+            className="absolute bottom-8 left-8 w-fit justify-between"
             onClick={handleClick}
           >
-            Get Started
+            Select Music Folder
             {loading ? (
               <Spinner className="h-3.5 w-3.5" />
             ) : (

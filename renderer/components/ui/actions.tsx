@@ -33,11 +33,19 @@ function Actions() {
             alt="logo"
             width={16}
             height={16}
+            className="hidden dark:block"
+          />
+          <Image
+            src={"/assets/Logo.ico"}
+            className="block dark:hidden"
+            alt="logo"
+            width={16}
+            height={16}
           />
           Wora v{data && data.appVersion}
         </div>
-        <div className="absolute -right-2 top-0 flex h-full items-center gap-2">
-          {data && data.isNotMac && (
+        <div className="absolute -right-2 top-0 flex h-full items-center gap-2.5">
+          {data && (
             <>
               <Button
                 variant="ghost"

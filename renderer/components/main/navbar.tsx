@@ -248,7 +248,7 @@ const Navbar = () => {
                     className="flex gap-4 text-xs"
                   >
                     <div className="h-full">
-                      <div className="relative h-36 w-36 overflow-hidden rounded-lg">
+                      <div className="relative h-36 w-36 overflow-hidden rounded-lg shadow-lg">
                         <Image
                           alt="album"
                           src="/coverArt.png"
@@ -311,7 +311,7 @@ const Navbar = () => {
             />
             <CommandList>
               {loading && (
-                <div className="flex h-[325px] w-full items-center justify-center text-white">
+                <div className="flex h-[325px] w-full items-center justify-center">
                   <Spinner className="h-8 w-8" />
                 </div>
               )}
@@ -322,6 +322,7 @@ const Navbar = () => {
                       key={`${item.type}-${item.id}`}
                       value={`${item.name}-${item.type}-${item.id}`}
                       onSelect={() => handleItemClick(item)}
+                      className="text-black dark:text-white"
                     >
                       <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
                         {(item.type === "Playlist" ||

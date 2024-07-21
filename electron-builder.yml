@@ -14,9 +14,11 @@ artifactName: Wora [v${version}].${ext}
 linux:
   target:
     - AppImage
+  category: Audio
 mac:
   target:
     - dmg
+  category: public.app-category.music
 win:
   target:
     - nsis

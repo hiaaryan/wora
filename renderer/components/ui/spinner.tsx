@@ -10,7 +10,7 @@ const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
         <svg
           aria-hidden="true"
           className={cn(
-            "animate-spin fill-white text-white/10 duration-700 dark:text-white/10",
+            "animate-spin fill-black text-black/10 duration-700 dark:fill-white dark:text-white/10",
             className,
           )}
           viewBox="0 0 100 101"

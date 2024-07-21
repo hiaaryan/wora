@@ -23,11 +23,8 @@ import {
   updateSettings,
 } from "./helpers/db/connectDB";
 import { initDatabase } from "./helpers/db/createDB";
-import { parseFile, selectCover } from "music-metadata";
+import { parseFile } from "music-metadata";
 import fs from "fs";
-import log from "electron-log/main";
-
-log.initialize();
 
 const isProd = process.env.NODE_ENV === "production";
 

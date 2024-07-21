@@ -9,6 +9,7 @@ import {
   IconListTree,
   IconMicrophone2,
   IconMicrophone2Off,
+  IconMusic,
   IconPhoto,
   IconPlayerPause,
   IconPlayerPlay,
@@ -16,6 +17,7 @@ import {
   IconPlayerSkipForward,
   IconPlus,
   IconRepeat,
+  IconVinyl,
   IconVolume,
   IconVolumeOff,
   IconWaveSine,
@@ -32,7 +34,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Lyrics from "@/components/ui/lyrics";
+import Lyrics from "@/components/main/lyrics";
 import {
   Tooltip,
   TooltipContent,
@@ -288,7 +290,7 @@ export const Player = () => {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
             <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
               {isSyncedLyrics(lyrics) ? (
                 <Badge>Synced</Badge>
@@ -320,7 +322,7 @@ export const Player = () => {
       </div>
       <div className="!absolute right-0 top-0 w-96">
         {showQueue && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-black/70 backdrop-blur-xl">
+          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
             <div className="h-utility w-full max-w-3xl px-6 pt-6">
               <Tabs
                 defaultValue="queue"
@@ -344,7 +346,7 @@ export const Player = () => {
                         key={song.id}
                         className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
                       >
-                        <div className="relative h-14 w-14 overflow-hidden rounded-lg">
+                        <div className="relative h-14 w-14 overflow-hidden rounded-lg shadow-lg">
                           <Image
                             alt="Album Cover"
                             src={song.album.coverArt}
@@ -375,7 +377,7 @@ export const Player = () => {
                         key={song.id}
                         className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
                       >
-                        <div className="relative h-14 w-14 overflow-hidden rounded-lg">
+                        <div className="relative h-14 w-14 overflow-hidden rounded-lg shadow-lg">
                           <Image
                             alt="Album Cover"
                             src={song.album.coverArt}
@@ -401,7 +403,7 @@ export const Player = () => {
           </div>
         )}
       </div>
-      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl bg-black/70 p-6 backdrop-blur-xl">
+      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl p-6">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
@@ -409,7 +411,7 @@ export const Player = () => {
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <Link href={`/albums/${song.album.id}`}>
-                      <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-lg shadow-lg transition duration-500">
                         <Image
                           alt="Album Cover"
                           src={song.album.coverArt}
@@ -423,11 +425,7 @@ export const Player = () => {
                   <ContextMenuContent className="w-64">
                     <Link href={`/albums/${song.album.id}`}>
                       <ContextMenuItem className="flex items-center gap-2">
-                        <IconPhoto
-                          className="fill-white"
-                          stroke={2}
-                          size={14}
-                        />
+                        <IconVinyl stroke={2} size={14} />
                         Go to Album
                       </ContextMenuItem>
                     </Link>
@@ -496,7 +494,7 @@ export const Player = () => {
                     ) : (
                       <div>
                         <IconArrowsShuffle2 stroke={2} size={16} />
-                        <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-white"></div>
+                        <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-black dark:bg-white"></div>
                       </div>
                     )}
                   </Button>
@@ -504,24 +502,27 @@ export const Player = () => {
                 <Button variant="ghost" onClick={previousSong}>
                   <IconPlayerSkipBack
                     stroke={2}
-                    className="fill-white"
+                    className="fill-black dark:fill-white"
                     size={15}
                   />
                 </Button>
                 <Button variant="ghost" onClick={handlePlayPause}>
                   {!isPlaying ? (
-                    <IconPlayerPlay stroke={2} className="h-6 w-6 fill-white" />
+                    <IconPlayerPlay
+                      stroke={2}
+                      className="h-6 w-6 fill-black dark:fill-white"
+                    />
                   ) : (
                     <IconPlayerPause
                       stroke={2}
-                      className="h-6 w-6 fill-white"
+                      className="h-6 w-6 fill-black dark:fill-white"
                     />
                   )}
                 </Button>
                 <Button variant="ghost" onClick={nextSong}>
                   <IconPlayerSkipForward
                     stroke={2}
-                    className="h-4 w-4 fill-white"
+                    className="h-4 w-4 fill-black dark:fill-white"
                   />
                 </Button>
                 <Button
@@ -539,7 +540,7 @@ export const Player = () => {
                   ) : (
                     <div>
                       <IconRepeat stroke={2} size={15} />
-                      <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-white"></div>
+                      <div className="absolute -top-2 left-0 right-0 mx-auto h-[1.5px] w-2/3 rounded-full bg-black dark:bg-white"></div>
                     </div>
                   )}
                 </Button>
