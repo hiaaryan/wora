@@ -45,7 +45,7 @@ function Actions() {
           Wora v{data && data.appVersion}
         </div>
         <div className="absolute -right-2 top-0 flex h-full items-center gap-2.5">
-          {data && (
+          {data && data.isNotMac && (
             <>
               <Button
                 variant="ghost"

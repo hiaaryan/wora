@@ -20,7 +20,7 @@ export default function Home() {
   }, []);
 
   return (
-    <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">
+    <ScrollArea className="mt-2.5 h-full w-full gradient-mask-b-70">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col">

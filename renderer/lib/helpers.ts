@@ -89,6 +89,7 @@ export const updateDiscordState = (song: any): void => {
     return;
   }
 
+  console.log(song);
   const details = `${song.name} → ${song.album.name}`;
   const state = `by ${song.artist}`;
 

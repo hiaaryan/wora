@@ -83,7 +83,11 @@ export default function Album() {
               </div>
               <div className="flex gap-2">
                 <Button onClick={playAlbum} className="w-fit">
-                  <IconPlayerPlay className="fill-white" stroke={2} size={16} />{" "}
+                  <IconPlayerPlay
+                    className="fill-black dark:fill-white"
+                    stroke={2}
+                    size={16}
+                  />{" "}
                   Play
                 </Button>
                 <Button className="w-fit" onClick={playAlbumAndShuffle}>

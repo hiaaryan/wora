@@ -12,8 +12,10 @@ import {
 import {
   IconCheck,
   IconClock,
+  IconHeart,
   IconPlayerPlay,
   IconPlus,
+  IconSquare,
   IconX,
 } from "@tabler/icons-react";
 import { convertTime } from "@/lib/helpers";
@@ -36,7 +38,7 @@ type Song = {
 };
 
 type Playlist = {
-  id: string;
+  id: number;
   name: string;
 };
 
@@ -49,7 +51,7 @@ const Songs: React.FC<SongsProps> = ({
   library,
   renderAdditionalMenuItems,
 }) => {
-  const { setQueueAndPlay } = usePlayer();
+  const { setQueueAndPlay, playNext, addToQueue } = usePlayer();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
   const handleMusicClick = (index: number) => {
@@ -128,9 +130,23 @@ const Songs: React.FC<SongsProps> = ({
                 <IconPlayerPlay className="fill-white" stroke={2} size={14} />
                 Play Song
               </ContextMenuItem>
+              <ContextMenuItem
+                className="flex items-center gap-2"
+                onClick={() => playNext(song)}
+              >
+                <IconSquare stroke={2} size={14} />
+                Play Next
+              </ContextMenuItem>
+              <ContextMenuItem
+                className="flex items-center gap-2"
+                onClick={() => addToQueue(song)}
+              >
+                <IconPlus className="fill-white" stroke={2} size={14} />
+                Add to Queue
+              </ContextMenuItem>
               <ContextMenuSub>
                 <ContextMenuSubTrigger className="flex items-center gap-2">
-                  <IconPlus stroke={2} size={14} />
+                  <IconHeart stroke={2} size={14} />
                   Add to Playlist
                 </ContextMenuSubTrigger>
                 <ContextMenuSubContent className="w-52">

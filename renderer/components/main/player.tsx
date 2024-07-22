@@ -9,8 +9,6 @@ import {
   IconListTree,
   IconMicrophone2,
   IconMicrophone2Off,
-  IconMusic,
-  IconPhoto,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
@@ -58,6 +56,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import Spectrogram from "../ui/spectrogram";
 
 const UPDATE_INTERVAL = 1000;
 
@@ -202,13 +201,10 @@ export const Player = () => {
   }, [song, lyrics]);
 
   useEffect(() => {
-    if (soundRef.current) {
-      soundRef.current.volume(volume);
-      soundRef.current.mute(isMuted);
-    }
+    soundRef.current?.volume(volume);
+    soundRef.current?.mute(isMuted);
   }, [volume, isMuted]);
 
-  // Effect for handling repeat
   useEffect(() => {
     if (soundRef.current) {
       soundRef.current.loop(repeat);
@@ -216,8 +212,10 @@ export const Player = () => {
   }, [repeat]);
 
   useEffect(() => {
-    setIsFavourite(!!favourite);
-  }, [favourite]);
+    if (song) {
+      setIsFavourite(favourite);
+    }
+  }, [song, favourite]);
 
   const handleVolume = useCallback((value: number[]) => {
     setVolume(value[0]);
@@ -288,6 +286,7 @@ export const Player = () => {
 
   return (
     <div>
+      {soundRef.current && <Spectrogram howl={soundRef.current} />}
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
           <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">

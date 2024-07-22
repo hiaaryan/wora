@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "@/styles/globals.css";
 import Actions from "@/components/ui/actions";
 import Navbar from "@/components/main/navbar";
 import Player from "@/components/main/player";
@@ -6,7 +6,6 @@ import Head from "next/head";
 import { PlayerProvider } from "@/context/playerContext";
 import { useRouter } from "next/router";
 import { Toaster } from "@/components/ui/sonner";
-import { useEffect } from "react";
 import { ThemeProvider } from "@/components/themeProvider";
 
 export default function App({ Component, pageProps }) {
@@ -16,8 +15,8 @@ export default function App({ Component, pageProps }) {
     <ThemeProvider
       attribute="class"
       defaultTheme="system"
-      enableSystem
       disableTransitionOnChange
+      enableSystem
     >
       <main className="select-none rounded-lg bg-white font-sans text-xs text-black antialiased dark:bg-black dark:text-white">
         <Head>
