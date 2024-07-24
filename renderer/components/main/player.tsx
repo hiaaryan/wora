@@ -69,6 +69,7 @@ export const Player = () => {
   const [currentLyric, setCurrentLyric] = useState(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
+  const [showSpectrogram, setShowSpectrogram] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const {
@@ -245,6 +246,10 @@ export const Player = () => {
     setShowLyrics((prev) => !prev);
   }, []);
 
+  const toggleSpectrogram = useCallback(() => {
+    setShowSpectrogram((prev) => !prev);
+  }, []);
+
   const toggleQueue = useCallback(() => {
     setShowQueue((prev) => !prev);
   }, []);
@@ -269,14 +274,14 @@ export const Player = () => {
         if (response === true) {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconCheck stroke={2} size={16} />
+              <IconCheck className="text-green-400" stroke={2} size={16} />
               Song is added to playlist.
             </div>,
           );
         } else {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconX stroke={2} size={16} />
+              <IconX className="text-red-500" stroke={2} size={16} />
               Song already exists in playlist.
             </div>,
           );
@@ -286,7 +291,6 @@ export const Player = () => {
 
   return (
     <div>
-      {soundRef.current && <Spectrogram howl={soundRef.current} />}
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
           <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
@@ -401,6 +405,15 @@ export const Player = () => {
             </div>
           </div>
         )}
+      </div>
+      <div className="!absolute right-0 top-0 w-full">
+        <div
+          className={`wora-border ${showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70`}
+        >
+          <div className="h-utility w-full px-6 pt-6">
+            {soundRef.current && <Spectrogram howl={soundRef.current} />}
+          </div>
+        </div>
       </div>
       <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl p-6">
         <TooltipProvider>
@@ -714,6 +727,9 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
+                <Button variant="ghost" onClick={toggleSpectrogram}>
+                  <IconWaveSine stroke={2} size={15} />
+                </Button>
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>

@@ -1,12 +1,9 @@
 import {
   IconArrowRight,
-  IconDeviceDesktop,
   IconFocusCentered,
   IconInbox,
-  IconMoon,
   IconPlus,
   IconSearch,
-  IconSun,
   IconVinyl,
 } from "@tabler/icons-react";
 import {
@@ -49,7 +46,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useTheme } from "next-themes";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -72,7 +68,6 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const { setQueueAndPlay } = usePlayer();
-  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const down = (e) => {
@@ -158,45 +153,25 @@ const Navbar = () => {
     });
   }, []);
 
-  const handleThemeToggle = () => {
-    if (theme === "light") {
-      setTheme("dark");
-    } else if (theme === "dark") {
-      setTheme("system");
-    } else {
-      setTheme("light");
-    }
-  };
-
-  const renderIcon = () => {
-    if (theme === "light") {
-      return <IconSun stroke={2} className="w-5" />;
-    } else if (theme === "dark") {
-      return <IconMoon stroke={2} className="w-5" />;
-    } else {
-      return <IconDeviceDesktop stroke={2} className="w-5" />;
-    }
-  };
-
   return (
     <div className="wora-border h-full w-20 rounded-xl p-6">
       <div className="flex h-full flex-col items-center justify-between gap-8">
         <TooltipProvider>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger>
-              <Link href="/settings">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
-                  />
-                </Avatar>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={50}>
-              <p>{settings && settings.name ? settings.name : "Wora User"}</p>
-            </TooltipContent>
-          </Tooltip>
           <div className="flex flex-col items-center gap-8">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <Link href="/settings">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
+                    />
+                  </Avatar>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={50}>
+                <p>{settings && settings.name ? settings.name : "Wora User"}</p>
+              </TooltipContent>
+            </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button variant="ghost" asChild>
@@ -254,9 +229,6 @@ const Navbar = () => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <Button variant="ghost" onClick={handleThemeToggle} asChild>
-            {renderIcon()}
-          </Button>
         </TooltipProvider>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>

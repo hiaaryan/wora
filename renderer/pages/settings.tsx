@@ -84,7 +84,7 @@ export default function Settings() {
         console.error("Error uploading profile picture:", error);
         toast(
           <div className="flex w-fit items-center gap-2 text-xs">
-            <IconX stroke={2} size={16} />
+            <IconX className="text-red-500" stroke={2} size={16} />
             Failed to upload profile picture. Using existing picture.
           </div>,
         );
@@ -107,7 +107,7 @@ export default function Settings() {
         setSettings((prevSettings) => ({ ...prevSettings, ...updatedData }));
         toast(
           <div className="flex w-fit items-center gap-2 text-xs">
-            <IconCheck stroke={2} size={16} />
+            <IconCheck className="text-green-400" stroke={2} size={16} />
             Your settings are updated.
           </div>,
         );
@@ -137,8 +137,8 @@ export default function Settings() {
         if (response) return;
         toast(
           <div className="flex w-fit items-center gap-2 text-xs">
-            <IconCheck stroke={2} size={16} />
-            Your music folder updated.
+            <IconCheck className="text-green-400" stroke={2} size={16} />
+            Your music folder is updated.
           </div>,
         );
         window.ipc.invoke("getSettings").then((response) => {

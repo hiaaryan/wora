@@ -74,14 +74,14 @@ const Songs: React.FC<SongsProps> = ({
         if (response === true) {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconCheck stroke={2} size={16} />
+              <IconCheck className="text-green-400" stroke={2} size={16} />
               Song is added to playlist.
             </div>,
           );
         } else {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconX stroke={2} size={16} />
+              <IconX className="text-red-500" stroke={2} size={16} />
               Song already exists in playlist.
             </div>,
           );

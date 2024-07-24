@@ -89,7 +89,7 @@ export default function Playlist() {
         if (response) {
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconX stroke={2} size={16} />
+              <IconCheck className="text-green-400" stroke={2} size={16} />
               Song removed from playlist.
             </div>,
           );
@@ -130,7 +130,7 @@ export default function Playlist() {
           setLoading(false);
           toast(
             <div className="flex w-fit items-center gap-2 text-xs">
-              <IconCheck stroke={2} size={16} />
+              <IconCheck className="text-green-400" stroke={2} size={16} />
               Your playlist is now updated.
             </div>,
           );

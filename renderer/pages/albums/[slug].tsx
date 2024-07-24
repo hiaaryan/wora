@@ -10,7 +10,6 @@ import {
   IconArrowLeft,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
-import { toast } from "sonner";
 import Songs from "@/components/ui/songs";
 
 type Album = {
