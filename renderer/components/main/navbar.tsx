@@ -1,9 +1,12 @@
 import {
   IconArrowRight,
+  IconDeviceDesktop,
   IconFocusCentered,
   IconInbox,
+  IconMoon,
   IconPlus,
   IconSearch,
+  IconSun,
   IconVinyl,
 } from "@tabler/icons-react";
 import {
@@ -46,6 +49,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useTheme } from "next-themes";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -68,6 +72,27 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const { setQueueAndPlay } = usePlayer();
+  const { theme, setTheme } = useTheme();
+
+  const handleThemeToggle = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("system");
+    } else {
+      setTheme("light");
+    }
+  };
+
+  const renderIcon = () => {
+    if (theme === "light") {
+      return <IconSun stroke={2} className="w-5" />;
+    } else if (theme === "dark") {
+      return <IconMoon stroke={2} className="w-5" />;
+    } else {
+      return <IconDeviceDesktop stroke={2} className="w-5" />;
+    }
+  };
 
   useEffect(() => {
     const down = (e) => {
@@ -76,6 +101,8 @@ const Navbar = () => {
         setOpen((open) => !open);
       }
     };
+
+    console.log(theme);
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
@@ -230,6 +257,9 @@ const Navbar = () => {
             </Tooltip>
           </div>
         </TooltipProvider>
+        <Button variant="ghost" onClick={handleThemeToggle} asChild>
+          {renderIcon()}
+        </Button>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <div className="flex h-full w-full items-start gap-6">

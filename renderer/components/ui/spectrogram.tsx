@@ -6,11 +6,14 @@ interface SpectrogramProps {
 }
 
 const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationRef = useRef<number | null>(null);
   const [isSetup, setIsSetup] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const LEFT_MARGIN = 20; // Space for y-axis labels
+  const AXIS_RIGHT_PADDING = 30; // Space between y-axis labels and graph
 
   const setupAudio = useCallback(() => {
     setIsSetup(false);
@@ -26,7 +29,6 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
       }
 
       analyserRef.current = audioContext.createAnalyser();
-      analyserRef.current.fftSize = 2048;
 
       const sound = howl as any;
       if (!sound._sounds || !sound._sounds[0] || !sound._sounds[0]._node) {
@@ -66,15 +68,15 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
 
     const barWidth = 1;
     const height = canvas.height - 20;
-    const leftMargin = 30;
+    const graphStart = LEFT_MARGIN + AXIS_RIGHT_PADDING;
 
     const imageData = ctx.getImageData(
-      leftMargin + barWidth,
+      graphStart + barWidth,
       0,
-      canvas.width - leftMargin - barWidth,
+      canvas.width - graphStart - barWidth,
       height,
     );
-    ctx.putImageData(imageData, leftMargin, 0);
+    ctx.putImageData(imageData, graphStart, 0);
 
     ctx.clearRect(canvas.width - barWidth, 0, barWidth, height);
 
@@ -99,22 +101,22 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
     canvas: HTMLCanvasElement,
   ) => {
     ctx.save();
-    ctx.clearRect(0, 0, 30, canvas.height);
+    ctx.clearRect(0, 0, LEFT_MARGIN + AXIS_RIGHT_PADDING, canvas.height);
     ctx.clearRect(0, canvas.height - 20, canvas.width, 20);
 
     ctx.fillStyle = "white";
-    ctx.font = "10px Maven Pro";
+    ctx.font = "10.5px Maven Pro";
     for (let i = 0; i <= 10; i++) {
       const freq = (i / 10) * 22.05;
       const y = canvas.height - 20 - (i / 10) * (canvas.height - 20);
-      ctx.fillText(`${freq.toFixed(2)}`, 5, y);
+      ctx.fillText(`${freq.toFixed(2)}k`, 5, y);
     }
 
     const currentTime = howl.seek();
     ctx.fillText(
-      `${currentTime.toFixed(1)}s`,
-      canvas.width - 30,
-      canvas.height - 5,
+      `Time: ${currentTime.toFixed(1)}s`,
+      canvas.width / 2,
+      canvas.height,
     );
 
     ctx.restore();
@@ -144,6 +146,15 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
     }
   }, []);
 
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (canvas && container) {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+  }, []);
+
   useEffect(() => {
     const initializeSpectrogram = () => {
       if (howl.state() === "loaded") {
@@ -169,6 +180,12 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
 
     initializeSpectrogram();
 
+    // Set up ResizeObserver
+    const resizeObserver = new ResizeObserver(resizeCanvas);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
     return () => {
       stopSpectrogram();
       if (analyserRef.current) {
@@ -177,17 +194,16 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
       howl.off("play", handlePlay);
       howl.off("pause", handlePauseOrStop);
       howl.off("end", handlePauseOrStop);
+      resizeObserver.disconnect();
     };
-  }, [howl, startSpectrogram, stopSpectrogram]);
+  }, [howl, startSpectrogram, stopSpectrogram, resizeCanvas]);
 
   return (
-    <div className="w-full rounded-xl bg-black p-5">
-      <canvas
-        ref={canvasRef}
-        width="1315"
-        height="400"
-        className="w-full antialiased"
-      />
+    <div
+      ref={containerRef}
+      className="h-full w-full rounded-xl px-6 pb-8 gradient-mask-r-90"
+    >
+      <canvas ref={canvasRef} className="h-full w-full antialiased" />
     </div>
   );
 };

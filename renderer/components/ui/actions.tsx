@@ -25,9 +25,9 @@ function Actions() {
   }, []);
 
   return (
-    <div className="absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
+    <div className="drag absolute top-0 z-50 flex h-11 w-full items-center justify-end px-8 py-2.5">
       <div className="relative flex h-full w-full items-center justify-center">
-        <div className="drag flex h-full items-center gap-2">
+        <div className="flex h-full items-center gap-2">
           <Image
             src={"/assets/Logo [Dark].ico"}
             alt="logo"
@@ -44,7 +44,7 @@ function Actions() {
           />
           Wora v{data && data.appVersion}
         </div>
-        <div className="absolute -right-2 top-0 flex h-full items-center gap-2.5">
+        <div className="no-drag absolute -right-2 top-0 flex h-full items-center gap-2.5">
           {data && data.isNotMac && (
             <>
               <Button

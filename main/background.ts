@@ -25,6 +25,7 @@ import {
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile } from "music-metadata";
 import fs from "fs";
+import { Howl } from "howler";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -110,6 +111,7 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
     largeImageKey: "logo",
     largeImageText: `v${app.getVersion()}`,
     instance: false,
+    type: "LISTENING",
   };
 
   if (timestamp) {

@@ -7,6 +7,7 @@ import { PlayerProvider } from "@/context/playerContext";
 import { useRouter } from "next/router";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/themeProvider";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function App({ Component, pageProps }) {
       disableTransitionOnChange
       enableSystem
     >
-      <main className="select-none rounded-lg bg-white font-sans text-xs text-black antialiased dark:bg-black dark:text-white">
+      <main className="select-none overflow-hidden rounded-lg bg-white font-sans text-xs text-black antialiased dark:bg-black dark:text-white">
         <Head>
           <title>Wora</title>
         </Head>
@@ -36,7 +37,10 @@ export default function App({ Component, pageProps }) {
                   </div>
                   <div className="h-screen flex-grow p-8 pl-0 pt-10">
                     <div className="wora-transition relative flex h-full w-full flex-col">
-                      <Component {...pageProps} />
+                      <ScrollArea className="mt-2.5 h-full w-full gradient-mask-b-80">
+                        <Component {...pageProps} />
+                        <div className="h-[16vh] w-full"></div>
+                      </ScrollArea>
                       <Player />
                     </div>
                   </div>

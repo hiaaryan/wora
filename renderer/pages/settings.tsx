@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Image from "next/image";
-import {
-  IconArrowRight,
-  IconCheck,
-  IconHeart,
-  IconX,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconCheck, IconX } from "@tabler/icons-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -166,176 +159,145 @@ export default function Settings() {
   }, [previewUrl]);
 
   return (
-    <ScrollArea className="mt-2.5 h-full w-[88.15vw] gradient-mask-b-70">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col">
-            <div className="mt-4 text-base font-medium">Settings</div>
-            <div className="opacity-50">You&apos;re on your own here.</div>
-          </div>
-          <div className="relative flex w-full flex-col gap-8">
-            <div className="flex w-full items-center gap-8">
-              <div className="wora-border h-48 w-2/5 rounded-xl p-6">
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(updateSettings)}
-                    className="flex h-full flex-col justify-between text-xs"
-                  >
-                    <div className="flex w-full items-center gap-4">
-                      <Label
-                        className="wora-transition w-fit cursor-pointer hover:opacity-50"
-                        htmlFor="profilePicture"
-                      >
-                        <Avatar className="h-20 w-20">
-                          <AvatarImage src={previewUrl} />
-                        </Avatar>
-                      </Label>
-                      <FormField
-                        control={form.control}
-                        name="profilePicture"
-                        render={({ field: { onChange, value, ...rest } }) => {
-                          const fileInputRef = useRef<HTMLInputElement>(null);
-                          return (
-                            <FormItem hidden className="w-full">
-                              <FormControl>
-                                <Input
-                                  id="profilePicture"
-                                  placeholder="Picture"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => {
-                                    const files = e.target.files;
-                                    if (files && files.length > 0) {
-                                      const file = files[0];
-                                      onChange(files);
-                                      const objectUrl =
-                                        URL.createObjectURL(file);
-                                      setPreviewUrl(objectUrl);
-                                    }
-                                  }}
-                                  ref={fileInputRef}
-                                  {...rest}
-                                />
-                              </FormControl>
-                              <FormMessage className="text-xs" />
-                            </FormItem>
-                          );
-                        }}
-                      />
-                      <div className="flex flex-col">
-                        <p className="text-sm font-medium">
-                          {settings && settings.name
-                            ? settings.name
-                            : "Wora User"}
-                        </p>
-                        <p className="opacity-50">A great listner of music.</p>
-                      </div>
-                    </div>
-                    <div className="flex w-full items-center gap-2">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem className="w-full">
+        <div className="flex flex-col">
+          <div className="mt-4 text-base font-medium">Settings</div>
+          <div className="opacity-50">You&apos;re on your own here.</div>
+        </div>
+        <div className="relative flex w-full flex-col gap-8">
+          <div className="flex w-full items-center gap-8">
+            <div className="wora-border h-48 w-2/5 rounded-xl p-6">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(updateSettings)}
+                  className="flex h-full flex-col justify-between text-xs"
+                >
+                  <div className="flex w-full items-center gap-4">
+                    <Label
+                      className="wora-transition w-fit cursor-pointer hover:opacity-50"
+                      htmlFor="profilePicture"
+                    >
+                      <Avatar className="h-20 w-20">
+                        <AvatarImage src={previewUrl} />
+                      </Avatar>
+                    </Label>
+                    <FormField
+                      control={form.control}
+                      name="profilePicture"
+                      render={({ field: { onChange, value, ...rest } }) => {
+                        const fileInputRef = useRef<HTMLInputElement>(null);
+                        return (
+                          <FormItem hidden className="w-full">
                             <FormControl>
                               <Input
-                                placeholder="A username would be great."
-                                {...field}
+                                id="profilePicture"
+                                placeholder="Picture"
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const files = e.target.files;
+                                  if (files && files.length > 0) {
+                                    const file = files[0];
+                                    onChange(files);
+                                    const objectUrl = URL.createObjectURL(file);
+                                    setPreviewUrl(objectUrl);
+                                  }
+                                }}
+                                ref={fileInputRef}
+                                {...rest}
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
                           </FormItem>
-                        )}
-                      />
-                      <Button
-                        className="w-fit justify-between text-xs"
-                        type="submit"
-                      >
-                        Save
-                        {loading ? (
-                          <Spinner className="h-3.5 w-3.5" />
-                        ) : (
-                          <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </div>
-              <div className="wora-border h-48 w-3/5 rounded-xl p-6">
-                <div className="flex h-full flex-col justify-between text-xs">
-                  <div className="flex w-full items-center gap-4">
-                    <div className="mt-4 flex w-full justify-around">
-                      <div className="flex flex-col items-center gap-2">
-                        Songs
-                        <p className="text-xl font-medium">
-                          {stats && stats.songs}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-center gap-2">
-                        Albums
-                        <p className="text-xl font-medium">
-                          {stats && stats.albums}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-center gap-2">
-                        Playlists
-                        <p className="text-xl font-medium">
-                          {stats && stats.playlists}
-                        </p>
-                      </div>
+                        );
+                      }}
+                    />
+                    <div className="flex flex-col">
+                      <p className="text-sm font-medium">
+                        {settings && settings.name
+                          ? settings.name
+                          : "Wora User"}
+                      </p>
+                      <p className="opacity-50">A great listner of music.</p>
                     </div>
                   </div>
                   <div className="flex w-full items-center gap-2">
-                    <div className="flex h-9 w-full items-center rounded-lg bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
-                      {settings && settings.musicFolder}
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormControl>
+                            <Input
+                              placeholder="A username would be great."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
                     <Button
-                      className="w-fit justify-between text-nowrap text-xs"
-                      onClick={updateMusicFolder}
+                      className="w-fit justify-between text-xs"
+                      type="submit"
                     >
-                      Update Music Folder
-                      {musicLoading ? (
+                      Save
+                      {loading ? (
                         <Spinner className="h-3.5 w-3.5" />
                       ) : (
                         <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
                       )}
                     </Button>
                   </div>
-                </div>
-              </div>
+                </form>
+              </Form>
             </div>
-            <div className="flex w-full items-center gap-8">
-              <div className="wora-border relative h-48 w-full overflow-hidden rounded-xl p-6">
-                <div className="flex h-full w-full flex-col items-center justify-center leading-3">
-                  <div className="relative h-14 w-14">
-                    <Image
-                      fill
-                      src={"/assets/Full [Dark].svg"}
-                      className="hidden dark:block"
-                      alt="Logo"
-                    />
-                    <Image
-                      fill
-                      src={"/assets/Full.svg"}
-                      className="block dark:hidden"
-                      alt="Logo"
-                    />
+            <div className="wora-border h-48 w-3/5 rounded-xl p-6">
+              <div className="flex h-full flex-col justify-between text-xs">
+                <div className="flex w-full items-center gap-4">
+                  <div className="mt-4 flex w-full justify-around">
+                    <div className="flex flex-col items-center gap-2">
+                      Songs
+                      <p className="text-xl font-medium">
+                        {stats && stats.songs}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      Albums
+                      <p className="text-xl font-medium">
+                        {stats && stats.albums}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      Playlists
+                      <p className="text-xl font-medium">
+                        {stats && stats.playlists}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    Made with
-                    <IconHeart
-                      stroke={2}
-                      className="inline-flex h-3.5 fill-red-500 stroke-red-500"
-                    />
-                    by hiaaryan & contributors.
+                </div>
+                <div className="flex w-full items-center gap-2">
+                  <div className="flex h-9 w-full items-center rounded-lg bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
+                    {settings && settings.musicFolder}
                   </div>
+                  <Button
+                    className="w-fit justify-between text-nowrap text-xs"
+                    onClick={updateMusicFolder}
+                  >
+                    Update Music Folder
+                    {musicLoading ? (
+                      <Spinner className="h-3.5 w-3.5" />
+                    ) : (
+                      <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 }

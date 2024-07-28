@@ -46,7 +46,6 @@
     "music-metadata": "^7.14.0",
     "next-themes": "^0.3.0",
     "react-hook-form": "^7.52.1",
-    "recharts": "^2.12.7",
     "sonner": "^1.5.0",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.4.0",

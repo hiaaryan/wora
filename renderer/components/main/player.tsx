@@ -4,6 +4,7 @@ import {
   IconArrowsShuffle2,
   IconCheck,
   IconClock,
+  IconDisc,
   IconHeart,
   IconInfoCircle,
   IconListTree,
@@ -15,6 +16,7 @@ import {
   IconPlayerSkipForward,
   IconPlus,
   IconRepeat,
+  IconRipple,
   IconVinyl,
   IconVolume,
   IconVolumeOff,
@@ -408,9 +410,9 @@ export const Player = () => {
       </div>
       <div className="!absolute right-0 top-0 w-full">
         <div
-          className={`wora-border ${showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70`}
+          className={`wora-border ${soundRef.current && soundRef.current.playing() && showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-xl bg-black`}
         >
-          <div className="h-utility w-full px-6 pt-6">
+          <div className="h-utility w-full p-6">
             {soundRef.current && <Spectrogram howl={soundRef.current} />}
           </div>
         </div>
@@ -560,7 +562,7 @@ export const Player = () => {
                   <div className="absolute -left-24 mt-0.5">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
-                        <IconWaveSine stroke={2} className="w-3.5" />
+                        <IconRipple stroke={2} className="w-3.5" />
                       </TooltipTrigger>
                       <TooltipContent side="left" sideOffset={25}>
                         <p>
@@ -727,9 +729,15 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                <Button variant="ghost" onClick={toggleSpectrogram}>
-                  <IconWaveSine stroke={2} size={15} />
-                </Button>
+                {soundRef.current && soundRef.current.playing() ? (
+                  <Button variant="ghost" onClick={toggleSpectrogram}>
+                    <IconWaveSine stroke={2} size={15} />
+                  </Button>
+                ) : (
+                  <Button variant="ghost">
+                    <IconWaveSine stroke={2} size={15} />
+                  </Button>
+                )}
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>

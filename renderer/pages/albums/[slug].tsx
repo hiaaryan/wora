@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,7 +47,7 @@ export default function Album() {
   };
 
   return (
-    <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
+    <>
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
         <Image
           alt={album ? album.name : "Album Cover"}
@@ -97,9 +96,9 @@ export default function Album() {
           </div>
         </div>
       </div>
-      <div className="pb-[32vh] pt-2">
+      <div className="pt-2">
         <Songs library={album?.songs} />
       </div>
-    </ScrollArea>
+    </>
   );
 }

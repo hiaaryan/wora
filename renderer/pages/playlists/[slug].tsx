@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
@@ -153,7 +152,7 @@ export default function Playlist() {
   }, [playlist]);
 
   return (
-    <ScrollArea className="mt-2.5 h-full w-full rounded-xl gradient-mask-b-80">
+    <>
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
         {playlist && playlist.id === 1 ? (
           <div className="h-full w-full bg-red-500 gradient-mask-b-10"></div>
@@ -211,7 +210,7 @@ export default function Playlist() {
           </div>
         </div>
       </div>
-      <div className="pb-[32vh] pt-2">
+      <div className="pt-2">
         <Songs
           library={playlist?.songs}
           renderAdditionalMenuItems={toRenderAdditionalMenuItems}
@@ -285,6 +284,6 @@ export default function Playlist() {
           </div>
         </DialogContent>
       </Dialog>
-    </ScrollArea>
+    </>
   );
 }
