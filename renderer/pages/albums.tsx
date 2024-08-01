@@ -18,7 +18,8 @@ export default function Albums() {
           <div className="opacity-50">All of your albums in one place.</div>
         </div>
         <div className="grid w-full grid-cols-5 gap-8">
-          {albums && albums.map((album) => <AlbumCard album={album} />)}
+          {albums &&
+            albums.map((album) => <AlbumCard key={album.id} album={album} />)}
         </div>
       </div>
     </div>

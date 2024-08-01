@@ -106,6 +106,7 @@ export const Player = () => {
       format: [song?.filePath.split(".").pop()],
       html5: true,
       autoplay: true,
+      preload: true,
       volume: volume,
       onload: () => {
         setSeekPosition(0);
@@ -143,21 +144,19 @@ export const Player = () => {
 
     const interval = setInterval(updateSeek, UPDATE_INTERVAL);
 
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: song.name,
-        artist: song.artist,
-        album: song.album.name,
-        artwork: [
-          { src: song.album.coverArt, sizes: "512x512", type: "image/png" },
-        ],
-      });
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: song.name,
+      artist: song.artist,
+      album: song.album.name,
+      artwork: [
+        { src: song.album.coverArt, sizes: "512x512", type: "image/png" },
+      ],
+    });
 
-      navigator.mediaSession.setActionHandler("play", handlePlayPause);
-      navigator.mediaSession.setActionHandler("pause", handlePlayPause);
-      navigator.mediaSession.setActionHandler("nexttrack", nextSong);
-      navigator.mediaSession.setActionHandler("previoustrack", previousSong);
-    }
+    navigator.mediaSession.setActionHandler("play", handlePlayPause);
+    navigator.mediaSession.setActionHandler("pause", handlePlayPause);
+    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+    navigator.mediaSession.setActionHandler("previoustrack", previousSong);
 
     soundRef.current.on("play", () => {
       updateDiscordState(song);
@@ -295,7 +294,7 @@ export const Player = () => {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
+          <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
             <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
               {isSyncedLyrics(lyrics) ? (
                 <Badge>Synced</Badge>
@@ -303,7 +302,7 @@ export const Player = () => {
                 <Badge>Unsynced</Badge>
               )}
             </div>
-            <div className="h-utility flex w-full items-center text-balance rounded-xl px-8 gradient-mask-b-70-d">
+            <div className="h-utility flex w-full items-center text-balance px-8 gradient-mask-b-70-d">
               <div className="no-scrollbar gradient-mask-b-30-d h-full w-full max-w-3xl overflow-hidden overflow-y-auto text-2xl font-medium">
                 <div className="flex flex-col py-[33vh]">
                   {isSyncedLyrics(lyrics) ? (
@@ -327,7 +326,7 @@ export const Player = () => {
       </div>
       <div className="!absolute right-0 top-0 w-96">
         {showQueue && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
+          <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
             <div className="h-utility w-full max-w-3xl px-6 pt-6">
               <Tabs
                 defaultValue="queue"
@@ -417,7 +416,7 @@ export const Player = () => {
           </div>
         </div>
       </div>
-      <div className="wora-border z-50 h-[6.5rem] w-full rounded-xl p-6">
+      <div className="wora-border z-50 h-[6.5rem] w-full rounded-2xl p-6">
         <TooltipProvider>
           <div className="relative flex h-full w-full items-center justify-between">
             <div className="absolute left-0 flex w-1/2 items-center gap-4">
@@ -467,7 +466,7 @@ export const Player = () => {
                   </ContextMenuContent>
                 </ContextMenu>
               ) : (
-                <div className="relative h-16 w-16 overflow-hidden rounded-md transition duration-500">
+                <div className="relative h-16 w-16 overflow-hidden rounded-lg transition duration-500">
                   <Image
                     alt="Album Cover"
                     src={"/coverArt.png"}
@@ -672,12 +671,13 @@ export const Player = () => {
                         </DialogHeader>
                         <div className="flex gap-4 overflow-hidden text-xs">
                           <div className="h-full">
-                            <div className="relative h-36 w-36 overflow-hidden rounded-lg">
+                            <div className="relative h-36 w-36 overflow-hidden rounded-xl">
                               <Image
                                 alt="album"
                                 src={song?.album.coverArt || "/coverArt.png"}
                                 fill
                                 className="object-cover"
+                                quality={25}
                               />
                             </div>
                           </div>
@@ -729,7 +729,7 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                {soundRef.current && soundRef.current.playing() ? (
+                {/* {soundRef.current && soundRef.current.playing() ? (
                   <Button variant="ghost" onClick={toggleSpectrogram}>
                     <IconWaveSine stroke={2} size={15} />
                   </Button>
@@ -737,7 +737,7 @@ export const Player = () => {
                   <Button variant="ghost">
                     <IconWaveSine stroke={2} size={15} />
                   </Button>
-                )}
+                )} */}
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>

@@ -199,10 +199,7 @@ const Spectrogram: React.FC<SpectrogramProps> = ({ howl }) => {
   }, [howl, startSpectrogram, stopSpectrogram, resizeCanvas]);
 
   return (
-    <div
-      ref={containerRef}
-      className="h-full w-full rounded-xl px-6 pb-8 gradient-mask-r-90"
-    >
+    <div ref={containerRef} className="h-full w-full rounded-2xl px-6 pb-8">
       <canvas ref={canvasRef} className="h-full w-full antialiased" />
     </div>
   );

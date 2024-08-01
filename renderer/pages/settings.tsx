@@ -278,7 +278,7 @@ export default function Settings() {
                   </div>
                 </div>
                 <div className="flex w-full items-center gap-2">
-                  <div className="flex h-9 w-full items-center rounded-lg bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
+                  <div className="flex h-9 w-full items-center rounded-xl bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
                     {settings && settings.musicFolder}
                   </div>
                   <Button

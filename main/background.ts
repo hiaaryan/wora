@@ -25,7 +25,6 @@ import {
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile } from "music-metadata";
 import fs from "fs";
-import { Howl } from "howler";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -261,12 +260,26 @@ ipcMain.handle("updateSettings", async (_, data: any) => {
 });
 
 ipcMain.handle("uploadProfilePicture", async (_, file) => {
-  const uploadsDir = path.join(app.getPath("userData"), "uploads");
+  const uploadsDir = path.join(app.getPath("userData"), "uploads/profile");
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
 
   const fileName = `profile_${Date.now()}${path.extname(file.name)}`;
+  const filePath = path.join(uploadsDir, fileName);
+
+  fs.writeFileSync(filePath, Buffer.from(file.data));
+
+  return filePath;
+});
+
+ipcMain.handle("uploadPlaylistPicture", async (_, file) => {
+  const uploadsDir = path.join(app.getPath("userData"), "uploads/playlists");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const fileName = `playlists_${Date.now()}${path.extname(file.name)}`;
   const filePath = path.join(uploadsDir, fileName);
 
   fs.writeFileSync(filePath, Buffer.from(file.data));

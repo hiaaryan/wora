@@ -153,7 +153,7 @@ export default function Playlist() {
 
   return (
     <>
-      <div className="relative h-96 w-full overflow-hidden rounded-xl">
+      <div className="relative h-96 w-full overflow-hidden rounded-2xl">
         {playlist && playlist.id === 1 ? (
           <div className="h-full w-full bg-red-500 gradient-mask-b-10"></div>
         ) : (
@@ -170,7 +170,7 @@ export default function Playlist() {
         </Button>
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
-            <div className="relative h-52 w-52 overflow-hidden rounded-lg shadow-lg transition duration-300">
+            <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">
               <Image
                 alt={playlist ? playlist.name : "Album Cover"}
                 src={playlist ? playlist.coverArt : "/coverArt.png"}
@@ -232,7 +232,7 @@ export default function Playlist() {
                   className="flex gap-4 text-xs"
                 >
                   <div className="h-full">
-                    <div className="relative h-36 w-36 overflow-hidden rounded-lg">
+                    <div className="relative h-36 w-36 overflow-hidden rounded-xl">
                       <Image
                         alt="album"
                         src="/coverArt.png"

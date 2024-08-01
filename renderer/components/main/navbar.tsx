@@ -102,8 +102,6 @@ const Navbar = () => {
       }
     };
 
-    console.log(theme);
-
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
@@ -181,7 +179,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="wora-border h-full w-20 rounded-xl p-6">
+    <div className="wora-border h-full w-20 rounded-2xl p-6">
       <div className="flex h-full flex-col items-center justify-between gap-8">
         <TooltipProvider>
           <div className="flex flex-col items-center gap-8">
@@ -333,7 +331,7 @@ const Navbar = () => {
         <CommandDialog open={open} onOpenChange={setOpen}>
           <Command>
             <CommandInput
-              placeholder="Search for a song, artist, album or playlist..."
+              placeholder="Search for a song, album or playlist..."
               value={search}
               onValueChange={setSearch}
             />
@@ -355,7 +353,7 @@ const Navbar = () => {
                       <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
                         {(item.type === "Playlist" ||
                           item.type === "Album") && (
-                          <div className="relative h-12 w-12 overflow-hidden rounded shadow-xl transition duration-300">
+                          <div className="relative h-12 w-12 overflow-hidden rounded-lg shadow-xl transition duration-300">
                             <Image
                               className="object-cover"
                               src={item.coverArt}

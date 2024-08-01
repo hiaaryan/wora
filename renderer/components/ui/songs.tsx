@@ -96,17 +96,18 @@ const Songs: React.FC<SongsProps> = ({
           <ContextMenu key={song.id}>
             <ContextMenuTrigger>
               <div
-                className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 hover:bg-black/5 dark:hover:bg-white/10"
+                className="wora-transition flex w-full cursor-pointer items-center justify-between rounded-xl p-3 hover:bg-black/5 dark:hover:bg-white/10"
                 onClick={() => handleMusicClick(index)}
               >
                 <div className="flex items-center gap-4">
-                  <div className="relative h-12 w-12 overflow-hidden rounded shadow-lg transition duration-300">
+                  <div className="relative h-12 w-12 overflow-hidden rounded-lg shadow-lg transition duration-300">
                     <Image
                       alt={song.album.name}
                       src={song.album.coverArt}
                       fill
                       loading="lazy"
                       className="object-cover"
+                      quality={25}
                     />
                   </div>
                   <div className="flex flex-col">

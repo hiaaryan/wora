@@ -89,7 +89,7 @@ export const updateDiscordState = (song: any): void => {
     return;
   }
 
-  const details = `${song.name} → ${song.album.name}`;
+  const details = `${song.name}`;
   const state = `by ${song.artist}`;
 
   window.ipc.send("set-rpc-state", { details, state });

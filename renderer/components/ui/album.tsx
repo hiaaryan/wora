@@ -16,18 +16,19 @@ type AlbumCardProps = {
 const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
   return (
     <Link href={`/albums/${album.id}`} passHref>
-      <div className="group/album wora-border wora-transition h-[21rem] rounded-xl p-5 hover:bg-black/5 dark:hover:bg-white/10">
-        <div className="relative flex h-full flex-col justify-between">
-          <div className="relative h-2/3 w-full overflow-hidden rounded-lg shadow-lg">
+      <div className="group/album wora-border wora-transition rounded-2xl p-5 hover:bg-black/5 dark:hover:bg-white/10">
+        <div className="relative flex flex-col justify-between">
+          <div className="relative w-full overflow-hidden rounded-xl pb-[100%] shadow-lg">
             <Image
               alt={album ? album.name : "Album Cover"}
               src={album.coverArt}
               fill
               loading="lazy"
               className="z-10 object-cover"
+              quality={25}
             />
           </div>
-          <div className="flex w-full flex-col">
+          <div className="mt-8 flex w-full flex-col">
             <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
               {album.name}
             </p>

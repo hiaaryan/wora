@@ -42,7 +42,7 @@ function Actions() {
             width={16}
             height={16}
           />
-          Wora v{data && data.appVersion}
+          Wora
         </div>
         <div className="no-drag absolute -right-2 top-0 flex h-full items-center gap-2.5">
           {data && data.isNotMac && (

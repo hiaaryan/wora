@@ -48,20 +48,20 @@ export default function Album() {
 
   return (
     <>
-      <div className="relative h-96 w-full overflow-hidden rounded-xl">
+      <div className="relative h-96 w-full overflow-hidden rounded-2xl">
         <Image
           alt={album ? album.name : "Album Cover"}
           src={album ? album.coverArt : "/coverArt.png"}
           fill
           loading="lazy"
-          className="object-cover object-center blur-xl gradient-mask-b-10"
+          className="object-cover object-center blur-2xl gradient-mask-b-10"
         />
         <Button onClick={() => router.back()} className="absolute left-4 top-4">
           <IconArrowLeft stroke={2} size={16} /> Back
         </Button>
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
-            <div className="relative h-52 w-52 overflow-hidden rounded-lg shadow-lg transition duration-300">
+            <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">
               <Image
                 alt={album ? album.name : "Album Cover"}
                 src={album ? album.coverArt : "/coverArt.png"}

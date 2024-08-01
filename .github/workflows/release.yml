@@ -41,15 +41,15 @@ jobs:
         with:
           node-version: "20"
       - name: Install Dependencies
-        run: yarn install
+        run: bun install
       - name: Build for ${{ matrix.os }}
         run: |
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            yarn build:mac
+            bun run build:mac
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            yarn build:linux
+            bun run build:linux
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            yarn build:win64
+            bun run build:win64
           fi
         shell: bash
       - name: Get Asset Details
