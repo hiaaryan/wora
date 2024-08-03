@@ -159,7 +159,11 @@ export default function Playlist() {
         ) : (
           <Image
             alt={playlist ? playlist.name : "Album Cover"}
-            src={playlist ? playlist.coverArt : "/coverArt.png"}
+            src={
+              playlist && playlist.coverArt
+                ? "wora://" + playlist.coverArt
+                : "/coverArt.png"
+            }
             fill
             loading="lazy"
             className="object-cover object-center blur-xl gradient-mask-b-10"
@@ -173,7 +177,13 @@ export default function Playlist() {
             <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">
               <Image
                 alt={playlist ? playlist.name : "Album Cover"}
-                src={playlist ? playlist.coverArt : "/coverArt.png"}
+                src={
+                  playlist && playlist.id === 1
+                    ? "/favouritesCoverArt.png"
+                    : playlist && playlist.coverArt
+                      ? "wora://" + playlist.coverArt
+                      : "/coverArt.png"
+                }
                 fill
                 loading="lazy"
                 className="scale-[1.01] object-cover"

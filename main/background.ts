@@ -273,7 +273,7 @@ ipcMain.handle("uploadProfilePicture", async (_, file) => {
   return filePath;
 });
 
-ipcMain.handle("uploadPlaylistPicture", async (_, file) => {
+ipcMain.handle("uploadPlaylistCover", async (_, file) => {
   const uploadsDir = path.join(app.getPath("userData"), "uploads/playlists");
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });

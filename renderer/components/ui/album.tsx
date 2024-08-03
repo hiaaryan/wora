@@ -28,7 +28,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
               quality={25}
             />
           </div>
-          <div className="mt-8 flex w-full flex-col">
+          <div className="mt-8 flex w-full flex-col overflow-clip">
             <p className="text-nowrap text-sm font-medium gradient-mask-r-70">
               {album.name}
             </p>

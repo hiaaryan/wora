@@ -8,6 +8,7 @@ import {
   IconSearch,
   IconSun,
   IconVinyl,
+  IconX,
 } from "@tabler/icons-react";
 import {
   Tooltip,
@@ -15,7 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -31,32 +32,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { usePlayer } from "@/context/playerContext";
 import Spinner from "@/components/ui/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useTheme } from "next-themes";
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Playlist name must be at least 2 characters.",
-  }),
-  description: z.string().optional(),
-});
 
 type Settings = {
   name: string;
@@ -66,7 +42,6 @@ type Settings = {
 const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [search, setSearch] = useState("");
@@ -150,22 +125,6 @@ const Navbar = () => {
     setOpen(false);
   };
 
-  const createPlaylist = (data: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    window.ipc
-      .invoke("createPlaylist", data)
-      .then((response) => {
-        setDialogOpen(false);
-        setLoading(false);
-        router.push(`/playlists/${response.lastInsertRowid}`);
-      })
-      .catch(() => setLoading(false));
-  };
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
-
   useEffect(() => {
     window.ipc.invoke("getSettings").then((response) => {
       setSettings(response);
@@ -199,7 +158,7 @@ const Navbar = () => {
             </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
-                <Button variant="ghost" asChild>
+                <Button className="mt-2" variant="ghost" asChild>
                   <Link href="/home">
                     <IconInbox stroke={2} className="w-5" />
                   </Link>
@@ -243,91 +202,12 @@ const Navbar = () => {
                 <p>Albums</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger onClick={() => setDialogOpen(true)}>
-                <Button variant="ghost" asChild>
-                  <IconPlus stroke={2} className="w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
-                <p>Create Playlist</p>
-              </TooltipContent>
-            </Tooltip>
           </div>
         </TooltipProvider>
         <Button variant="ghost" onClick={handleThemeToggle} asChild>
           {renderIcon()}
         </Button>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent>
-            <div className="flex h-full w-full items-start gap-6">
-              <div className="jusitfy-between flex h-full w-full flex-col gap-4">
-                <DialogHeader>
-                  <DialogTitle>Create Playlist</DialogTitle>
-                  <DialogDescription>
-                    Add a new playlist to your library.
-                  </DialogDescription>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(createPlaylist)}
-                    className="flex gap-4 text-xs"
-                  >
-                    <div className="h-full">
-                      <div className="relative h-36 w-36 overflow-hidden rounded-lg shadow-lg">
-                        <Image
-                          alt="album"
-                          src="/coverArt.png"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex h-full w-full flex-col items-end justify-between gap-4">
-                      <div className="flex w-full flex-col gap-2">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem className="w-full">
-                              <FormControl>
-                                <Input placeholder="Name" {...field} />
-                              </FormControl>
-                              <FormMessage className="text-xs" />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="description"
-                          render={({ field }) => (
-                            <FormItem className="w-full">
-                              <FormControl>
-                                <Input placeholder="Description" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <Button
-                        className="w-fit justify-between text-xs"
-                        type="submit"
-                      >
-                        Create Playlist
-                        {loading ? (
-                          <Spinner className="h-3.5 w-3.5" />
-                        ) : (
-                          <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+
         <CommandDialog open={open} onOpenChange={setOpen}>
           <Command>
             <CommandInput

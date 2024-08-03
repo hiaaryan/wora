@@ -163,10 +163,12 @@ export const searchDB = async (query: string) => {
 
   const searchAlbums = await db.query.albums.findMany({
     where: like(albums.name, `%${lowerSearch}%`),
+    limit: 5,
   });
 
   const searchPlaylists = await db.query.playlists.findMany({
     where: like(playlists.name, `%${lowerSearch}%`),
+    limit: 5,
   });
 
   const searchSongs = await db.query.songs.findMany({
@@ -179,6 +181,7 @@ export const searchDB = async (query: string) => {
         },
       },
     },
+    limit: 5,
   });
 
   return {
@@ -201,7 +204,7 @@ export const createPlaylist = async (data: any) => {
   if (data.coverArt) {
     coverArt = data.coverArt;
   } else {
-    coverArt = "/coverArt.png";
+    coverArt = null;
   }
 
   const playlist = await db.insert(playlists).values({
@@ -483,7 +486,7 @@ export const initializeData = async (musicFolder: string) => {
   if (!defaultPlaylist[0]) {
     await db.insert(playlists).values({
       name: "Favourites",
-      coverArt: "/favouritesCoverArt.png",
+      coverArt: null,
       description: "Songs liked by you.",
     });
   }

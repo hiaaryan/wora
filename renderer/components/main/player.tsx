@@ -409,7 +409,7 @@ export const Player = () => {
       </div>
       <div className="!absolute right-0 top-0 w-full">
         <div
-          className={`wora-border ${soundRef.current && soundRef.current.playing() && showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-xl bg-black`}
+          className={`wora-border ${soundRef.current && soundRef.current.playing() && showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-2xl bg-black`}
         >
           <div className="h-utility w-full p-6">
             {soundRef.current && <Spectrogram howl={soundRef.current} />}
@@ -729,7 +729,7 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                {/* {soundRef.current && soundRef.current.playing() ? (
+                {soundRef.current && soundRef.current.playing() ? (
                   <Button variant="ghost" onClick={toggleSpectrogram}>
                     <IconWaveSine stroke={2} size={15} />
                   </Button>
@@ -737,7 +737,7 @@ export const Player = () => {
                   <Button variant="ghost">
                     <IconWaveSine stroke={2} size={15} />
                   </Button>
-                )} */}
+                )}
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>

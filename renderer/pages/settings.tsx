@@ -167,7 +167,7 @@ export default function Settings() {
         </div>
         <div className="relative flex w-full flex-col gap-8">
           <div className="flex w-full items-center gap-8">
-            <div className="wora-border h-48 w-2/5 rounded-xl p-6">
+            <div className="wora-border h-48 w-2/5 rounded-2xl p-6">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(updateSettings)}
@@ -253,7 +253,7 @@ export default function Settings() {
                 </form>
               </Form>
             </div>
-            <div className="wora-border h-48 w-3/5 rounded-xl p-6">
+            <div className="wora-border h-48 w-3/5 rounded-2xl p-6">
               <div className="flex h-full flex-col justify-between text-xs">
                 <div className="flex w-full items-center gap-4">
                   <div className="mt-4 flex w-full justify-around">

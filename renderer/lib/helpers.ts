@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 
 interface MetadataResponse {
   metadata: IAudioMetadata;
-  art: string;
   favourite: boolean;
 }
 
@@ -50,7 +49,6 @@ export const fetchMetadata = async (
   file: string,
 ): Promise<MetadataResponse> => {
   let metadata: IAudioMetadata | null;
-  let art: string;
   let favourite: boolean;
 
   if (file) {
@@ -58,7 +56,6 @@ export const fetchMetadata = async (
       .invoke("getSongMetadata", file)
       .then((response) => {
         metadata = response.metadata;
-        art = response.art;
         favourite = response.favourite;
       })
       .catch((error) => {
@@ -66,11 +63,10 @@ export const fetchMetadata = async (
       });
   } else {
     metadata = null;
-    art = "/coverArt.png";
     favourite = false;
   }
 
-  return { metadata, art, favourite };
+  return { metadata, favourite };
 };
 
 interface DiscordState {
@@ -89,7 +85,7 @@ export const updateDiscordState = (song: any): void => {
     return;
   }
 
-  const details = `${song.name}`;
+  const details = `${song.name} → ${song.album.name}`;
   const state = `by ${song.artist}`;
 
   window.ipc.send("set-rpc-state", { details, state });
