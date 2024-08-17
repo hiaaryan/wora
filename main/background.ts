@@ -110,7 +110,7 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
     largeImageKey: "logo",
     largeImageText: `v${app.getVersion()}`,
     instance: false,
-    type: "LISTENING",
+    type: 2,
   };
 
   if (timestamp) {
