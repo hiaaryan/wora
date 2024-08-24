@@ -218,7 +218,7 @@ const Navbar = () => {
             <CommandList>
               {loading && (
                 <div className="flex h-[325px] w-full items-center justify-center">
-                  <Spinner className="h-8 w-8" />
+                  <Spinner className="h-6 w-6" />
                 </div>
               )}
               {search && !loading && (

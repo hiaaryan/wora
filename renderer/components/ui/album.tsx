@@ -25,7 +25,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
               fill
               loading="lazy"
               className="z-10 object-cover"
-              quality={25}
+              quality={10}
             />
           </div>
           <div className="mt-8 flex w-full flex-col overflow-clip">

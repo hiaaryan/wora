@@ -178,9 +178,9 @@ app.whenReady().then(() => {
 });
 
 // @hiaaryan: IPC Handlers from Renderer
-ipcMain.handle("getAllAlbums", async () => {
-  const albums = await getAlbums();
-  return albums;
+ipcMain.handle("getAlbums", async (_, page) => {
+  console.log(page);
+  return await getAlbums(page);
 });
 
 ipcMain.handle("getAllPlaylists", async () => {

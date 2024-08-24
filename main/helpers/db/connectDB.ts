@@ -53,8 +53,13 @@ export const getSongs = async () => {
   return await db.select().from(songs).orderBy(songs.name);
 };
 
-export const getAlbums = async () => {
-  return await db.select().from(albums).orderBy(albums.name);
+export const getAlbums = async (page: number, limit: number = 15) => {
+  return await db
+    .select()
+    .from(albums)
+    .orderBy(albums.name)
+    .limit(limit)
+    .offset((page - 1) * limit);
 };
 
 export const getPlaylists = async () => {
