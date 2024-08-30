@@ -1,0 +1,43 @@
+.bg-animated {
+    @apply opacity-90 dark:opacity-100;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    transform: scale(1.1);
+    overflow: hidden;
+    border-radius: 2em;
+    animation: 1.5s ease-in show-animated-bg;
+    .bg-color,
+    .bg-black {
+        width: 100%;
+        position: absolute;
+        border-radius: 99999em;
+        animation: rotate 50s linear infinite;
+    }
+    .bg-color {
+        right: -25%;
+        top: 0;
+        filter: blur(60px);
+        z-index: 1;
+        mix-blend-mode: luminosity;
+    }
+    .bg-black {
+        left: -25%;
+        bottom: -25%;
+        filter: blur(60px);
+        z-index: 1;
+        animation-direction: reverse;
+        animation-delay: 10s;
+    }
+}
+
+@keyframes rotate{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
+@keyframes show-animated-bg {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+}

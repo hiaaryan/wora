@@ -53,7 +53,7 @@ export default function Album() {
           src={album ? album.coverArt : "/coverArt.png"}
           fill
           loading="lazy"
-          className="object-cover object-center blur-xl gradient-mask-b-10"
+          className="object-cover object-center z-2 gradient-mask-b-10"
         />
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
