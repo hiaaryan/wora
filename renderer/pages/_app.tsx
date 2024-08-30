@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-// import "@/styles/animated-background.scss"
+import "@/styles/animated-background.scss"
 import Actions from "@/components/ui/actions";
 import Navbar from "@/components/main/navbar";
 import Player from "@/components/main/player";
@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }) {
           <Component {...pageProps} />
         ) : (
           <PlayerProvider>
-            {/*<AnimatedBackground/>*/}
+            <AnimatedBackground/>
             <div className="h-dvh w-dvw">
               <div>
                 <Actions />
