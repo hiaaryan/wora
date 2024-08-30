@@ -7,13 +7,15 @@ export default function Albums() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const loadAlbums = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (page > 1) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
 
     try {
       const newAlbums = await window.ipc.invoke("getAlbums", page);
@@ -31,11 +33,11 @@ export default function Albums() {
   }, [page, loading, hasMore]);
 
   useEffect(() => {
-    loadAlbums(); // Load initial albums
-  }, []); // Empty dependency array ensures this only runs once on mount
+    loadAlbums();
+  }, []);
 
   const lastAlbumElementRef = useCallback(
-    (node) => {
+    (node: HTMLDivElement | null) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
@@ -51,7 +53,7 @@ export default function Albums() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col">
-          <div className="mt-4 text-base font-medium">Albums</div>
+          <div className="mt-4 text-lg font-medium leading-6">Albums</div>
           <div className="opacity-50">All of your albums in one place.</div>
         </div>
         <div className="grid w-full grid-cols-5 gap-8">

@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }) {
                     <div className="wora-transition relative flex h-full w-full flex-col">
                       <ScrollArea className="mt-2.5 h-full w-full gradient-mask-b-80">
                         <Component {...pageProps} />
-                        <div className="h-[16vh] w-full"></div>
+                        <div className="h-[10vh] w-full"></div>
                       </ScrollArea>
                       <Player />
                     </div>

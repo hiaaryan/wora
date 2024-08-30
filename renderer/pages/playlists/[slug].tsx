@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   IconPlayerPlay,
   IconArrowsShuffle2,
-  IconArrowLeft,
   IconX,
   IconCheck,
   IconStar,
@@ -169,9 +168,6 @@ export default function Playlist() {
             className="object-cover object-center blur-xl gradient-mask-b-10"
           />
         )}
-        <Button onClick={() => router.back()} className="absolute left-4 top-4">
-          <IconArrowLeft stroke={2} size={16} /> Back
-        </Button>
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
             <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">

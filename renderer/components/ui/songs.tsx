@@ -107,7 +107,7 @@ const Songs: React.FC<SongsProps> = ({
                       fill
                       loading="lazy"
                       className="object-cover"
-                      quality={25}
+                      quality={10}
                     />
                   </div>
                   <div className="flex flex-col">

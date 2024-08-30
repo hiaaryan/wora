@@ -61,6 +61,7 @@ let settings: any;
     titleBarStyle: "hidden",
     trafficLightPosition: { x: 20, y: 15 },
     transparent: true,
+    frame: false,
     icon: path.join(__dirname, "resources/icon.icns"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

@@ -442,6 +442,15 @@ export const Player = () => {
                         Go to Album
                       </ContextMenuItem>
                     </Link>
+                    {soundRef.current && soundRef.current.playing() && (
+                      <ContextMenuItem
+                        onClick={toggleSpectrogram}
+                        className="flex items-center gap-2"
+                      >
+                        <IconWaveSine stroke={2} size={14} />
+                        Spectrogram
+                      </ContextMenuItem>
+                    )}
                     <ContextMenuSub>
                       <ContextMenuSubTrigger className="flex items-center gap-2">
                         <IconPlus stroke={2} size={14} />
@@ -729,15 +738,7 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                {soundRef.current && soundRef.current.playing() ? (
-                  <Button variant="ghost" onClick={toggleSpectrogram}>
-                    <IconWaveSine stroke={2} size={15} />
-                  </Button>
-                ) : (
-                  <Button variant="ghost">
-                    <IconWaveSine stroke={2} size={15} />
-                  </Button>
-                )}
+
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconListTree stroke={2} size={15} />
                 </Button>

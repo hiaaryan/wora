@@ -1,14 +1,11 @@
 import {
-  IconArrowRight,
   IconDeviceDesktop,
   IconFocusCentered,
   IconInbox,
   IconMoon,
-  IconPlus,
   IconSearch,
   IconSun,
   IconVinyl,
-  IconX,
 } from "@tabler/icons-react";
 import {
   Tooltip,
@@ -139,23 +136,23 @@ const Navbar = () => {
 
   return (
     <div className="wora-border h-full w-20 rounded-2xl p-6">
-      <div className="flex h-full flex-col items-center justify-between gap-8">
+      <div className="flex h-full flex-col items-center justify-between">
         <TooltipProvider>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger>
+              <Link href="/settings">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
+                  />
+                </Avatar>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={50}>
+              <p>{settings && settings.name ? settings.name : "Wora User"}</p>
+            </TooltipContent>
+          </Tooltip>
           <div className="flex flex-col items-center gap-8">
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <Link href="/settings">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
-                    />
-                  </Avatar>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={50}>
-                <p>{settings && settings.name ? settings.name : "Wora User"}</p>
-              </TooltipContent>
-            </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button className="mt-2" variant="ghost" asChild>
@@ -175,7 +172,12 @@ const Navbar = () => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={55}>
-                <p>Search</p>
+                <div className="flex items-center">
+                  <p>Search</p>
+                  <div className="ml-2 rounded bg-black/5 px-1 shadow-sm dark:bg-white/10">
+                    ⌘ / Ctrl + F
+                  </div>
+                </div>
               </TooltipContent>
             </Tooltip>
             <Tooltip delayDuration={0}>
@@ -221,7 +223,7 @@ const Navbar = () => {
                   <Spinner className="h-6 w-6" />
                 </div>
               )}
-              {search && !loading && (
+              {search && !loading ? (
                 <CommandGroup heading="Search Results" className="pb-2">
                   {searchResults.map((item) => (
                     <CommandItem
@@ -259,6 +261,12 @@ const Navbar = () => {
                     </CommandItem>
                   ))}
                 </CommandGroup>
+              ) : (
+                <div className="flex h-[325px] w-full items-center justify-center text-xs">
+                  <div className="ml-2 rounded-lg bg-black/5 px-1.5 py-1 shadow-sm dark:bg-white/10">
+                    ⌘ / Ctrl + F
+                  </div>
+                </div>
               )}
             </CommandList>
           </Command>

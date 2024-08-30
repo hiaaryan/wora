@@ -105,7 +105,7 @@ export default function Playlists() {
       <div className="flex flex-col gap-8">
         <div className="flex w-full items-center justify-between">
           <div className="flex flex-col">
-            <div className="mt-4 text-base font-medium">Playlists</div>
+            <div className="mt-4 text-lg font-medium leading-6">Playlists</div>
             <div className="opacity-50">
               Most awesome, epic playlists created by you.
             </div>

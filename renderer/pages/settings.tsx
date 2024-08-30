@@ -162,7 +162,7 @@ export default function Settings() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col">
-          <div className="mt-4 text-base font-medium">Settings</div>
+          <div className="mt-4 text-lg font-medium leading-6">Settings</div>
           <div className="opacity-50">You&apos;re on your own here.</div>
         </div>
         <div className="relative flex w-full flex-col gap-8">

@@ -6,7 +6,6 @@ import {
   IconCircleFilled,
   IconPlayerPlay,
   IconArrowsShuffle2,
-  IconArrowLeft,
 } from "@tabler/icons-react";
 import { usePlayer } from "@/context/playerContext";
 import Songs from "@/components/ui/songs";
@@ -54,11 +53,8 @@ export default function Album() {
           src={album ? album.coverArt : "/coverArt.png"}
           fill
           loading="lazy"
-          className="object-cover object-center blur-2xl gradient-mask-b-10"
+          className="object-cover object-center blur-xl gradient-mask-b-10"
         />
-        <Button onClick={() => router.back()} className="absolute left-4 top-4">
-          <IconArrowLeft stroke={2} size={16} /> Back
-        </Button>
         <div className="absolute bottom-6 left-6">
           <div className="flex items-end gap-4">
             <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">
