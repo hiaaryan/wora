@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   check-version-change:
@@ -31,7 +30,7 @@ jobs:
 
   build:
     needs: check-version-change
-    if: ${{ (needs.check-version-change.outputs.version_changed != 'true') && (github.event_name != 'workflow_dispatch') }}
+    if: needs.check-version-change.outputs.version_changed == 'true'
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -69,7 +68,7 @@ jobs:
         shell: bash
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: ${{ (success()) && && (github.event_name != 'workflow_dispatch') }}
+        if: success()
         with:
           tag_name: v${{ needs.check-version-change.outputs.new_version }}
           name: v${{ needs.check-version-change.outputs.new_version }}
