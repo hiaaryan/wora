@@ -69,7 +69,7 @@ jobs:
         shell: bash
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: ${{ (success()) && && (github.event_name != 'workflow_dispatch') }}
+        if: ${{ (success()) && (github.event_name != 'workflow_dispatch') }}
         with:
           tag_name: v${{ needs.check-version-change.outputs.new_version }}
           name: v${{ needs.check-version-change.outputs.new_version }}
