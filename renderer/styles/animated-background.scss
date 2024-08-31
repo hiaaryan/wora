@@ -7,29 +7,35 @@
     transform: scale(1.1);
     overflow: hidden;
     border-radius: 2em;
-    animation: 1.5s ease-in show-animated-bg;
+
     .bg-color,
     .bg-black {
         width: 100%;
         position: absolute;
         border-radius: 99999em;
+        filter: blur(60px);
+        z-index: 1;
         animation: rotate 50s linear infinite;
     }
     .bg-color {
         right: -25%;
-        top: 0;
-        filter: blur(60px);
-        z-index: 1;
-        mix-blend-mode: luminosity;
+        top: -5%;
     }
     .bg-black {
         left: -25%;
-        bottom: -25%;
-        filter: blur(60px);
-        z-index: 1;
+        bottom: -5%;
         animation-direction: reverse;
-        animation-delay: 10s;
+        animation-delay: 5s;
+        mix-blend-mode: luminosity;
     }
+}
+
+.bg-fade-in {
+    animation: fadeIn 1.5s forwards;
+}
+
+.bg-fade-out {
+    animation: fadeOut 1.5s forwards;
 }
 
 @keyframes rotate{
@@ -37,7 +43,16 @@
     100% {transform: rotate(360deg);}
 }
 
-@keyframes show-animated-bg {
+@keyframes fadeIn {
     0% { opacity: 0 }
-    100% { opacity: 0.85 }
+    100% {
+        @apply opacity-100 dark:opacity-85;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        @apply opacity-100 dark:opacity-85;
+    }
+    100% { opacity: 0 }
 }

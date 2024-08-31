@@ -8,7 +8,7 @@ import React, {
   useCallback,
 } from "react";
 
-interface Song {
+export interface Song {
   id: number;
   name: string;
   artist: string;
