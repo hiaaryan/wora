@@ -42,5 +42,5 @@ jobs:
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
-          name: Wora ${{ matrix.os }} v${{ needs.check-version-change.outputs.new_version }}
+          name: Wora ${{ matrix.os }}
           path: ${{ steps.get_asset.outputs.asset_path }}
