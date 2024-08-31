@@ -294,7 +294,7 @@ export const Player = () => {
     <div>
       <div className="!absolute left-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
+          <div className="wora-border relative mt-2 h-full w-full rounded-2xl backdrop-blur-xl">
             <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
               {isSyncedLyrics(lyrics) ? (
                 <Badge>Synced</Badge>

@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/animated-background.scss"
 import Actions from "@/components/ui/actions";
 import Navbar from "@/components/main/navbar";
 import Player from "@/components/main/player";
@@ -8,6 +9,7 @@ import { useRouter } from "next/router";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/themeProvider";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import AnimatedBackground from "@/components/ui/animated-background";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -27,6 +29,7 @@ export default function App({ Component, pageProps }) {
           <Component {...pageProps} />
         ) : (
           <PlayerProvider>
+            <AnimatedBackground/>
             <div className="h-dvh w-dvw">
               <div>
                 <Actions />
