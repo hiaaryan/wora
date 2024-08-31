@@ -13,20 +13,20 @@
         width: 100%;
         position: absolute;
         border-radius: 99999em;
-        filter: blur(60px);
+        filter: blur(45px);
         z-index: 1;
         animation: rotate 50s linear infinite;
     }
     .bg-color {
         right: -25%;
-        top: -5%;
+        top: -10%;
+        mix-blend-mode: overlay;
     }
     .bg-black {
         left: -25%;
-        bottom: -5%;
+        bottom: -10%;
         animation-direction: reverse;
         animation-delay: 5s;
-        mix-blend-mode: luminosity;
     }
 }
 
