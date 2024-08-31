@@ -1,0 +1,46 @@
+name: Build Manually
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Dependencies
+        run: bun install
+      - name: Build for ${{ matrix.os }}
+        run: |
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            bun run build:mac
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            bun run build:linux
+          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+            bun run build:win64
+          fi
+        shell: bash
+      - name: Get Asset Details
+        id: get_asset
+        run: |
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            echo "asset_path=./dist/*.dmg" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            echo "asset_path=./dist/*.AppImage" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+            echo "asset_path=./dist/*.exe" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wora ${{ matrix.os }} v${{ needs.check-version-change.outputs.new_version }}
+          path: ${{ steps.get_asset.outputs.asset_path }}
