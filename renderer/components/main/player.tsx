@@ -4,12 +4,12 @@ import {
   IconArrowsShuffle2,
   IconCheck,
   IconClock,
-  IconDisc,
   IconHeart,
   IconInfoCircle,
+  IconList,
   IconListTree,
-  IconMicrophone2,
-  IconMicrophone2Off,
+  IconMessage,
+  IconMessageOff,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
@@ -60,8 +60,6 @@ import {
 } from "@/components/ui/context-menu";
 import Spectrogram from "../ui/spectrogram";
 
-const UPDATE_INTERVAL = 1000;
-
 export const Player = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [_, setSeekPosition] = useState(0);
@@ -86,6 +84,7 @@ export const Player = () => {
     toggleShuffle,
     toggleRepeat,
   } = usePlayer();
+
   const { metadata, lyrics, favourite } = useAudioMetadata(song?.filePath);
 
   const handlePlayPause = useCallback(() => {
@@ -142,7 +141,7 @@ export const Player = () => {
       }
     };
 
-    const interval = setInterval(updateSeek, UPDATE_INTERVAL);
+    const interval = setInterval(updateSeek, 1000);
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title: song.name,
@@ -197,7 +196,7 @@ export const Player = () => {
       }
     };
 
-    const interval = setInterval(updateLyrics, UPDATE_INTERVAL);
+    const interval = setInterval(updateLyrics, 1000);
 
     return () => clearInterval(interval);
   }, [song, lyrics]);
@@ -292,36 +291,14 @@ export const Player = () => {
 
   return (
     <div>
-      <div className="!absolute left-0 top-0 w-full">
+      <div className="absolute right-0 top-0 w-full">
         {showLyrics && lyrics && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
-            <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
-              {isSyncedLyrics(lyrics) ? (
-                <Badge>Synced</Badge>
-              ) : (
-                <Badge>Unsynced</Badge>
-              )}
-            </div>
-            <div className="h-utility flex w-full items-center text-balance px-8 gradient-mask-b-70-d">
-              <div className="no-scrollbar gradient-mask-b-30-d h-full w-full max-w-3xl overflow-hidden overflow-y-auto text-2xl font-medium">
-                <div className="flex flex-col py-[33vh]">
-                  {isSyncedLyrics(lyrics) ? (
-                    <Lyrics
-                      lyrics={parseLyrics(lyrics)}
-                      currentLyric={currentLyric}
-                      onLyricClick={handleLyricClick}
-                    />
-                  ) : (
-                    <div>
-                      {lyrics.split("\n").map((line) => {
-                        return <p className="my-2 py-4 opacity-40">{line}</p>;
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <Lyrics
+            lyrics={parseLyrics(lyrics)}
+            currentLyric={currentLyric}
+            onLyricClick={handleLyricClick}
+            isSyncedLyrics={isSyncedLyrics(lyrics)}
+          />
         )}
       </div>
       <div className="!absolute right-0 top-0 w-96">
@@ -416,21 +393,21 @@ export const Player = () => {
           </div>
         </div>
       </div>
-      <div className="wora-border z-50 h-[6.5rem] w-full rounded-2xl p-6">
-        <TooltipProvider>
-          <div className="relative flex h-full w-full items-center justify-between">
-            <div className="absolute left-0 flex w-1/2 items-center gap-4">
+      <div className="w-full h-28 rounded-2xl wora-border overflow-hidden p-6">
+        <div className="relative flex h-full w-full items-center">
+          <TooltipProvider>
+            <div className="absolute left-0 flex justify-start w-1/4 overflow-hidden gradient-mask-r-70 items-center gap-4">
               {song ? (
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <Link href={`/albums/${song.album.id}`}>
-                      <div className="relative h-16 w-16 overflow-hidden rounded-lg shadow-lg transition duration-500">
+                      <div className="relative h-[4.25rem] w-[4.25rem] overflow-hidden rounded-lg shadow-lg transition duration-500">
                         <Image
                           alt="Album Cover"
                           src={song.album.coverArt}
                           fill
                           priority={true}
-                          className="object-cover"
+                          className="object-cover object-center"
                         />
                       </div>
                     </Link>
@@ -485,7 +462,7 @@ export const Player = () => {
                   />
                 </div>
               )}
-              <div className="w-1/3 gradient-mask-r-70">
+              <div className="w-full gradient-mask-r-70">
                 <p className="text-nowrap text-sm font-medium">
                   {song ? song.name : "Echoes of Emptiness"}
                 </p>
@@ -494,8 +471,9 @@ export const Player = () => {
                 </p>
               </div>
             </div>
-            <div className="absolute left-0 right-0 mx-auto flex h-full w-1/3 flex-col items-center justify-between">
-              <div className="relative flex items-center gap-8">
+
+            <div className="absolute left-0 right-0 mx-auto flex h-full w-2/4 flex-col gap-4 items-center justify-between">
+              <div className="flex items-center w-full gap-8 justify-center h-full">
                 <Button
                   variant="ghost"
                   asChild
@@ -567,7 +545,7 @@ export const Player = () => {
                   )}
                 </Button>
                 {metadata && metadata.format.lossless && (
-                  <div className="absolute -left-24 mt-0.5">
+                  <div className="absolute left-32">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
                         <IconRipple stroke={2} className="w-3.5" />
@@ -581,7 +559,7 @@ export const Player = () => {
                     </Tooltip>
                   </div>
                 )}
-                <div className="absolute -right-24 mt-0.5">
+                <div className="absolute right-32">
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
                       <Button
@@ -611,8 +589,8 @@ export const Player = () => {
                   </Tooltip>
                 </div>
               </div>
-              <div className="relative flex w-full items-center gap-3">
-                <p className="absolute -left-10">
+              <div className="relative h-full items-center flex w-96 px-4">
+                <p className="absolute -left-8">
                   {convertTime(soundRef.current?.seek() || 0)}
                 </p>
                 <Slider
@@ -622,13 +600,13 @@ export const Player = () => {
                   max={soundRef.current?.duration() || 0}
                   step={0.01}
                 />
-                <p className="absolute -right-10">
+                <p className="absolute -right-8">
                   {convertTime(soundRef.current?.duration() || 0)}
                 </p>
               </div>
             </div>
-            <div className="absolute right-0 flex w-1/3 items-center justify-end gap-8">
-              <div className="group/volume flex w-1/4 items-center gap-3">
+            <div className="absolute right-0 flex w-1/4 items-center justify-end gap-10">
+              <div className="flex items-center gap-4">
                 <Button
                   variant="ghost"
                   onClick={toggleMute}
@@ -653,16 +631,17 @@ export const Player = () => {
                   defaultValue={[volume]}
                   max={1}
                   step={0.01}
+                  className="w-24"
                 />
               </div>
               <div className="flex items-center gap-4">
                 {lyrics ? (
                   <Button variant="ghost" onClick={toggleLyrics}>
-                    <IconMicrophone2 stroke={2} size={15} />
+                    <IconMessage stroke={2} size={15} />
                   </Button>
                 ) : (
                   <Button variant="ghost" className="text-red-500 opacity-100">
-                    <IconMicrophone2Off stroke={2} size={15} />
+                    <IconMessageOff stroke={2} size={15} />
                   </Button>
                 )}
                 <Dialog>
@@ -740,12 +719,13 @@ export const Player = () => {
                 </Dialog>
 
                 <Button variant="ghost" onClick={toggleQueue}>
-                  <IconListTree stroke={2} size={15} />
+                  <IconList stroke={2} size={15} />
                 </Button>
               </div>
             </div>
-          </div>
-        </TooltipProvider>
+          </TooltipProvider>
+        </div>
+
       </div>
     </div>
   );

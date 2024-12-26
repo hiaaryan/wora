@@ -3,7 +3,7 @@ import { Menu, Tray, app, dialog, ipcMain, shell } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { protocol } from "electron";
-import { AutoClient } from "discord-auto-rpc";
+import { RpcClient, ActivityType } from "dc-rpc";
 import {
   addSongToPlaylist,
   addToFavourites,
@@ -103,7 +103,7 @@ let settings: any;
 })();
 
 // @hiaaryan: Initialize Discord RPC
-const client = new AutoClient({ transport: "ipc" });
+const client = new RpcClient({ transport: 'ipc' });
 ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
   const setActivity = {
     details,
@@ -111,7 +111,7 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
     largeImageKey: "logo",
     largeImageText: `v${app.getVersion()}`,
     instance: false,
-    type: 2,
+    type: ActivityType.Listening,
   };
 
   if (timestamp) {
@@ -120,7 +120,7 @@ ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
 
   client.setActivity(setActivity);
 });
-client.endlessLogin({ clientId: "1243707416588320800" });
+client.login({ clientId: "1243707416588320800" });
 
 // @hiaaryan: Called to Set Music Folder
 ipcMain.handle("setMusicFolder", async () => {

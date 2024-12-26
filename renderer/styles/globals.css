@@ -5,36 +5,28 @@
 @tailwind utilities;
 
 .wora-border {
-  @apply border border-black/[0.035] dark:border-white/[0.070];
-}
-
-.wora-bg {
-  @apply bg-black/5 dark:bg-white/10;
+    @apply border border-black/5 dark:border-white/10;
 }
 
 .wora-transition {
-  @apply transition-all duration-300;
+    @apply transition-all duration-300;
 }
 
-.drag {
-  -webkit-app-region: drag;
-}
-
-.no-drag {
-  -webkit-app-region: no-drag;
+.h-utility {
+    height: calc(100vh - 14.5rem);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
-.h-utility {
-  height: calc(100vh - 13.55rem);
+html {
+    overscroll-behavior: none;
 }

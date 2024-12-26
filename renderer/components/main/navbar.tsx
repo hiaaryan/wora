@@ -2,6 +2,7 @@ import {
   IconDeviceDesktop,
   IconFocusCentered,
   IconInbox,
+  IconList,
   IconMoon,
   IconSearch,
   IconSun,
@@ -135,33 +136,31 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="wora-border h-full w-20 rounded-2xl p-6">
-      <div className="flex h-full flex-col items-center justify-between">
+    <>
+      <div className="flex h-full flex-col items-center justify-center gap-10">
         <TooltipProvider>
           <Tooltip delayDuration={0}>
             <TooltipTrigger>
               <Link href="/settings">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`}
-                  />
+                  <AvatarImage src={`${settings && settings.profilePicture ? "wora://" + settings.profilePicture : "/userPicture.png"}`} />
                 </Avatar>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={50}>
+            <TooltipContent side="right" sideOffset={25}>
               <p>{settings && settings.name ? settings.name : "Wora User"}</p>
             </TooltipContent>
           </Tooltip>
-          <div className="flex flex-col items-center gap-8">
+          <div className="w-[4.5rem] p-8 rounded-2xl wora-border flex flex-col items-center gap-10">
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
-                <Button className="mt-2" variant="ghost" asChild>
+                <Button variant="ghost" asChild>
                   <Link href="/home">
                     <IconInbox stroke={2} className="w-5" />
                   </Link>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
+              <TooltipContent side="right" sideOffset={50}>
                 <p>Home</p>
               </TooltipContent>
             </Tooltip>
@@ -171,36 +170,43 @@ const Navbar = () => {
                   <IconSearch stroke={2} className="w-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
-                <div className="flex items-center">
-                  <p>Search</p>
-                  <div className="ml-2 rounded bg-black/5 px-1 shadow-sm dark:bg-white/10">
-                    ⌘ / Ctrl + F
-                  </div>
-                </div>
+              <TooltipContent side="right" sideOffset={50}>
+                <p>Search</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button variant="ghost" asChild>
                   <Link href="/playlists">
-                    <IconVinyl stroke={2} className="w-5" />
+                    <IconVinyl stroke={2} size={20} />
                   </Link>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
+              <TooltipContent side="right" sideOffset={50}>
                 <p>Playlists</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <Button variant="ghost" asChild>
-                  <Link href="/albums">
-                    <IconFocusCentered stroke={2} className="w-5" />
+                  <Link href="/playlists">
+                    <IconList stroke={2} size={20} />
                   </Link>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={55}>
+              <TooltipContent side="right" sideOffset={50}>
+                <p>Songs</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <Button variant="ghost" asChild>
+                  <Link href="/albums">
+                    <IconFocusCentered stroke={2} size={20} />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={50}>
                 <p>Albums</p>
               </TooltipContent>
             </Tooltip>
@@ -209,70 +215,70 @@ const Navbar = () => {
         <Button variant="ghost" onClick={handleThemeToggle} asChild>
           {renderIcon()}
         </Button>
+      </div>
 
-        <CommandDialog open={open} onOpenChange={setOpen}>
-          <Command>
-            <CommandInput
-              placeholder="Search for a song, album or playlist..."
-              value={search}
-              onValueChange={setSearch}
-            />
-            <CommandList>
-              {loading && (
-                <div className="flex h-[325px] w-full items-center justify-center">
-                  <Spinner className="h-6 w-6" />
-                </div>
-              )}
-              {search && !loading ? (
-                <CommandGroup heading="Search Results" className="pb-2">
-                  {searchResults.map((item) => (
-                    <CommandItem
-                      key={`${item.type}-${item.id}`}
-                      value={`${item.name}-${item.type}-${item.id}`}
-                      onSelect={() => handleItemClick(item)}
-                      className="text-black dark:text-white"
-                    >
-                      <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
-                        {(item.type === "Playlist" ||
-                          item.type === "Album") && (
+
+
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <Command>
+          <CommandInput
+            placeholder="Search for a song, album or playlist..."
+            value={search}
+            onValueChange={setSearch} />
+          <CommandList>
+            {loading && (
+              <div className="flex h-[325px] w-full items-center justify-center">
+                <Spinner className="h-6 w-6" />
+              </div>
+            )}
+            {search && !loading ? (
+              <CommandGroup heading="Search Results" className="pb-2">
+                {searchResults.map((item) => (
+                  <CommandItem
+                    key={`${item.type}-${item.id}`}
+                    value={`${item.name}-${item.type}-${item.id}`}
+                    onSelect={() => handleItemClick(item)}
+                    className="text-black dark:text-white"
+                  >
+                    <div className="flex h-full w-full items-center gap-2.5 gradient-mask-r-70">
+                      {(item.type === "Playlist" ||
+                        item.type === "Album") && (
                           <div className="relative h-12 w-12 overflow-hidden rounded-lg shadow-xl transition duration-300">
                             <Image
                               className="object-cover"
                               src={item.coverArt}
                               alt={item.name}
-                              fill
-                            />
+                              fill />
                           </div>
                         )}
-                        <div>
-                          <p className="w-full overflow-hidden text-nowrap text-xs">
-                            {item.name}
-                            <span className="ml-1 opacity-50">
-                              ({item.type})
-                            </span>
-                          </p>
-                          <p className="w-full text-xs opacity-50">
-                            {item.type === "Playlist"
-                              ? item.description
-                              : item.artist}
-                          </p>
-                        </div>
+                      <div>
+                        <p className="w-full overflow-hidden text-nowrap text-xs">
+                          {item.name}
+                          <span className="ml-1 opacity-50">
+                            ({item.type})
+                          </span>
+                        </p>
+                        <p className="w-full text-xs opacity-50">
+                          {item.type === "Playlist"
+                            ? item.description
+                            : item.artist}
+                        </p>
                       </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : (
-                <div className="flex h-[325px] w-full items-center justify-center text-xs">
-                  <div className="ml-2 rounded-lg bg-black/5 px-1.5 py-1 shadow-sm dark:bg-white/10">
-                    ⌘ / Ctrl + F
-                  </div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ) : (
+              <div className="flex h-[325px] w-full items-center justify-center text-xs">
+                <div className="ml-2 rounded-lg bg-black/5 px-1.5 py-1 shadow-sm dark:bg-white/10">
+                  ⌘ / Ctrl + F
                 </div>
-              )}
-            </CommandList>
-          </Command>
-        </CommandDialog>
-      </div>
-    </div>
+              </div>
+            )}
+          </CommandList>
+        </Command>
+      </CommandDialog>
+    </>
   );
 };
 
