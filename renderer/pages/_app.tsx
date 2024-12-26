@@ -32,7 +32,7 @@ export default function App({ Component, pageProps }) {
                 </div>
                 <div className="h-dvh flex-grow p-8 pl-0 pt-12">
                   <div className="wora-transition relative flex h-full w-full flex-col">
-                    <ScrollArea className="h-full w-full gradient-mask-b-70-d">
+                    <ScrollArea className="h-full w-full gradient-mask-b-70">
                       <Component {...pageProps} />
                       <div className="h-[20vh] w-full"></div>
                     </ScrollArea>

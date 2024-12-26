@@ -35,7 +35,7 @@ const Lyrics: React.FC<LyricsProps> = React.memo(
     }, [currentLyric]);
 
     return (
-      <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
+      <div className="wora-border relative h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
         <div className="absolute bottom-5 right-6 z-50 flex items-center gap-2">
           <Badge>{isSyncedLyrics ? "Synced" : "Unsynced"}</Badge>
         </div>

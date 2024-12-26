@@ -211,13 +211,19 @@ const Navbar = () => {
               </TooltipContent>
             </Tooltip>
           </div>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger>
+              <Button variant="ghost" onClick={handleThemeToggle} asChild>
+                {renderIcon()}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={25}>
+              <p className="capitalize">Theme: {theme}</p>
+            </TooltipContent>
+          </Tooltip>
+
         </TooltipProvider>
-        <Button variant="ghost" onClick={handleThemeToggle} asChild>
-          {renderIcon()}
-        </Button>
       </div>
-
-
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <Command>

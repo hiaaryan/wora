@@ -237,8 +237,6 @@ export const updatePlaylist = async (data: any) => {
     coverArt = "/coverArt.png";
   }
 
-  console.log(data);
-
   const playlist = await db
     .update(playlists)
     .set({
@@ -424,7 +422,7 @@ export const initializeData = async (musicFolder: string) => {
       // @hiaaryan: Update Album if Artist or CoverArt is different
       if (
         album.artist !==
-          (metadata.common.albumartist || metadata.common.artist) ||
+        (metadata.common.albumartist || metadata.common.artist) ||
         album.year !== metadata.common.year ||
         album.coverArt !== art
       ) {

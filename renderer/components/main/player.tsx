@@ -20,7 +20,6 @@ import {
   IconVinyl,
   IconVolume,
   IconVolumeOff,
-  IconWaveSine,
   IconX,
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -43,8 +42,6 @@ import {
 } from "@/components/ui/tooltip";
 import { convertTime, isSyncedLyrics, parseLyrics } from "@/lib/helpers";
 import { useAudioMetadata } from "@/lib/helpers";
-import { Badge } from "@/components/ui/badge";
-import { updateDiscordState, resetDiscordState } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
@@ -58,7 +55,6 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import Spectrogram from "../ui/spectrogram";
 
 export const Player = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -69,7 +65,6 @@ export const Player = () => {
   const [currentLyric, setCurrentLyric] = useState(null);
   const [showLyrics, setShowLyrics] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
-  const [showSpectrogram, setShowSpectrogram] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const {
@@ -112,12 +107,10 @@ export const Player = () => {
         setIsPlaying(true);
       },
       onloaderror: (error) => {
-        resetDiscordState();
         setIsPlaying(false);
         console.error("Error loading audio:", error);
       },
       onend: () => {
-        resetDiscordState();
         setIsPlaying(false);
         if (!repeat) {
           nextSong();
@@ -158,18 +151,12 @@ export const Player = () => {
     navigator.mediaSession.setActionHandler("previoustrack", previousSong);
 
     soundRef.current.on("play", () => {
-      updateDiscordState(song);
       setIsPlaying(true);
     });
 
     soundRef.current.on("pause", () => {
-      resetDiscordState();
       setIsPlaying(false);
     });
-
-    if (soundRef.current.state() === "loaded") {
-      updateDiscordState(song);
-    }
 
     return () => {
       clearInterval(interval);
@@ -246,10 +233,6 @@ export const Player = () => {
     setShowLyrics((prev) => !prev);
   }, []);
 
-  const toggleSpectrogram = useCallback(() => {
-    setShowSpectrogram((prev) => !prev);
-  }, []);
-
   const toggleQueue = useCallback(() => {
     setShowQueue((prev) => !prev);
   }, []);
@@ -303,7 +286,7 @@ export const Player = () => {
       </div>
       <div className="!absolute right-0 top-0 w-96">
         {showQueue && (
-          <div className="wora-border relative mt-2 h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
+          <div className="wora-border relative h-full w-full rounded-2xl bg-white/70 backdrop-blur-xl dark:bg-black/70">
             <div className="h-utility w-full max-w-3xl px-6 pt-6">
               <Tabs
                 defaultValue="queue"
@@ -327,7 +310,7 @@ export const Player = () => {
                         key={song.id}
                         className="flex w-full items-center gap-4 overflow-hidden gradient-mask-r-70"
                       >
-                        <div className="relative h-14 w-14 overflow-hidden rounded-lg shadow-lg">
+                        <div className="relative min-h-14 min-w-14 overflow-hidden rounded-lg shadow-lg">
                           <Image
                             alt="Album Cover"
                             src={song.album.coverArt}
@@ -384,15 +367,6 @@ export const Player = () => {
           </div>
         )}
       </div>
-      <div className="!absolute right-0 top-0 w-full">
-        <div
-          className={`wora-border ${soundRef.current && soundRef.current.playing() && showSpectrogram ? "block" : "hidden"} relative mt-2 h-full w-full rounded-2xl bg-black`}
-        >
-          <div className="h-utility w-full p-6">
-            {soundRef.current && <Spectrogram howl={soundRef.current} />}
-          </div>
-        </div>
-      </div>
       <div className="w-full h-28 rounded-2xl wora-border overflow-hidden p-6">
         <div className="relative flex h-full w-full items-center">
           <TooltipProvider>
@@ -401,7 +375,7 @@ export const Player = () => {
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <Link href={`/albums/${song.album.id}`}>
-                      <div className="relative h-[4.25rem] w-[4.25rem] overflow-hidden rounded-lg shadow-lg transition duration-500">
+                      <div className="relative min-h-[4.25rem] min-w-[4.25rem] overflow-hidden rounded-lg shadow-lg transition duration-500">
                         <Image
                           alt="Album Cover"
                           src={song.album.coverArt}
@@ -419,15 +393,6 @@ export const Player = () => {
                         Go to Album
                       </ContextMenuItem>
                     </Link>
-                    {soundRef.current && soundRef.current.playing() && (
-                      <ContextMenuItem
-                        onClick={toggleSpectrogram}
-                        className="flex items-center gap-2"
-                      >
-                        <IconWaveSine stroke={2} size={14} />
-                        Spectrogram
-                      </ContextMenuItem>
-                    )}
                     <ContextMenuSub>
                       <ContextMenuSubTrigger className="flex items-center gap-2">
                         <IconPlus stroke={2} size={14} />
@@ -452,7 +417,7 @@ export const Player = () => {
                   </ContextMenuContent>
                 </ContextMenu>
               ) : (
-                <div className="relative h-16 w-16 overflow-hidden rounded-lg transition duration-500">
+                <div className="relative min-h-[4.25rem] min-w-[4.25rem] overflow-hidden rounded-lg shadow-lg transition duration-500">
                   <Image
                     alt="Album Cover"
                     src={"/coverArt.png"}
@@ -545,7 +510,7 @@ export const Player = () => {
                   )}
                 </Button>
                 {metadata && metadata.format.lossless && (
-                  <div className="absolute left-32">
+                  <div className="absolute left-36">
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger>
                         <IconRipple stroke={2} className="w-3.5" />
@@ -559,7 +524,7 @@ export const Player = () => {
                     </Tooltip>
                   </div>
                 )}
-                <div className="absolute right-32">
+                <div className="absolute right-36">
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
                       <Button

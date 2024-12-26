@@ -49,7 +49,5 @@ fileAssociations:
     name: WEBA Audio File
   - ext: webm
     name: WEBM Audio File
-  - ext: dolby
-    name: Dolby Audio File
   - ext: flac
     name: FLAC Audio File

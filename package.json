@@ -13,8 +13,7 @@
     "build": "nextron build",
     "build:mac": "nextron build --mac --universal",
     "build:linux": "nextron build --linux",
-    "build:win64": "nextron build --win --x64",
-    "postinstall": "electron-builder install-app-deps"
+    "build:win64": "nextron build --win --x64"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
