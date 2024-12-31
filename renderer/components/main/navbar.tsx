@@ -252,7 +252,7 @@ const Navbar = () => {
                           <div className="relative h-12 w-12 overflow-hidden rounded-lg shadow-xl transition duration-300">
                             <Image
                               className="object-cover"
-                              src={item.coverArt}
+                              src={`wora://${item.cover}`}
                               alt={item.name}
                               fill />
                           </div>

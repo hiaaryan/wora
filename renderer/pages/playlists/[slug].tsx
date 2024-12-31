@@ -45,7 +45,7 @@ type Playlist = {
   id: number;
   name: string;
   description: string;
-  coverArt: string;
+  cover: string;
   songs: any;
 };
 
@@ -159,8 +159,8 @@ export default function Playlist() {
           <Image
             alt={playlist ? playlist.name : "Album Cover"}
             src={
-              playlist && playlist.coverArt
-                ? "wora://" + playlist.coverArt
+              playlist && playlist.cover
+                ? "wora://" + playlist.cover
                 : "/coverArt.png"
             }
             fill
@@ -176,8 +176,8 @@ export default function Playlist() {
                 src={
                   playlist && playlist.id === 1
                     ? "/favouritesCoverArt.png"
-                    : playlist && playlist.coverArt
-                      ? "wora://" + playlist.coverArt
+                    : playlist && playlist.cover
+                      ? "wora://" + playlist.cover
                       : "/coverArt.png"
                 }
                 fill

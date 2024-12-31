@@ -25,7 +25,7 @@ import { toast } from "sonner";
 type Album = {
   id: number;
   name: string;
-  coverArt: string;
+  cover: string;
 };
 
 type Song = {
@@ -103,7 +103,7 @@ const Songs: React.FC<SongsProps> = ({
                   <div className="relative h-12 w-12 overflow-hidden rounded-lg shadow-lg transition duration-300">
                     <Image
                       alt={song.album.name}
-                      src={song.album.coverArt}
+                      src={`wora://${song.album.cover}`}
                       fill
                       loading="lazy"
                       className="object-cover"

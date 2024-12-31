@@ -9,7 +9,6 @@ import {
   IconList,
   IconListTree,
   IconMessage,
-  IconMessageOff,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlayerSkipBack,
@@ -40,8 +39,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { convertTime, isSyncedLyrics, parseLyrics } from "@/lib/helpers";
-import { useAudioMetadata } from "@/lib/helpers";
+import { convertTime, isSyncedLyrics, parseLyrics, updateDiscordState, useAudioMetadata } from "@/lib/helpers";
 import { usePlayer } from "@/context/playerContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
@@ -105,6 +103,7 @@ export const Player = () => {
       onload: () => {
         setSeekPosition(0);
         setIsPlaying(true);
+        updateDiscordState(1, song);
       },
       onloaderror: (error) => {
         setIsPlaying(false);
@@ -134,21 +133,7 @@ export const Player = () => {
       }
     };
 
-    const interval = setInterval(updateSeek, 1000);
-
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: song.name,
-      artist: song.artist,
-      album: song.album.name,
-      artwork: [
-        { src: song.album.coverArt, sizes: "512x512", type: "image/png" },
-      ],
-    });
-
-    navigator.mediaSession.setActionHandler("play", handlePlayPause);
-    navigator.mediaSession.setActionHandler("pause", handlePlayPause);
-    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
-    navigator.mediaSession.setActionHandler("previoustrack", previousSong);
+    const interval = setInterval(updateSeek, 100);
 
     soundRef.current.on("play", () => {
       setIsPlaying(true);
@@ -161,7 +146,7 @@ export const Player = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [song, handlePlayPause, nextSong, previousSong]);
+  }, [song]);
 
   useEffect(() => {
     if (!lyrics || !song) return;
@@ -313,7 +298,7 @@ export const Player = () => {
                         <div className="relative min-h-14 min-w-14 overflow-hidden rounded-lg shadow-lg">
                           <Image
                             alt="Album Cover"
-                            src={song.album.coverArt}
+                            src={`wora://${song?.album.cover}`}
                             fill
                             priority={true}
                             className="object-cover"
@@ -344,7 +329,7 @@ export const Player = () => {
                         <div className="relative h-14 w-14 overflow-hidden rounded-lg shadow-lg">
                           <Image
                             alt="Album Cover"
-                            src={song.album.coverArt}
+                            src={`wora://${song?.album.cover}`}
                             fill
                             priority={true}
                             className="object-cover"
@@ -378,7 +363,7 @@ export const Player = () => {
                       <div className="relative min-h-[4.25rem] min-w-[4.25rem] overflow-hidden rounded-lg shadow-lg transition duration-500">
                         <Image
                           alt="Album Cover"
-                          src={song.album.coverArt}
+                          src={`wora://${song?.album.cover}`}
                           fill
                           priority={true}
                           className="object-cover object-center"
@@ -605,14 +590,16 @@ export const Player = () => {
                     <IconMessage stroke={2} size={15} />
                   </Button>
                 ) : (
-                  <Button variant="ghost" className="text-red-500 opacity-100">
-                    <IconMessageOff stroke={2} size={15} />
-                  </Button>
+                  <IconMessage className="text-red-500 opacity-75 cursor-not-allowed" stroke={2} size={15} />
                 )}
                 <Dialog>
-                  <DialogTrigger className="opacity-30 duration-500 hover:opacity-100">
-                    <IconInfoCircle stroke={2} size={15} />
-                  </DialogTrigger>
+                  {song ? (
+                    <DialogTrigger className="opacity-30 duration-500 hover:opacity-100">
+                      <IconInfoCircle stroke={2} size={15} />
+                    </DialogTrigger>
+                  ) : (
+                    <IconInfoCircle className="text-red-500 opacity-75 cursor-not-allowed" stroke={2} size={15} />
+                  )}
                   <DialogContent>
                     <div className="flex h-full w-full items-start gap-6 overflow-hidden gradient-mask-r-70">
                       <div className="jusitfy-between flex h-full w-full flex-col gap-4">
@@ -627,7 +614,7 @@ export const Player = () => {
                             <div className="relative h-36 w-36 overflow-hidden rounded-xl">
                               <Image
                                 alt="album"
-                                src={song?.album.coverArt || "/coverArt.png"}
+                                src={`wora://${song?.album.cover}` || "/coverArt.png"}
                                 fill
                                 className="object-cover"
                                 quality={25}
@@ -682,7 +669,6 @@ export const Player = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-
                 <Button variant="ghost" onClick={toggleQueue}>
                   <IconList stroke={2} size={15} />
                 </Button>
@@ -690,7 +676,6 @@ export const Player = () => {
             </div>
           </TooltipProvider>
         </div>
-
       </div>
     </div>
   );

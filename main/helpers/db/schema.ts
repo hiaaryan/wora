@@ -13,7 +13,7 @@ export const albums = sqliteTable("albums", {
   name: text("name"),
   artist: text("artist"),
   year: integer("year"),
-  coverArt: blob("coverArt"),
+  cover: text("cover"),
 });
 
 export const songs = sqliteTable("songs", {
@@ -40,7 +40,7 @@ export const playlists = sqliteTable("playlists", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name").notNull().unique(),
   description: text("description").notNull(),
-  coverArt: text("coverArt").notNull(),
+  cover: text("cover").notNull(),
 });
 
 export const playlistSongs = sqliteTable("playlistSongs", {

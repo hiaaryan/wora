@@ -6,7 +6,7 @@ type Album = {
   id: string;
   name: string;
   artist: string;
-  coverArt: string;
+  cover: string;
 };
 
 type AlbumCardProps = {
@@ -21,7 +21,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
           <div className="relative w-full overflow-hidden rounded-xl pb-[100%] shadow-lg">
             <Image
               alt={album ? album.name : "Album Cover"}
-              src={album.coverArt}
+              src={`wora://${album.cover}`}
               fill
               loading="lazy"
               className="z-10 object-cover"

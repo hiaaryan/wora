@@ -14,7 +14,7 @@ type Album = {
   name: string;
   artist: string;
   year: number;
-  coverArt: string;
+  cover: string;
   songs: any;
 };
 
@@ -50,7 +50,7 @@ export default function Album() {
       <div className="relative h-96 w-full overflow-hidden rounded-2xl">
         <Image
           alt={album ? album.name : "Album Cover"}
-          src={album ? album.coverArt : "/coverArt.png"}
+          src={album ? `wora://${album.cover}` : "/coverArt.png"}
           fill
           loading="lazy"
           className="object-cover object-center blur-xl gradient-mask-b-10"
@@ -60,7 +60,7 @@ export default function Album() {
             <div className="relative h-52 w-52 overflow-hidden rounded-xl shadow-lg transition duration-300">
               <Image
                 alt={album ? album.name : "Album Cover"}
-                src={album ? album.coverArt : "/coverArt.png"}
+                src={album ? `wora://${album.cover}` : "/coverArt.png"}
                 fill
                 loading="lazy"
                 className="scale-[1.01] object-cover"

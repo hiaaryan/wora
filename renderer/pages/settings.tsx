@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { IconArrowRight, IconCheck, IconX } from "@tabler/icons-react";
+import { IconArrowRight, IconCheck, IconRefresh, IconX } from "@tabler/icons-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -121,10 +121,29 @@ export default function Settings() {
     }
   }, [settings]);
 
-  const updateMusicFolder = () => {
+  const rescanLibrary = () => {
     setMusicLoading(true);
     window.ipc
-      .invoke("setMusicFolder", true)
+      .invoke("rescanLibrary")
+      .then(() => {
+        setMusicLoading(false);
+        toast(
+          <div className="flex w-fit items-center gap-2 text-xs">
+            <IconCheck className="text-green-400" stroke={2} size={16} />
+            Your library is rescanned.
+          </div>,
+        );
+        window.ipc.invoke("getLibraryStats").then((response) => {
+          setStats(response);
+        });
+      })
+      .catch(() => setMusicLoading(false));
+  };
+
+  const scanLibrary = () => {
+    setMusicLoading(true);
+    window.ipc
+      .invoke("scanLibrary", true)
       .then((response) => {
         setMusicLoading(false);
         if (response) return;
@@ -281,9 +300,12 @@ export default function Settings() {
                   <div className="flex h-9 w-full items-center rounded-xl bg-black/5 px-3 py-1 text-xs transition duration-300 focus:outline-none dark:bg-white/10">
                     {settings && settings.musicFolder}
                   </div>
+                  <Button className="w-fit justify-between text-nowrap text-xs" onClick={rescanLibrary}>
+                    <IconRefresh stroke={2} className="h-3.5 w-3.5" />
+                  </Button>
                   <Button
                     className="w-fit justify-between text-nowrap text-xs"
-                    onClick={updateMusicFolder}
+                    onClick={scanLibrary}
                   >
                     Update Music Folder
                     {musicLoading ? (

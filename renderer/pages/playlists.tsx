@@ -83,7 +83,7 @@ export default function Playlists() {
     const updatedData = {
       name: data.name,
       description: data.description,
-      coverArt: playlistCoverPath,
+      cover: playlistCoverPath,
     };
 
     window.ipc
@@ -130,8 +130,8 @@ export default function Playlists() {
                         src={
                           playlist.id === 1
                             ? "/favouritesCoverArt.png"
-                            : playlist.coverArt
-                              ? "wora://" + playlist.coverArt
+                            : playlist.cover
+                              ? "wora://" + playlist.cover
                               : "/coverArt.png"
                         }
                         fill

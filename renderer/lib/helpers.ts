@@ -1,3 +1,4 @@
+import { Song } from "@/context/playerContext";
 import axios from "axios";
 import { IAudioMetadata } from "music-metadata";
 import { useState, useEffect } from "react";
@@ -19,6 +20,45 @@ export const convertTime = (seconds: number) => {
     .padStart(2, "0");
   return `${minutes}:${secs}`;
 };
+
+async function fetchCover(artist: string, album: string) {
+  const queryTerms = [
+    !artist || artist === 'Various Artist'
+      ? ''
+      : `artist:"${artist.replace(/"/g, '\\"')}"`,
+    !album || album === 'Unknown Album' || album === ''
+      ? ''
+      : `release:"${album.replace(/"/g, '\\"')}"`
+  ];
+
+  const query = queryTerms.join(' ').trim();
+
+  try {
+    const response = await axios.get('https://musicbrainz.org/ws/2/release', {
+      params: {
+        fmt: 'json',
+        limit: '3',
+        query
+      }
+    });
+
+    for (const release of response.data.releases) {
+      const coverUrl = `https://coverartarchive.org/release/${release.id}/front-250`;
+
+      try {
+        const headResponse = await axios.head(coverUrl);
+        if (headResponse.status >= 200 && headResponse.status < 300) {
+          return coverUrl;
+        }
+      } catch {
+        continue;
+      }
+    }
+    return "logo";
+  } catch {
+    return "logo";
+  }
+}
 
 export const fetchLyrics = async (query: string, duration: number) => {
   try {
@@ -118,15 +158,16 @@ const defaultState: DiscordState = {
   timestamp: true,
 };
 
-export const updateDiscordState = (song: any): void => {
-  if (!song) {
-    return;
-  }
+export const updateDiscordState = async (seek: number, song: Song) => {
+  if (!song) return;
 
   const details = `${song.name}`;
   const state = `${song.artist}`;
+  const duration = song.duration;
 
-  window.ipc.send("set-rpc-state", { details, state });
+  const cover = await fetchCover(song.album.artist, song.album.name);
+
+  window.ipc.send("set-rpc-state", { details, state, seek, duration, cover });
 };
 
 export const resetDiscordState = (): void => {

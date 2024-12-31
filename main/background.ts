@@ -3,7 +3,6 @@ import { Menu, Tray, app, dialog, ipcMain, shell } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { protocol } from "electron";
-import { RpcClient, ActivityType } from "dc-rpc";
 import {
   addSongToPlaylist,
   addToFavourites,
@@ -25,6 +24,7 @@ import {
 import { initDatabase } from "./helpers/db/createDB";
 import { parseFile } from "music-metadata";
 import fs from "fs";
+import { Client } from "@xhayper/discord-rpc";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -38,17 +38,26 @@ let mainWindow: any;
 let settings: any;
 
 // @hiaaryan: Initialize Database on Startup
-(async () => {
-  initDatabase();
-  settings = await getSettings();
+const initializeLibrary = async () => {
+  try {
+    // Initialize SQLite database
+    await initDatabase();
 
-  if (settings) {
-    await initializeData(settings.musicFolder);
+    // Get settings
+    settings = await getSettings();
+
+    if (settings) {
+      // Initialize the music library
+      await initializeData(settings.musicFolder);
+    }
+  } catch (error) {
+    console.error('Error initializing library:', error);
   }
-})();
+};
 
 (async () => {
   await app.whenReady();
+  await initializeLibrary();
 
   // @hiaaryan: Using Depreciated API [Seeking Not Supported with Net]
   protocol.registerFileProtocol("wora", (request, callback) => {
@@ -59,7 +68,7 @@ let settings: any;
     width: 1500,
     height: 900,
     titleBarStyle: "hidden",
-    trafficLightPosition: { x: 20, y: 15 },
+    trafficLightPosition: { x: 20, y: 20 },
     transparent: true,
     frame: false,
     icon: path.join(__dirname, "resources/icon.icns"),
@@ -103,27 +112,41 @@ let settings: any;
 })();
 
 // @hiaaryan: Initialize Discord RPC
-const client = new RpcClient({ transport: 'ipc' });
-ipcMain.on("set-rpc-state", (_, { details, state, timestamp }) => {
+const client = new Client({
+  clientId: "1243707416588320800"
+});
+
+client.login();
+
+ipcMain.on("set-rpc-state", (_, { details, state, seek, duration, cover }) => {
+  let startTimestamp, endTimestamp;
+
+  if (duration && seek) {
+    const now = Math.ceil(Date.now());
+    startTimestamp = now - (seek * 1000);
+    endTimestamp = now + ((duration - seek) * 1000);
+  }
+
   const setActivity = {
     details,
     state,
-    largeImageKey: "logo",
-    largeImageText: `v${app.getVersion()}`,
+    largeImageKey: cover,
     instance: false,
-    type: ActivityType.Listening,
+    type: 2,
+    startTimestamp: startTimestamp,
+    endTimestamp: endTimestamp,
   };
 
-  if (timestamp) {
-    (setActivity as any).startTimestamp = Date.now();
-  }
-
-  client.setActivity(setActivity);
+  client.user.setActivity(setActivity);
 });
-client.login({ clientId: "1243707416588320800" });
+
+// @hiaaryan: Called to Rescan Library
+ipcMain.handle("rescanLibrary", async () => {
+  await initializeLibrary();
+});
 
 // @hiaaryan: Called to Set Music Folder
-ipcMain.handle("setMusicFolder", async () => {
+ipcMain.handle("scanLibrary", async () => {
   const diag = await dialog
     .showOpenDialog({
       properties: ["openDirectory", "createDirectory"],
@@ -261,7 +284,7 @@ ipcMain.handle("updateSettings", async (_, data: any) => {
 });
 
 ipcMain.handle("uploadProfilePicture", async (_, file) => {
-  const uploadsDir = path.join(app.getPath("userData"), "uploads/profile");
+  const uploadsDir = path.join(app.getPath("userData"), "utilities/uploads/profile");
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
@@ -275,7 +298,7 @@ ipcMain.handle("uploadProfilePicture", async (_, file) => {
 });
 
 ipcMain.handle("uploadPlaylistCover", async (_, file) => {
-  const uploadsDir = path.join(app.getPath("userData"), "uploads/playlists");
+  const uploadsDir = path.join(app.getPath("userData"), "utilities/uploads/playlists");
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }

@@ -13,7 +13,7 @@ export default function Setup() {
   const handleClick = () => {
     setLoading(true);
     window.ipc
-      .invoke("setMusicFolder", true)
+      .invoke("scanLibrary", true)
       .then((response) => {
         if (response) {
           setLoading(false);

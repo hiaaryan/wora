@@ -6,7 +6,7 @@ export const sqlite = new Database(
   path.join(app.getPath("userData"), "wora.db"),
 );
 
-export const initDatabase = () => {
+export const initDatabase = async () => {
   sqlite.exec(`
       CREATE TABLE IF NOT EXISTS settings (
         id INTEGER PRIMARY KEY,
@@ -19,7 +19,7 @@ export const initDatabase = () => {
         name TEXT,
         artist TEXT,
         year INTEGER,
-        coverArt BLOB
+        cover TEXT
       );
       CREATE TABLE IF NOT EXISTS songs (
         id INTEGER PRIMARY KEY,
@@ -34,7 +34,7 @@ export const initDatabase = () => {
         id INTEGER PRIMARY KEY,
         name TEXT,
         description TEXT,
-        coverArt BLOB
+        cover TEXT
       );
       CREATE TABLE IF NOT EXISTS playlistSongs (
         playlistId INTEGER,
