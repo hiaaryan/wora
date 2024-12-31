@@ -135,10 +135,10 @@ export const updatePlaylist = async (data: any) => {
     description = "An epic playlist created by you.";
   }
 
-  if (data.coverArt) {
-    cover = data.data.coverArt;
+  if (data.cover) {
+    cover = data.data.cover;
   } else {
-    cover = "/coverArt.png";
+    cover = "/cover.png";
   }
 
   const playlist = await db
@@ -361,13 +361,13 @@ export const initializeData = async (musicFolder: string) => {
             metadata.common.artist ||
             "Various Artists",
           year: metadata.common.year,
-          coverArt: artPath,
+          cover: artPath,
         })
         .returning();
 
       album = newAlbum;
     } else {
-      // @hiaaryan: Update Album if Artist or CoverArt is different
+      // @hiaaryan: Update Album if Artist or Cover is different
       if (
         album.artist !==
         (metadata.common.albumartist || metadata.common.artist) ||
