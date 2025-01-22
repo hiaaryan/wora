@@ -39,7 +39,7 @@ A bit simpler process would be to download the latest build through [here](https
 
 - [Node.js](https://nodejs.org/) v14 or higher
 - [Git](https://git-scm.com/) for obvious reasons
-- [Yarn](https://yarnpkg.com/) for dependencies
+- [Bun](https://bun.sh/) for dependencies
 
 ### 👾 Installation
 
@@ -53,19 +53,19 @@ A bit simpler process would be to download the latest build through [here](https
 2. **Install the dependencies:**
 
     ```sh
-    yarn install
+    bun install
     ```
 
 4. **Start the application:**
 
     ```sh
-    yarn dev
+    bun run dev
     ```
 
 5. **Build the application**
 
     ```sh
-    yarn build
+    bun run build
     ```
 
 ## 🤝 Contributing
