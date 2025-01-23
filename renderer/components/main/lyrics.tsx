@@ -52,7 +52,7 @@ const Lyrics: React.FC<LyricsProps> = React.memo(
                 id={`line-${line.time}`}
                 className={
                   `${currentLyric?.time === line.time ? "scale-125 font-semibold" : "opacity-40"}` +
-                  " transform-gpu transition-transform duration-700 my-2 max-w-xl origin-left cursor-pointer rounded-xl p-4 hover:bg-black/5 dark:hover:bg-white/10"
+                  " transform-gpu lowercase transition-transform duration-700 my-2 max-w-xl origin-left cursor-pointer rounded-xl p-4 hover:bg-black/5 dark:hover:bg-white/10"
                 }
                 onClick={() => onLyricClick(line.time)}
               >
