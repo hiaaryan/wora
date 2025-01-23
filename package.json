@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "nextron",
     "build": "nextron build",
+    "postinstall": "electron-builder install-app-deps",
     "build:mac": "nextron build --mac --universal",
     "build:linux": "nextron build --linux",
     "build:win64": "nextron build --win --x64"
@@ -71,6 +72,5 @@
     "rebuild": "^0.1.2",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2"
-  },
-  "packageManager": "yarn@4.3.1"
+  }
 }

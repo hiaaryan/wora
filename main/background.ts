@@ -116,9 +116,7 @@ const client = new Client({
   clientId: "1243707416588320800"
 });
 
-client.login();
-
-ipcMain.on("set-rpc-state", (_, { details, state, seek, duration, cover }) => {
+ipcMain.on("set-rpc-state", async (_, { details, state, seek, duration, cover }) => {
   let startTimestamp, endTimestamp;
 
   if (duration && seek) {
@@ -135,9 +133,22 @@ ipcMain.on("set-rpc-state", (_, { details, state, seek, duration, cover }) => {
     type: 2,
     startTimestamp: startTimestamp,
     endTimestamp: endTimestamp,
+    buttons: [
+      { label: "Support Project", url: "https://github.com/hiaaryan/wora" },
+    ]
   };
 
-  client.user.setActivity(setActivity);
+  if (!client.isConnected) {
+    try {
+      await client.login();
+    } catch (error) {
+      console.error('Error logging into Discord:', error);
+    }
+  }
+
+  if (client.isConnected) {
+    client.user.setActivity(setActivity);
+  }
 });
 
 // @hiaaryan: Called to Rescan Library
@@ -203,7 +214,6 @@ app.whenReady().then(() => {
 
 // @hiaaryan: IPC Handlers from Renderer
 ipcMain.handle("getAlbums", async (_, page) => {
-  console.log(page);
   return await getAlbums(page);
 });
 

@@ -19,23 +19,8 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { convertTime } from "@/lib/helpers";
-import { usePlayer } from "@/context/playerContext";
+import { Song, usePlayer } from "@/context/playerContext";
 import { toast } from "sonner";
-
-type Album = {
-  id: number;
-  name: string;
-  cover: string;
-};
-
-type Song = {
-  id: number;
-  name: string;
-  filePath: string;
-  artist: string;
-  duration: number;
-  album: Album;
-};
 
 type Playlist = {
   id: number;

@@ -161,8 +161,8 @@ const defaultState: DiscordState = {
 export const updateDiscordState = async (seek: number, song: Song) => {
   if (!song) return;
 
-  const details = `${song.name}`;
-  const state = `${song.artist}`;
+  const details = song.name;
+  const state = (song.artist).split(/[,&(]/)[0].trim();;
   const duration = song.duration;
 
   const cover = await fetchCover(song.album.artist, song.album.name);
