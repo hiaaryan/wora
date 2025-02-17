@@ -10,6 +10,7 @@
   <a href="https://github.com/hiaaryan/wora/stargazers"><img src="https://img.shields.io/github/stars/hiaaryan/wora?style=flat&stars" alt="GitHub Stars" /></a>
   <a href="https://github.com/hiaaryan/wora/network"><img src="https://img.shields.io/github/forks/hiaaryan/wora?style=flat&forks" alt="GitHub Forks" /></a>
   <a href="https://github.com/hiaaryan/wora/watchers"><img src="https://img.shields.io/github/watchers/hiaaryan/wora?style=flat&watchers" alt="GitHub Watchers" /></a>
+  <a href="https://github.com/hiaaryan/wora/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/hiaaryan/wora/total?style=flat"></a>
 </p>
 
 ## ⭐️ Description
